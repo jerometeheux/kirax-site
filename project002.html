@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kirax - Project 002</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="project.css">
+</head>
+<body>
+  <main class="container">
+    <a class="back-link" href="index.html">← Back to home</a>
+    <section class="hero">
+      <p class="kicker">Project 002</p>
+      <h1>SmartStrips</h1>
+      <p class="subtitle">Very discreet 1m high smart LED strip controlled thanks to Art-Net trough WiFi wih multiple DMX mapping modes.</p>
+      <div class="meta">
+        <span class="chip status status-progress">In Progress</span><span class="chip">HW + SW</span><span class="chip">ESP32-C6</span><span class="chip">Smart LEDs</span><span class="chip">DMX</span><span class="chip">Art-Net</span><span class="chip">Web UI</span><span class="chip">Hack-Me</span>
+      </div>
+      <img class="cover" src="pics/project002p01.jpg" alt="Project 002 main image">
+    </section>
+    <div class="grid">
+      <section class="card">
+        <h2>Core Features</h2>
+        <ul class="features">
+          <li>WiFi Art-Net control for stage and installation setups</li>
+          <li>Multiple DMX modes for flexible channel layouts</li>
+          <li>Octo-strip's like DMX modes</li>
+          <li>20 internal presets with RGB control, macro variants, speed</li>          
+          <li>Stand-alone mode available thanks to Web UI</li>          
+          <li>TPM2 over Wifi (using Jinx software)</li>
+          <li>Embedded web configuration with discovery & broacast to all for quick tuning</li>
+        </ul>
+        <h2>Hardware</h2>
+        <ul class="features">
+          <li>60 leds WS2812 RGB Leds</li>
+          <li>WiFi internal antena</li>
+          <li>5V 3A DC IN DIN connector</li>
+          <li>USB-C (Update)</li>
+          <li>Hack-me if you can ! use hardware and build your own firmware !</li>
+        </ul>
+        <h2>Futures Features</h2>
+        <ul class="features">
+          <li>Stand-alone XY Effects</li>
+          <li>Zibgee control</li>
+          <li>Router-free stage setup up to 20 stips thanks to ESP-NOW</li>
+          <li>Basic libs for hacks</li>          
+        </ul>        
+
+        <div class="section">
+          <h2>Photo Gallery</h2>
+          <div class="gallery">
+            <img src="pics/project002p01.jpg" alt="Project 002 photo 1">
+            <img src="pics/project002p01.jpg" alt="Project 002 photo 2">
+            <img src="pics/project002p01.jpg" alt="Project 002 photo 3">
+          </div>
+        </div>
+      </section>
+      <aside class="card">
+        <h2>Project Info</h2>
+        <div class="details">
+          <p><strong>Status:</strong> In Progress</p>
+          <p><strong>Timeline:</strong> 2026</p>
+          <p><strong>Tech:</strong> ESP32-C6, C++, Art-Net</p>
+          <p><strong>Context:</strong> Experimental + product direction</p>
+          <p><strong>Slug:</strong> project002</p>
+        </div>
+        <div class="section" style="margin-top:22px">
+          <h2>Download</h2>
+          <ul class="features" style="margin-bottom:0">
+            <li>
+              <a href="https://github.com/jerometeheux/kirax" target="_blank" rel="noopener">View on Github</a>
+            </li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    <section class="card section">
+      <h2>Use Cases</h2>
+      <div class="usecases">
+        <article class="usecase">
+          <h3>Use Case 01 — Console-driven pro operation</h3>
+          <p><strong>Context:</strong> Lighting operator works from MA/Avolites and needs deterministic control.</p>
+          <p><strong>Solution:</strong> Use Art-Net mode for low-latency control, keep web UI available as fallback for quick local tuning.</p>
+          <p><strong>Proof:</strong> TBD</p>
+          <section class="card section">
+            <div class="screens">
+              <div class="screen"><img src="pics/project002p01.jpg" alt="Project 002 screenshot 1"><p>DMX mode selection screen.</p></div>
+              <div class="screen"><img src="pics/project002p01.jpg" alt="Project 002 screenshot 2"><p>Live strip preview and controls.</p></div>
+            </div>
+          </section>
+        </article>
+        <article class="usecase">
+          <h3>Use Case 02 — Large visual wall with 2D effects</h3>
+          <p><strong>Context:</strong> Multiple strips arranged physically as a grid for immersive visuals.</p>
+          <p><strong>Solution:</strong> Assign each strip a virtual XY position; each device computes its own pixels while receiving shared effect parameters and clock.</p>
+          <p><strong>Proof:</strong> Add a grid layout image, a screenshot of XY config values, and a clip of wave/fire effects across the full wall.</p>
+          <section class="card section">
+            <div class="screens">
+              <div class="screen"><img src="pics/project002p01.jpg" alt="Project 002 screenshot 1"><p>DMX mode selection screen.</p></div>
+              <div class="screen"><img src="pics/project002p01.jpg" alt="Project 002 screenshot 2"><p>Live strip preview and controls.</p></div>
+            </div>
+          </section>
+        </article>
+        <article class="usecase">
+          <h3>Use Case 01 — Router-free stage setup</h3>
+          <p><strong>Context:</strong> Small stage, fast deployment, no local router available.</p>
+          <p><strong>Solution:</strong> One SmartStrip acts as WiFi AP + ESP-NOW master; additional strips sync parameters and timing with near real-time behavior.</p>
+          <p><strong>Proof:</strong> TBD</p>
+          <section class="card section">
+            <div class="screens">
+              <div class="screen"><img src="pics/project002p01.jpg" alt="Project 002 screenshot 1"><p>DMX mode selection screen.</p></div>
+              <div class="screen"><img src="pics/project002p01.jpg" alt="Project 002 screenshot 2"><p>Live strip preview and controls.</p></div>
+            </div>
+          </section>
+        </article>
+      </div>
+    </section>
+    <section class="card section">
+      <h2>Promo Video</h2>
+      <div class="video-wrapper">
+        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Project 002 promo video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </section>
+    <a class="back-link" href="index.html">← Back to home</a>
+  </main>
+</body>
+</html>

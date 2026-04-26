@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kirax - Project 001</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="project.css">
+</head>
+<body>
+  <main class="container">
+    <a class="back-link" href="index.html">← Back to home</a>
+    <section class="hero">
+      <p class="kicker">Project 001</p>
+      <h1>DMXTools</h1>
+      <p class="subtitle">A "swiss-knife" DMX controller with a mobile-friendly web UI for quick live adjustments.</p>
+      <div class="meta">
+        <span class="chip status status-progress">In Progress</span><span class="chip">HW + SW</span><span class="chip">DMX</span><span class="chip">Art-Net</span><span class="chip">Web UI</span><span class="chip">Merge</span><span class="chip">Hack-Me</span>
+      </div>
+      <img class="cover" src="pics/project001p01.jpg" alt="Project 001 main image">
+    </section>
+    <div class="grid">
+      <section class="card">
+        <h2>Core Features</h2>
+        <ul class="features">
+          <li>2 x DMX Universes IN & 1 DMX Univers OUT</li>
+          <li>4 x Artnet Univers IN / 4 x Artnet Univers OUT</li>
+          <li>Full configurable routing (Web UI, CSV, Presets)</li>
+          <li>DMX channel control through touch-friendly faders</li>
+          <li>Scene and preset management for fast recalls</li>
+          <li>WiFi & Ethernet setup and access from phone, tablet, and desktop</li>
+          <li>Art-Net and DMX workflow compatibility</li>
+        </ul>
+        <h2>Hardware</h2>
+        <ul class="features">
+          <li>2 x XLR 3 M + 2 x XLR 3 F</li>
+          <li>Ethernet</li>
+          <li>WiFi external antena</li>
+          <li>USB-C (Power & Update)</li>
+          <li>Internal SD Card for CSV files (Access only from Web UI)</li>
+          <li>Hack-me if you can ! use hardware and build your own firmware !</li>
+        </ul>
+        <h2>Futures Features</h2>
+        <ul class="features">
+          <li>3 x DMX Universes IN or OUT (XLR3)</li>
+          <li>Oled Screen + 4 buttons to select basic features (presets) </li>
+          <li>SD Card Removable</li>
+          <li>Basic libs</li>
+        </ul>        
+        <div class="section">
+          <h2>Photo Gallery</h2>
+          <div class="gallery">
+            <img src="pics/project001p01.jpg" alt="Project 001 photo 1">
+            <img src="pics/project001p01.jpg" alt="Project 001 photo 2">
+            <img src="pics/project001p01.jpg" alt="Project 001 photo 3">
+          </div>
+        </div>
+      </section>
+      <aside class="card">
+        <h2>Project Info</h2>
+        <div class="details">
+          <p><strong>Status:</strong> Proto on test</p>
+          <p><strong>Timeline:</strong> 2026</p>
+          <p><strong>Tech:</strong> ESP32-S3, C++, HTML/CSS/JS</p>
+          <p><strong>Context:</strong> Personal product</p>
+          <p><strong>Slug:</strong> project001</p>
+        </div>
+        <div class="section" style="margin-top:22px">
+          <h2>Download</h2>
+          <ul class="features" style="margin-bottom:0">
+            <li>
+              <a href="https://github.com/jerometeheux/kirax" target="_blank" rel="noopener">View on Github</a>
+            </li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+    <section class="card section">
+      <h2>Use Cases</h2>
+      <div class="usecases">
+        <article class="usecase">
+          <h3>Use Case 1 - DMX Merger</h3>
+          <p><strong>Context:</strong> Using Trads, RGB fixtures and Automatic fixtures on one Univers</p>
+          <p><strong>Solution:</strong> Use 2 cheap consoles together : a "24 Channels DMX" and a "12 x 16 Automatic console" with main master</p>
+          <p><strong>Proof:</strong> TBD</p>
+        </article>
+        <article class="usecase">
+          <h3>Use Case 2 - DMX simplifier</h3>
+          <p><strong>Context:</strong> Transform fixtures with strange DMX or Moving Wash into simple "RGB channels"</p>
+          <p><strong>Solution:</strong> Use web-configurable routing and remapping rules to use cheap 24 Channels DMX console to control "complex" fixutres</p>
+          <p><strong>Proof:</strong> TBD</p>
+        </article>
+        <article class="usecase">
+          <h3>Use Case 3 - Hybrid operation (console + local web control)</h3>
+          <p><strong>Context:</strong> Operator needs deterministic Art-Net/DMX control, while technicians still need quick local adjustments.</p>
+          <p><strong>Solution:</strong> Keep Art-Net/DMX for live playback and use mobile web UI as fallback for setup, testing, and emergency tweaks.</p>
+          <p><strong>Proof:</strong> TBD</p>    <section class="card section">
+            <div class="screens">
+              <div class="screen"><img src="pics/project001p01.jpg" alt="Project 001 screenshot 1"><p>Main dashboard view.</p></div>
+              <div class="screen"><img src="pics/project001p01.jpg" alt="Project 001 screenshot 2"><p>Preset and scene controls.</p></div>
+            </div>
+          </section>
+        </article>
+        <article class="usecase">
+          <h3>Use Case 04 - Multi-tools with simple routing presets</h3>
+          <p><strong>Context:</strong> Today I need only a simple converter... </p>
+          <p><strong>Solution:</strong> Use routing presets like DMX to Art-net or Art-Net to DMX, basic merger, basic splitter...</p>
+          <p><strong>Proof:</strong> TBD</p>
+          <section class="card section">
+            <div class="screens">
+              <div class="screen"><img src="pics/project001p01.jpg" alt="Project 001 screenshot 1"><p>Main dashboard view.</p></div>
+              <div class="screen"><img src="pics/project001p01.jpg" alt="Project 001 screenshot 2"><p>Preset and scene controls.</p></div>
+            </div>
+          </section>
+        </article>
+        <article class="usecase">
+          <h3>Use Case 05 - Web-UI simple presets</h3>
+          <p><strong>Context:</strong> Small events need repeatable scenes with minimal technical overhead.</p>
+          <p><strong>Solution:</strong> Store presets and recall them quickly with tablet or smartphone</p>
+          <p><strong>Proof:</strong>  TBD</p>
+          <section class="card section">
+            <div class="screens">
+              <div class="screen"><img src="pics/project001p01.jpg" alt="Project 001 screenshot 1"><p>Main dashboard view.</p></div>
+              <div class="screen"><img src="pics/project001p01.jpg" alt="Project 001 screenshot 2"><p>Preset and scene controls.</p></div>
+            </div>
+          </section>
+        </article>
+      </div>
+    </section>
+    <section class="card section">
+      <h2>Promo Video</h2>
+      <div class="video-wrapper">
+        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Project 001 promo video" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+    </section>
+    <a class="back-link" href="index.html">← Back to home</a>
+  </main>
+</body>
+</html>

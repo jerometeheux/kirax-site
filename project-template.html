@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kirax - Project Page Template</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="project.css">
+</head>
+<body>
+  <main class="container">
+    <a class="back-link" href="index.html">← Back to home</a>
+
+    <section class="hero">
+      <p class="kicker">Project Page Template</p>
+      <h1>Project Name</h1>
+      <p class="subtitle">
+        Short 1-2 sentence project description: what it does, who it is for, and why it matters.
+      </p>
+      <div class="meta">
+        <span class="chip status status-finished">Finished</span>
+        <span class="chip">HW + SW</span>
+        <span class="chip">ESP32</span>
+        <span class="chip">Web UI</span>
+      </div>
+      <img class="cover" src="pics/project001p01.jpg" alt="Main project image">
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Core Features</h2>
+        <ul class="features">
+          <li>Feature 1 clearly tied to real usage.</li>
+          <li>Feature 2 with a direct user benefit.</li>
+          <li>Feature 3 (advanced mode / automation / presets).</li>
+          <li>Feature 4 (connectivity, integration, API, etc.).</li>
+        </ul>
+
+        <div class="section">
+          <h2>Photo Gallery</h2>
+          <div class="gallery">
+            <img src="pics/project001p01.jpg" alt="Project photo 1">
+            <img src="pics/project001p02.jpg" alt="Project photo 2">
+            <img src="pics/project001p03.jpg" alt="Project photo 3">
+          </div>
+        </div>
+      </section>
+
+      <aside class="card">
+        <h2>Project Info</h2>
+        <div class="details">
+          <p><strong>Status:</strong> In Progress / Finished</p>
+          <p><strong>Timeline:</strong> 2026</p>
+          <p><strong>Tech:</strong> ESP32, C++, HTML/CSS/JS</p>
+          <p><strong>Context:</strong> Personal / Client / Experimental</p>
+          <p><strong>Repo / docs:</strong> GitHub link or docs URL</p>
+        </div>
+        <div class="section" style="margin-top:22px">
+          <h2>Download</h2>
+          <ul class="features" style="margin-bottom:0">
+            <li>
+              <a href="https://github.com/jerometeheux/kirax" target="_blank" rel="noopener">View on Github</a>
+            </li>
+          </ul>
+        </div>      
+      </aside>
+    </div>
+
+    <section class="card section">
+      <h2>Promo Video</h2>
+      <div class="video-wrapper">
+        <iframe
+          src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+          title="Project promo video"
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </section>
+
+    <section class="card section">
+      <h2>Use Cases</h2>
+      <div class="usecases">
+        <article class="usecase">
+          <h3>Use Case 01 — Live show with no router</h3>
+          <p><strong>Context:</strong> Small setup controlled from a tablet, no network infrastructure on site.</p>
+          <p><strong>Solution:</strong> One unit acts as AP + sync master, other units follow parameters.</p>
+          <p><strong>Proof:</strong> Add one screenshot of setup, one short video clip of synchronized output.</p>
+          <div class="screens">
+            <div class="screen">
+              <img src="pics/project001p04.jpg" alt="Main interface screenshot">
+              <p>Main dashboard or home screen.</p>
+            </div>
+            <div class="screen">
+              <img src="pics/project001p05.jpg" alt="Advanced settings screenshot">
+              <p>Settings and configuration screen.</p>
+            </div>
+          </div>
+        </article>
+        <article class="usecase">
+          <h3>Use Case 02 — Console workflow integration</h3>
+          <p><strong>Context:</strong> Operator needs deterministic control from a lighting console.</p>
+          <p><strong>Solution:</strong> Use Art-Net/DMX mode with project-specific mapping and presets.</p>
+          <p><strong>Proof:</strong> Add console mapping screenshot and a before/after playback comparison.</p>
+          <div class="screens">
+            <div class="screen">
+              <img src="pics/project001p04.jpg" alt="Main interface screenshot">
+              <p>Main dashboard or home screen.</p>
+            </div>
+            <div class="screen">
+              <img src="pics/project001p05.jpg" alt="Advanced settings screenshot">
+              <p>Settings and configuration screen.</p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="card section">
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#">Open Live Demo</a>
+        <a class="btn btn-ghost" href="#">Read Documentation</a>
+      </div>
+    </section>
+    <a class="back-link" href="index.html">← Back to home</a>
+  </main>
+</body>
+</html>
