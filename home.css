@@ -249,6 +249,11 @@ section {
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
 }
+a.project-card {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
 .project-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -266,6 +271,7 @@ section {
   background: radial-gradient(circle at 70% 20%, var(--accent-glow) 0%, transparent 60%);
   opacity: 0;
   transition: opacity 0.3s;
+  pointer-events: none; 
 }
 .project-card:hover {
   border-color: var(--border-h);
