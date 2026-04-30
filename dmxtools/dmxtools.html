@@ -1,0 +1,3705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DMXTools — Live</title>
+<link rel="stylesheet" href="dmxtools.css">
+</head>
+<body>
+
+<div class="page-wrap">
+
+  <header class="app-header">
+    <div style="display:flex;align-items:center;gap:10px">
+      <img src="kiraxlogo52p.png" alt="Kirax" style="height:24px;flex-shrink:0">
+      <div>
+        <div class="app-title">DMX<span>Tools</span></div>
+        <div class="show-sub" id="showSub">—</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="status-dot" id="statusDot"></div>
+    </div>
+  </header>
+
+
+    <!-- ── Faders ── -->
+    <div class="panel active" id="tab-faders">
+
+      <div class="content">
+        <div style="display:flex;gap:8px;align-items:stretch;flex-wrap:wrap">
+
+          <!-- PRESET zone -->
+          <div class="zone-wrap preset">
+            <div class="zone-label">Preset</div>
+            <div class="zone-ctrl-row">
+              <div class="ctrl-group">
+                <div class="ctrl-group-label">Record mode</div>
+                <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">
+                  <div class="pill-group" id="recModeBtns">
+                    <button class="pill active" onclick="setPresetRecMode('all')">All</button>
+                    <button class="pill"        onclick="setPresetRecMode('allfaders')">All Faders</button>
+                    <button class="pill"        onclick="setPresetRecMode('sel')">Selection</button>
+                    <button class="pill"        onclick="setPresetRecMode('dyn')">Dynamic</button>
+                    <span style="display:inline-block;width:16px"></span>
+
+                  </div>
+                </div>
+              </div>
+              <div class="ctrl-group">
+                <div class="ctrl-group-label">Edit Function</div>
+                <div style="display:flex;gap:4px;align-items:center">
+                  <button class="pill" id="btnAutoEdit" onclick="toggleAutoEdit()" title="Auto-edit preset after save">Auto Labels</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FADER zone -->
+          <div class="zone-wrap fader">
+            <div class="zone-label">Fader</div>
+            <div class="zone-ctrl-row">
+              <div class="ctrl-group">
+                <div class="ctrl-group-label">Label Button Function</div>
+                <div style="display:flex;gap:4px;align-items:center">
+                  <div class="pill-group" id="fnModeBtns">
+                    <button class="pill active" onclick="setFnMode('flash')">Flash</button>
+                    <button class="pill"        onclick="setFnMode('on')">ON</button>
+                    <button class="pill"        onclick="setFnMode('off')">OFF</button>
+                    <button class="pill"        onclick="setFnMode('sel')">Sel</button>
+                    <span style="display:inline-block;width:16px"></span>
+                    
+                    <button class="pill" id="btnSelectAllFaders" onclick="selectAllFaders()" title="Select all faders" style="display:none">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="vertical-align:middle">
+                        <rect x="2.5" y="6" width="11" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3" />
+                        <path d="M5 9l2 2 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                    <button class="pill" id="btnDeselectAllFaders" onclick="selectNoFaders()" title="Unselect all faders" style="display:none">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="vertical-align:middle">
+                        <rect x="2.5" y="6" width="11" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3" />
+                        <path d="M5.5 10.5l5-5M5.5 5.5l5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                      </svg>
+                    </button>
+                    
+                    <span style="display:inline-block;width:16px"></span>
+
+                    <button class="icon-btn" id="btnEditMode" onclick="toggleEditMode()" title="Edit labels &amp; colours">
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M11 2l3 3-8 8H3v-3L11 2z"/>
+                      </svg>
+                    </button>
+                  </div>
+          
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Global danger -->
+          <div class="danger-zone">
+            <div class="danger-zone-label" style="width:100%">Global</div>
+            <button class="danger-btn" onclick="allFadersZero()">0 >>> Faders</button>
+            <button class="danger-btn" onclick="allMastersZero()">0 >>> Masters</button>
+            <button class="danger-btn" id="btnBlackout" onclick="toggleBlackout()">Blackout</button>
+          </div>
+
+        </div>
+      </div>
+                
+
+      <div id="presets-zone" style="display:none"></div>
+
+      <!-- Fader + Masters area — two independent framed zones -->
+      <div class="fader-main-area">
+        <div class="faders-card">
+          <div id="faders-zone"></div>
+        </div>
+        <div class="masters-area">
+          <div class="masters-strip" id="masters-strip"></div>
+        </div>
+      </div>
+
+      <!-- Settings bar -->
+      <div class="controls-bar">
+
+        <!-- PRESET zone -->
+        <div class="zone-wrap preset">
+          <div class="zone-label">Preset</div>
+          <div class="zone-ctrl-row">
+            <div class="ctrl-group">
+              <div class="ctrl-group-label">Rows</div>
+              <div class="pill-group" id="presetRowBtns">
+                <button class="pill active" onclick="setPresetRows(0)">Off</button>
+                <button class="pill"        onclick="setPresetRows(1)">1</button>
+                <button class="pill"        onclick="setPresetRows(2)">2</button>
+                <button class="pill"        onclick="setPresetRows(3)">3</button>
+              </div>
+            </div>
+            <span style="display:inline-block;width:16px"></span>
+            <div class="ctrl-group">
+              <div class="ctrl-group-label">Cols</div>
+              <div class="pill-group" id="presetColBtns">
+                <button class="pill"        onclick="setPresetCols(6)">6</button>
+                <button class="pill"        onclick="setPresetCols(8)">8</button>
+                <button class="pill active" onclick="setPresetCols(12)">12</button>
+                <button class="pill"        onclick="setPresetCols(16)">16</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FADER zone -->
+        <div class="zone-wrap fader">
+          <div class="zone-label">Fader</div>
+          <div class="zone-ctrl-row">
+            <div class="ctrl-group">
+              <div class="ctrl-group-label">Rows</div>
+              <div class="pill-group" id="faderRowBtns">
+                <button class="pill active" onclick="setFaderRows(1)">1</button>
+                <button class="pill"        onclick="setFaderRows(2)">2</button>
+                <button class="pill"        onclick="setFaderRows(3)">3</button>
+              </div>
+            </div>
+            <span style="display:inline-block;width:16px"></span>
+            <div class="ctrl-group">
+              <div class="ctrl-group-label">Cols</div>
+              <div class="pill-group" id="faderColBtns">
+                <button class="pill"        onclick="setFaderCols(6)">6</button>
+                <button class="pill"        onclick="setFaderCols(8)">8</button>
+                <button class="pill active" onclick="setFaderCols(12)">12</button>
+                <button class="pill"        onclick="setFaderCols(16)">16</button>
+              </div>
+            </div>
+            <span style="display:inline-block;width:16px"></span>
+            <div class="ctrl-group">
+              <div class="ctrl-group-label">Height</div>
+              <div class="pill-group" id="faderSizeBtns">
+                <button class="pill" data-sz="s" onclick="setFaderSize('s')">S</button>
+                <button class="pill" data-sz="m" onclick="setFaderSize('m')">M</button>
+                <button class="pill" data-sz="l" onclick="setFaderSize('l')">L</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MASTER zone -->
+        <div class="zone-wrap master">
+          <div class="zone-label">Master</div>
+          <div class="zone-ctrl-row">
+            <div class="ctrl-group">
+              <div class="ctrl-group-label">Count</div>
+              <div class="pill-group" id="masterCountBtns">
+                <button class="pill active" onclick="setNumMasters(1)">1</button>
+                <button class="pill"        onclick="setNumMasters(2)">2</button>
+                <button class="pill"        onclick="setNumMasters(4)">4</button>
+                <button class="pill"        onclick="setNumMasters(8)">8</button>
+                <button class="pill"        onclick="setNumMasters(16)">16</button>
+              </div>
+            </div>
+            <span style="display:inline-block;width:16px"></span>
+            <div class="ctrl-group">
+              <div class="ctrl-group-label">Height</div>
+              <div class="pill-group" id="masterSizeBtns">
+                <button class="pill" data-sz="s" onclick="setMasterSize('s')">S</button>
+                <button class="pill" data-sz="m" onclick="setMasterSize('m')">M</button>
+                <button class="pill" data-sz="l" onclick="setMasterSize('l')">L</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Show + Rules ── -->
+    <div class="panel" id="tab-show">
+
+      <div class="card">
+
+        <!-- Show actif -->
+        <div class="card-row">
+          <div style="flex:1;min-width:0">
+            <div class="row-label" id="showActiveRow">—</div>
+            <div class="row-sub" id="showDescRow"></div>
+          </div>
+        </div>
+
+        <!-- Load depuis SD -->
+        <div class="card-row" style="gap:8px;flex-wrap:wrap">
+          <span class="show-lbl">Load</span>
+          <select id="showSel" style="flex:1;min-width:100px;padding:6px 10px;font-size:13px;
+            background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);
+            color:var(--text);-webkit-appearance:none;appearance:none;outline:none"></select>
+          <button class="btn" onclick="loadShow()" style="flex-shrink:0">Load</button>
+          <button class="icon-btn" onclick="downloadShow()" title="Download this CSV">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px">
+              <path d="M8 2v8M5 7l3 3 3-3"/><path d="M2 12h12"/>
+            </svg>
+          </button>
+          <button class="icon-btn" id="btnDeleteFile" onclick="confirmDelete()"
+            title="Delete this file" style="color:#f07070;border-color:rgba(220,60,60,.25)">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px">
+              <path d="M3 4h10M6 4V2h4v2M5 4v8h6V4"/>
+            </svg>
+          </button>
+        </div>
+        <div id="show-preview" style="display:none;font-size:11px;color:var(--accent);
+          padding:4px 2px;margin-top:-4px;font-style:italic"></div>
+        <!-- PC : upload + download all -->
+        <div class="card-row" style="gap:8px">
+          <span class="show-lbl">PC</span>
+          <input type="file" id="uploadInput" accept=".csv" style="display:none"
+            onchange="onPickFile(event)">
+          <div class="upload-zone" id="uploadZone"
+            style="flex:1;margin:0;padding:8px 12px;flex-direction:row;gap:8px;min-height:0;text-align:left"
+            onclick="document.getElementById('uploadInput').click()"
+            ondragover="onDragOver(event)" ondragleave="onDragLeave(event)"
+            ondrop="onDropFile(event)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <span style="font-size:13px">Drop .csv here, or click to upload</span>
+            <span id="uploadProgress" class="upload-progress" style="font-size:12px"></span>
+          </div>
+          <button class="icon-btn" id="btnDownloadAll" onclick="downloadAllShows()"
+            title="Download all .csv files from SD">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px">
+              <path d="M2 3h12M8 6v8M5 11l3 3 3-3"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Confirmation suppression (cachée) -->
+        <div class="card-row" id="deleteConfirmRow"
+          style="display:none;background:rgba(220,60,60,0.08)">
+          <span style="font-size:13px;color:#f07070">Delete <strong id="deleteFileName"></strong> ?</span>
+          <div style="display:flex;gap:8px">
+            <button class="btn-sm" onclick="cancelDelete()">Cancel</button>
+            <button class="btn-danger" onclick="doDeleteFile()">Yes, delete</button>
+          </div>
+        </div>
+
+        <!-- Save vers SD -->
+        <div class="card-row" style="gap:8px;flex-wrap:wrap">
+          <span class="show-lbl">Save</span>
+          <input type="text" id="saveFilename" placeholder="myshow.csv"
+            style="flex:1;min-width:90px;background:var(--surface2);border:1px solid var(--border);
+              border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:13px;
+              padding:6px 10px;outline:none;transition:border-color .2s"
+            onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''">
+          <input type="text" id="saveDesc" placeholder="Description (optional)"
+            style="flex:2;min-width:120px;background:var(--surface2);border:1px solid var(--border);
+              border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:13px;
+              padding:6px 10px;outline:none;transition:border-color .2s"
+            onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''">
+          <button class="btn" onclick="saveShow()" style="flex-shrink:0">Save to SD</button>
+          <button class="icon-btn" onclick="exportCurrentRules()" title="Export CSV (no SD required)">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px">
+              <path d="M8 2v8M5 7l3 3 3-3"/><path d="M2 12h12"/>
+            </svg>
+          </button>
+          <span id="saveMsg" style="font-size:12px;color:var(--muted)"></span>
+        </div>
+
+        <!-- Global show (JSON) -->
+        <div class="card-row" style="gap:8px;flex-wrap:wrap;align-items:center">
+          <span class="show-lbl">Global</span>
+          <span style="font-size:11px;color:var(--muted);flex:1">Rules + ports + fader labels/colors</span>
+          <input type="file" id="globalImportInput" accept=".json" style="display:none"
+            onchange="onPickGlobalFile(event)">
+          <button class="btn-sm" onclick="exportGlobalShow()">Export JSON</button>
+          <button class="btn-sm" onclick="document.getElementById('globalImportInput').click()">Import JSON</button>
+        </div>
+
+      </div>
+
+      <div class="section-label">Presets</div>
+      <div class="card" id="presets-card">
+        <div class="card-row" style="color:var(--muted);font-size:12px">Loading presets…</div>
+      </div>
+
+      <div class="section-label">
+        Rules
+        <span id="rules-count" style="color:var(--text);font-weight:400;text-transform:none;letter-spacing:0"></span>
+        <button class="icon-btn" onclick="fetchRules()" title="Refresh" style="margin-left:4px">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M13.5 8A5.5 5.5 0 1 1 10 3.1"/><polyline points="10,1 13.5,3.1 11.5,6.5"/>
+          </svg>
+        </button>
+        <button class="btn-danger" id="btnClearRules" onclick="confirmClearRules()"
+          style="font-size:11px;padding:3px 10px" title="Clear all rules">Clear all</button>
+        <div id="clearConfirmRow" style="display:none;align-items:center;gap:8px">
+          <span style="font-size:12px;color:#f07070">Clear all rules?</span>
+          <button class="btn-sm" onclick="document.getElementById('clearConfirmRow').style.display='none'">Cancel</button>
+          <button class="btn-danger" onclick="doClearRules()">Yes</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-row" style="gap:8px;flex-wrap:wrap;align-items:flex-end">
+          <div class="field-group">
+            <label>Filter ch from</label>
+            <input type="number" id="flt-from" min="1" max="512" placeholder="1" style="width:62px">
+          </div>
+          <span style="font-size:12px;color:var(--muted);align-self:flex-end;padding-bottom:6px">→</span>
+          <div class="field-group">
+            <label>to</label>
+            <input type="number" id="flt-to" min="1" max="512" placeholder="512" style="width:62px">
+          </div>
+          <div style="display:flex;gap:6px;align-self:flex-end">
+            <button class="btn-sm" onclick="applyFilter()">Filter</button>
+            <button class="btn-sm" id="btnClearFilter" onclick="clearFilter()" style="display:none">Clear</button>
+          </div>
+          <span id="filter-status" style="font-size:12px;color:var(--muted);align-self:flex-end;padding-bottom:4px"></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="rules-wrap" id="rules-tbl-wrap">
+          <div class="rules-empty">Loading…</div>
+        </div>
+      </div>
+
+      <div class="card" id="add-rules-card">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;
+          color:var(--accent);margin-bottom:8px">Add rules</div>
+        <div class="card-row" style="gap:10px;flex-wrap:wrap;align-items:flex-end">
+          <div class="field-group">
+            <label>Port</label>
+            <select id="ar-port"><option>A</option><option>B</option><option>C</option><option>D</option></select>
+          </div>
+          <div class="field-group">
+            <label>Out ch from → to</label>
+            <div style="display:flex;gap:4px;align-items:center">
+              <div class="universe-box">
+                <button class="step-btn" onclick="stepArOutFrom(-1)">−</button>
+                <div class="uni-center"><input type="number" id="ar-out-from" min="1" max="512" value="1" oninput="onArRangeChange()"></div>
+                <button class="step-btn" onclick="stepArOutFrom(1)">+</button>
+              </div>
+              <span style="font-size:11px;color:var(--muted)">→</span>
+              <div class="universe-box">
+                <button class="step-btn" onclick="stepArOutTo(-1)">−</button>
+                <div class="uni-center"><input type="number" id="ar-out-to" min="1" max="512" value="1" oninput="onArRangeChange()"></div>
+                <button class="step-btn" onclick="stepArOutTo(1)">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Count</label>
+            <div class="universe-box">
+              <button class="step-btn" onclick="stepArCount(-1)">−</button>
+              <div class="uni-center"><input type="number" id="ar-count" min="1" max="512" value="1" oninput="onArCountChange()"></div>
+              <button class="step-btn" onclick="stepArCount(1)">+</button>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Source</label>
+            <select id="ar-src" onchange="onAddSrcChange()">
+              <option>DMX</option><option>ARTNET</option><option>WEB</option><option>CONST</option><option>USB</option>
+            </select>
+          </div>
+          <div class="field-group" id="ar-uni-cell">
+            <label>Universe</label>
+            <div class="universe-box">
+              <button class="step-btn" onclick="stepArUni(-1)">−</button>
+              <div class="uni-center"><input type="number" id="ar-uni" min="0" max="15" value="0"></div>
+              <button class="step-btn" onclick="stepArUni(1)">+</button>
+            </div>
+          </div>
+          <div class="field-group">
+            <label id="ar-in-label">In ch start</label>
+            <div class="universe-box">
+              <button class="step-btn" onclick="stepArIn(-1)">−</button>
+              <div class="uni-center"><input type="number" id="ar-in" min="1" max="512" value="1" placeholder="ch"></div>
+              <button class="step-btn" onclick="stepArIn(1)">+</button>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Master</label>
+            <div class="universe-box">
+              <button class="step-btn" onclick="stepArMaster(-1)">−</button>
+              <div class="uni-center"><input type="number" id="ar-master" min="0" max="8" value="0"></div>
+              <button class="step-btn" onclick="stepArMaster(1)">+</button>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Merge</label>
+            <select id="ar-merge">
+              <option value="HTP">HTP</option><option value="LTP">LTP</option><option value="OVR">OVR</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Priority</label>
+            <div class="universe-box">
+              <button class="step-btn" onclick="stepArPriority(-1)">−</button>
+              <div class="uni-center"><input type="number" id="ar-priority" min="0" max="255" value="0"></div>
+              <button class="step-btn" onclick="stepArPriority(1)">+</button>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Note</label>
+            <input type="text" id="ar-note" maxlength="32" placeholder="label…"
+              style="width:90px;min-width:70px">
+          </div>
+          <button class="btn" onclick="addFromRow()" style="align-self:flex-end">Add</button>
+        </div>
+        <div id="dup-warn-row" style="display:none;margin-top:8px;background:rgba(232,160,0,0.1);
+          border-radius:6px;padding:10px 12px;font-size:13px"></div>
+      </div>
+
+      <div class="card" id="bulk-edit-card" style="display:none">
+        <div class="bulk-title" id="bulk-count-label">0 rows selected</div>
+        <div class="card-row" style="gap:10px;flex-wrap:wrap;align-items:flex-end">
+          <div class="field-group">
+            <label>Port</label>
+            <select id="be-port">
+              <option value="">— keep —</option>
+              <option>A</option><option>B</option><option>C</option><option>D</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Out ch from → to <span style="font-size:10px;color:var(--muted)">(1 règle)</span></label>
+            <div style="display:flex;gap:4px;align-items:center">
+              <div class="universe-box">
+                <button class="step-btn" onclick="stepBe('be-out-from',1,512,-1,updateBeInTo)">−</button>
+                <div class="uni-center"><input type="number" id="be-out-from" min="1" max="512" placeholder="—" oninput="updateBeInTo()"></div>
+                <button class="step-btn" onclick="stepBe('be-out-from',1,512,1,updateBeInTo)">+</button>
+              </div>
+              <span style="font-size:11px;color:var(--muted)">→</span>
+              <div class="universe-box">
+                <button class="step-btn" onclick="stepBe('be-out-to',1,512,-1,updateBeInTo)">−</button>
+                <div class="uni-center"><input type="number" id="be-out-to" min="1" max="512" placeholder="—" oninput="updateBeInTo()"></div>
+                <button class="step-btn" onclick="stepBe('be-out-to',1,512,1,updateBeInTo)">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Source</label>
+            <select id="be-src" onchange="onBeSrcChange()">
+              <option value="">— keep —</option>
+              <option>DMX</option><option>ARTNET</option><option>WEB</option><option>CONST</option><option>USB</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Universe</label>
+            <div class="universe-box">
+              <button class="step-btn" onclick="stepBe('be-uni',0,15,-1)">−</button>
+              <div class="uni-center"><input type="number" id="be-uni" min="0" max="15" placeholder="—"></div>
+              <button class="step-btn" onclick="stepBe('be-uni',0,15,1)">+</button>
+            </div>
+          </div>
+          <div class="field-group">
+            <label id="be-in-lbl">In ch start</label>
+            <div style="display:flex;gap:4px;align-items:center">
+              <div class="universe-box">
+                <button class="step-btn" onclick="stepBe('be-in',0,512,-1,updateBeInTo)">−</button>
+                <div class="uni-center"><input type="number" id="be-in" min="0" max="512" placeholder="—" oninput="updateBeInTo()"></div>
+                <button class="step-btn" onclick="stepBe('be-in',0,512,1,updateBeInTo)">+</button>
+              </div>
+              <span id="be-in-to" style="font-size:11px;color:var(--accent);white-space:nowrap">—</span>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Master</label>
+            <div class="universe-box">
+              <button class="step-btn" onclick="stepBe('be-master',0,16,-1)">−</button>
+              <div class="uni-center"><input type="number" id="be-master" min="0" max="16" placeholder="—"></div>
+              <button class="step-btn" onclick="stepBe('be-master',0,16,1)">+</button>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Merge</label>
+            <select id="be-merge">
+              <option value="">— keep —</option>
+              <option value="HTP">HTP</option><option value="LTP">LTP</option><option value="OVR">OVR</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label>Priority</label>
+            <div class="universe-box">
+              <button class="step-btn" onclick="stepBe('be-priority',0,255,-1)">−</button>
+              <div class="uni-center"><input type="number" id="be-priority" min="0" max="255" placeholder="—"></div>
+              <button class="step-btn" onclick="stepBe('be-priority',0,255,1)">+</button>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Note</label>
+            <input type="text" id="be-note" maxlength="32" placeholder="— keep —" style="width:90px">
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center">
+          <button class="btn" onclick="applyBulkEdit()">Apply to selected</button>
+          <button class="btn-danger" onclick="deleteSelected()">Delete selected</button>
+          <button class="btn-sm" onclick="clearSelection()">Deselect all</button>
+          <span style="font-size:11px;color:var(--muted)">Blank = keep. In ch s'incrémente automatiquement.</span>
+        </div>
+      </div>
+
+      <div class="section-label">Masters</div>
+      <div class="card">
+        <div class="rules-wrap" id="masters-tbl-wrap">
+          <div class="rules-empty">Loading…</div>
+        </div>
+      </div>
+
+      <div class="card" id="add-master-card">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;
+          color:var(--accent);margin-bottom:8px">Add master</div>
+        <div class="card-row" style="gap:10px;flex-wrap:wrap;align-items:flex-end">
+          <div class="field-group">
+            <label>M#</label>
+            <div class="universe-box">
+              <button class="step-btn" onclick="stepAm('am-idx',1,16,-1)">−</button>
+              <div class="uni-center"><input type="number" id="am-idx" min="1" max="16" value="1"></div>
+              <button class="step-btn" onclick="stepAm('am-idx',1,16,1)">+</button>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Source</label>
+            <select id="am-src" onchange="onAmSrcChange()">
+              <option>DMX</option><option>ARTNET</option><option>WEB</option>
+            </select>
+          </div>
+          <div class="field-group" id="am-uni-cell">
+            <label>Universe</label>
+            <div class="universe-box">
+              <button class="step-btn" onclick="stepAm('am-uni',0,15,-1)">−</button>
+              <div class="uni-center"><input type="number" id="am-uni" min="0" max="15" value="0"></div>
+              <button class="step-btn" onclick="stepAm('am-uni',0,15,1)">+</button>
+            </div>
+          </div>
+          <div class="field-group">
+            <label id="am-in-label">In ch</label>
+            <div class="universe-box">
+              <button class="step-btn" onclick="stepAm('am-in',1,512,-1)">−</button>
+              <div class="uni-center"><input type="number" id="am-in" min="1" max="512" value="1"></div>
+              <button class="step-btn" onclick="stepAm('am-in',1,512,1)">+</button>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Parent M# <span style="font-weight:400;color:var(--muted)">(0=none)</span></label>
+            <div class="universe-box">
+              <button class="step-btn" onclick="stepAm('am-parent',0,15,-1)">−</button>
+              <div class="uni-center"><input type="number" id="am-parent" min="0" max="15" value="0"></div>
+              <button class="step-btn" onclick="stepAm('am-parent',0,15,1)">+</button>
+            </div>
+          </div>
+          <button class="btn" onclick="addMasterFromRow()" style="align-self:flex-end">Add</button>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px">
+          Parent doit avoir un M# inférieur. Ex: M1=source, M2 atténué par M1 → parent=1.
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Status ── -->
+    <div class="panel" id="tab-status">
+
+      <!-- hidden elements kept for JS compatibility -->
+      <div style="display:none">
+        <span id="s-rules"></span><span id="s-masters"></span><span id="s-show"></span>
+      </div>
+
+      <div class="section-label">
+        Signal monitor
+        <div class="pill-group">
+          <button class="pill active" id="pill-bars"    onclick="setDmxView('bars')">Bars</button>
+          <button class="pill"        id="pill-sliders" onclick="setDmxView('sliders')">Sliders</button>
+        </div>
+        <div class="pill-group" id="colBtns">
+          <button class="pill"        onclick="setStatusCols(12)">12</button>
+          <button class="pill active" onclick="setStatusCols(16)">16</button>
+          <button class="pill"        onclick="setStatusCols(24)">24</button>
+          <button class="pill"        onclick="setStatusCols(32)">32</button>
+        </div>
+        <div class="pg-nav">
+          <button class="icon-btn" onclick="prevPage()">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="10,3 5,8 10,13"/></svg>
+          </button>
+          <span class="pg-info" id="pgInfo">1–16</span>
+          <button class="icon-btn" onclick="nextPage()">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6,3 11,8 6,13"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Source visibility filter -->
+      <div class="vis-filter-bar">
+        <button class="vis-pill vis-pill-vf"  id="vis-btn-vf"   onclick="toggleVis('vf')">VF</button>
+        <button class="vis-pill vis-pill-vf"  id="vis-btn-mf"   onclick="toggleVis('mf')">MF</button>
+        <button class="vis-pill vis-pill-dmx" id="vis-btn-in0"   onclick="toggleVis('in0')">IN 0</button>
+        <button class="vis-pill vis-pill-dmx" id="vis-btn-in1"   onclick="toggleVis('in1')">IN 1</button>
+        <button class="vis-pill vis-pill-dmx" id="vis-btn-in2"   onclick="toggleVis('in2')">IN 2</button>
+        <button class="vis-pill vis-pill-art" id="vis-btn-art0"  onclick="toggleVis('art0')">Art 0</button>
+        <button class="vis-pill vis-pill-art" id="vis-btn-art1"  onclick="toggleVis('art1')">Art 1</button>
+        <button class="vis-pill vis-pill-art" id="vis-btn-art2"  onclick="toggleVis('art2')">Art 2</button>
+        <button class="vis-pill vis-pill-art" id="vis-btn-art3"  onclick="toggleVis('art3')">Art 3</button>
+        <button class="vis-pill vis-pill-dmx" id="vis-btn-usb"   onclick="toggleVis('usb')">USB</button>
+        <button class="vis-pill vis-pill-out" id="vis-btn-porta" onclick="toggleVis('porta')">PORT A</button>
+        <button class="vis-pill vis-pill-out" id="vis-btn-portb" onclick="toggleVis('portb')">PORT B</button>
+        <button class="vis-pill vis-pill-out" id="vis-btn-portc" onclick="toggleVis('portc')">PORT C</button>
+        <button class="vis-pill vis-pill-out" id="vis-btn-portd" onclick="toggleVis('portd')">PORT D</button>
+      </div>
+
+      <div class="card">
+        <div class="dmx-section">
+
+          <div class="dmx-bars active" id="view-bars">
+            <div class="dmx-uni" id="vis-vf-bars">
+              <div class="dmx-uni-hdr uni-hdr-vf">Virtual Faders</div>
+              <div class="bar-row" id="bars-vf"></div>
+            </div>
+            <div class="dmx-uni" id="vis-mf-bars">
+              <div class="dmx-uni-hdr uni-hdr-mf">Master Faders</div>
+              <div class="bar-row" id="bars-mf"></div>
+            </div>
+            <div class="dmx-uni" id="vis-in0-bars">
+              <div class="dmx-uni-hdr uni-hdr-dmx">IN 0 (DMX)</div>
+              <div class="bar-row" id="bars-in0"></div>
+            </div>
+            <div class="dmx-uni" id="vis-in1-bars">
+              <div class="dmx-uni-hdr uni-hdr-dmx">IN 1 (DMX)</div>
+              <div class="bar-row" id="bars-in1"></div>
+            </div>
+            <div class="dmx-uni" id="vis-in2-bars">
+              <div class="dmx-uni-hdr uni-hdr-dmx">IN 2 (DMX)</div>
+              <div class="bar-row" id="bars-in2"></div>
+            </div>
+            <div id="bars-artnet-container"></div>
+            <div class="dmx-uni" id="vis-porta-bars">
+              <div class="dmx-uni-hdr uni-hdr-out">PORT A</div>
+              <div class="bar-row" id="bars-porta"></div>
+            </div>
+            <div class="dmx-uni" id="vis-portb-bars">
+              <div class="dmx-uni-hdr uni-hdr-out">PORT B</div>
+              <div class="bar-row" id="bars-portb"></div>
+            </div>
+            <div class="dmx-uni" id="vis-portc-bars">
+              <div class="dmx-uni-hdr uni-hdr-out">PORT C</div>
+              <div class="bar-row" id="bars-portc"></div>
+            </div>
+            <div class="dmx-uni" id="vis-portd-bars">
+              <div class="dmx-uni-hdr uni-hdr-out">PORT D</div>
+              <div class="bar-row" id="bars-portd"></div>
+            </div>
+          </div>
+
+          <div class="dmx-sliders" id="view-sliders">
+            <div class="dmx-uni" id="vis-vf-sliders">
+              <div class="dmx-uni-hdr uni-hdr-vf">Virtual Faders</div>
+              <div class="slider-uni" id="sliders-vf"></div>
+            </div>
+            <div class="dmx-uni" id="vis-mf-sliders">
+              <div class="dmx-uni-hdr uni-hdr-mf">Master Faders</div>
+              <div class="slider-uni" id="sliders-mf"></div>
+            </div>
+            <div class="dmx-uni" id="vis-in0-sliders">
+              <div class="dmx-uni-hdr uni-hdr-dmx">IN 0 (DMX)</div>
+              <div class="slider-uni" id="sliders-in0"></div>
+            </div>
+            <div class="dmx-uni" id="vis-in1-sliders">
+              <div class="dmx-uni-hdr uni-hdr-dmx">IN 1 (DMX)</div>
+              <div class="slider-uni" id="sliders-in1"></div>
+            </div>
+            <div class="dmx-uni" id="vis-in2-sliders">
+              <div class="dmx-uni-hdr uni-hdr-dmx">IN 2 (DMX)</div>
+              <div class="slider-uni" id="sliders-in2"></div>
+            </div>
+            <div id="sliders-artnet-container"></div>
+            <div class="dmx-uni" id="vis-porta-sliders">
+              <div class="dmx-uni-hdr uni-hdr-out">PORT A</div>
+              <div class="slider-uni" id="sliders-porta"></div>
+            </div>
+            <div class="dmx-uni" id="vis-portb-sliders">
+              <div class="dmx-uni-hdr uni-hdr-out">PORT B</div>
+              <div class="slider-uni" id="sliders-portb"></div>
+            </div>
+            <div class="dmx-uni" id="vis-portc-sliders">
+              <div class="dmx-uni-hdr uni-hdr-out">PORT C</div>
+              <div class="slider-uni" id="sliders-portc"></div>
+            </div>
+            <div class="dmx-uni" id="vis-portd-sliders">
+              <div class="dmx-uni-hdr uni-hdr-out">PORT D</div>
+              <div class="slider-uni" id="sliders-portd"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Config ── -->
+    <div class="panel" id="tab-config">
+
+      <div class="section-label">DMX IO</div>
+      <div class="card">
+        <div class="card-row" style="justify-content:space-between;align-items:center">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:12px;color:var(--muted)">ArtNet OUT</span>
+            <button class="toggle-btn" id="artoutToggle" onclick="cfgToggleArtnetOut()">OFF</button>
+          </div>
+          <span id="portSaveStatus" style="font-size:11px;color:var(--muted)"></span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;padding:8px 14px 14px" id="portsList"></div>
+        <div id="artnet-dup-warn" style="display:none;margin:0 14px 4px;padding:8px 12px;border-radius:6px;
+          background:rgba(232,80,0,.12);border:1px solid rgba(232,80,0,.35);
+          font-size:12px;color:#f09060"></div>
+        <div id="uart-dup-warn" style="display:none;margin:0 14px 12px;padding:8px 12px;border-radius:6px;
+          background:rgba(232,80,0,.12);border:1px solid rgba(232,80,0,.35);
+          font-size:12px;color:#f09060"></div>
+      </div>
+
+      <div class="section-label">CSV</div>
+      <div class="card">
+        <div class="card-row" style="gap:10px;align-items:center;flex-wrap:wrap">
+          <span style="font-size:12px;color:var(--muted)">Séparateur export</span>
+          <div class="pill-group" id="csvSepBtns">
+            <button class="pill" data-sep="," onclick="setCsvSep(',')"> , &nbsp;comma</button>
+            <button class="pill" data-sep=";" onclick="setCsvSep(';')"> ; &nbsp;point-virgule</button>
+            <button class="pill" data-sep="tab" onclick="setCsvSep('tab')">TAB</button>
+          </div>
+          <span id="csvSepStatus" style="font-size:11px;color:var(--muted)"></span>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:6px">
+          Le parser accepte automatiquement , ; et TAB à l'import. Sauvegardé en NVS.
+        </div>
+      </div>
+
+      <div class="section-label">USB DMX</div>
+      <div class="card" id="usbDmxCard">
+        <div class="card-row" style="justify-content:space-between;align-items:center">
+          <div style="display:flex;align-items:center;gap:10px">
+            <button class="toggle-btn" id="usbDmxToggle" onclick="toggleUsbDmx()">OFF</button>
+            <div>
+              <div style="font-size:12px;font-weight:600">Enttec DMX USB Pro</div>
+              <div style="font-size:11px;color:var(--muted)">USB CDC IN (label 6) / OUT (label 5)</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span id="usbDmxDot" style="width:8px;height:8px;border-radius:50%;background:var(--border);display:inline-block"></span>
+            <span id="usbDmxStatus" style="font-size:11px;color:var(--muted)">—</span>
+          </div>
+        </div>
+        <div id="usbDmxNote" style="font-size:11px;color:#f07070;margin-top:4px;display:none">
+          ⚠ Firmware compilé sans ENABLE_USB_DMX — toggle sans effet.
+        </div>
+      </div>
+
+      <div class="section-label">WiFi</div>
+      <div class="card">
+        <div class="card-row" style="flex-wrap:wrap;gap:8px">
+          <div><div class="row-label">Connection</div>
+            <div class="row-sub" id="currentSsid">—</div></div>
+          <span class="wifi-badge" id="wifiBadge"><span class="badge-dot"></span>—</span>
+        </div>
+        <div class="wifi-form">
+          <div class="form-field-cfg">
+            <span class="form-label">New SSID</span>
+            <div class="ssid-row">
+              <input type="text" id="wifiSsid" placeholder="Network name" autocomplete="off" spellcheck="false">
+              <button class="scan-btn" id="scanBtn"><span id="scanIcon">📶</span> Scan</button>
+            </div>
+            <select id="ssidSelect" title="Select a detected network">
+              <option value="">— pick from scan results —</option>
+            </select>
+          </div>
+          <div class="form-field-cfg">
+            <span class="form-label">Password</span>
+            <div class="pwd-wrap">
+              <input type="password" id="wifiPwd" placeholder="Leave empty for open networks" autocomplete="new-password">
+              <button class="pwd-eye" id="pwdEye" type="button">👁</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="reboot-note">
+        <span style="font-size:16px;flex-shrink:0;margin-top:1px">⚠️</span>
+        <span>Saving WiFi credentials will <strong>reboot the device</strong>. Reconnect after restart.</span>
+      </div>
+      <button class="btn-cfg-danger" id="saveWifiBtn" style="margin-bottom:10px">📶 Save WiFi &amp; Reboot</button>
+
+      <div class="section-label">Network</div>
+      <div class="card">
+        <div class="info-row">
+          <span style="font-size:14px;color:var(--muted)">Ethernet IP</span>
+          <span class="info-val hi" id="currentEthIp">—</span>
+        </div>
+        <div class="card-row">
+          <div><div class="row-label">IP Mode</div>
+            <div class="row-sub" id="ipModeHint">DHCP</div></div>
+          <select id="ipMode" style="width:auto">
+            <option value="0">DHCP</option><option value="1">Static</option>
+          </select>
+        </div>
+        <div class="card-row" id="subnetRow" style="display:none">
+          <div><div class="row-label">Subnet</div><div class="row-sub">First 3 octets</div></div>
+          <div style="display:flex;align-items:center;gap:3px;font-family:monospace;font-size:13px">
+            <input type="number" id="ipBaseA" min="0" max="255" value="192" style="max-width:50px;padding:7px 4px;text-align:center;width:auto">
+            <span style="color:var(--muted)">.</span>
+            <input type="number" id="ipBaseB" min="0" max="255" value="168" style="max-width:50px;padding:7px 4px;text-align:center;width:auto">
+            <span style="color:var(--muted)">.</span>
+            <input type="number" id="ipBaseC" min="0" max="255" value="0"   style="max-width:50px;padding:7px 4px;text-align:center;width:auto">
+            <span style="color:var(--muted)">.*</span>
+          </div>
+        </div>
+        <div class="card-row" id="gatewayRow" style="display:none">
+          <div><div class="row-label">Gateway</div><div class="row-sub">Last octet</div></div>
+          <div style="display:flex;align-items:center;gap:4px">
+            <span id="gwPrefix" style="font-family:monospace;font-size:12px;color:var(--muted)">192.168.0.</span>
+            <input type="number" id="ipGwLast" min="1" max="254" value="1" style="max-width:60px;width:auto">
+          </div>
+        </div>
+        <div class="card-row" id="fixedIpRow" style="display:none">
+          <div><div class="row-label">Fixed Address</div><div class="row-sub">Last octet</div></div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+            <div style="display:flex;align-items:center;gap:4px;font-family:monospace;font-size:13px">
+              <span id="fixedIpPrefix" style="color:var(--muted)">192.168.0.</span>
+              <input type="number" id="fixedIp" min="1" max="254" value="50" style="max-width:60px;width:auto">
+            </div>
+            <span class="ip-preview" id="ipPreview">192.168.0.50</span>
+          </div>
+        </div>
+      </div>
+      <button class="btn-cfg-primary" id="saveNetBtn" style="margin-bottom:10px">💾 Save Network Config</button>
+
+      <div class="section-label">Firmware Update</div>
+      <div class="card">
+        <div class="card-row" id="tab-config .card-row.stacked" style="flex-direction:column;align-items:stretch;gap:10px">
+          <div style="font-size:14px;font-weight:600">🔧 Firmware</div>
+          <div class="upload-row-cfg">
+            <label class="file-label" id="fwLabel"><span>📂</span>
+              <span class="file-name" id="fwName">Choose firmware.bin…</span>
+              <input type="file" id="fwFile" accept=".bin">
+            </label>
+            <button class="upload-btn-cfg" id="fwUploadBtn" disabled>Upload</button>
+          </div>
+          <div class="progress-wrap" id="fwProgress"><div class="progress-bar" id="fwBar"></div></div>
+          <div class="progress-msg" id="fwMsg"></div>
+        </div>
+        <div class="card-row" style="flex-direction:column;align-items:stretch;gap:10px">
+          <div style="font-size:14px;font-weight:600">🌐 Filesystem (Web)</div>
+          <div class="upload-row-cfg">
+            <label class="file-label" id="fsLabel"><span>📂</span>
+              <span class="file-name" id="fsName">Choose littlefs.bin…</span>
+              <input type="file" id="fsFile" accept=".bin">
+            </label>
+            <button class="upload-btn-cfg" id="fsUploadBtn" disabled>Upload</button>
+          </div>
+          <div class="progress-wrap" id="fsProgress"><div class="progress-bar" id="fsBar"></div></div>
+          <div class="progress-msg" id="fsMsg"></div>
+        </div>
+      </div>
+      <div class="reboot-note" style="margin-bottom:10px">
+        <span style="font-size:16px;flex-shrink:0;margin-top:1px">⚡</span>
+        <span>Do <strong>not cut power</strong> during upload. Device reboots automatically.</span>
+      </div>
+
+      <div class="section-label">System</div>
+      <button class="btn-cfg-fleet" id="rebootBtn" style="margin-bottom:8px">🔄 Reboot DMXTools</button>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- ── Bottom nav ── -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" id="nav-faders" onclick="switchTab('faders',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="4" y1="6" x2="20" y2="6"/><circle cx="9" cy="6" r="2.5" fill="currentColor" stroke="none"/>
+      <line x1="4" y1="12" x2="20" y2="12"/><circle cx="15" cy="12" r="2.5" fill="currentColor" stroke="none"/>
+      <line x1="4" y1="18" x2="20" y2="18"/><circle cx="9" cy="18" r="2.5" fill="currentColor" stroke="none"/>
+    </svg>
+    <span>Faders</span>
+  </button>
+  <button class="nav-btn" id="nav-show" onclick="switchTab('show',this);fetchRules()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="3"/>
+      <line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="7" y1="16" x2="13" y2="16"/>
+    </svg>
+    <span>Rules</span>
+  </button>
+  <button class="nav-btn" id="nav-status" onclick="switchTab('status',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+    </svg>
+    <span>Status</span>
+  </button>
+  <button class="nav-btn" id="nav-config" onclick="switchTab('config',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"/>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+    </svg>
+    <span>Config</span>
+  </button>
+</nav>
+
+<!-- ── Edit label panel ── -->
+<div id="edit-backdrop" onclick="closeEditPanel()"></div>
+<div id="edit-panel">
+  <h4 id="edit-panel-title">Edit F1</h4>
+  <input type="text" id="edit-name-input" placeholder="Label (optional)" maxlength="12">
+  <div style="display:flex;gap:4px;margin:6px 0 2px;font-size:11px;color:var(--muted)">
+    <span style="flex:1">Color for:</span>
+    <button class="pill active" id="col-tab-cell" onclick="setColTab('cell')">Cell</button>
+    <button class="pill"        id="col-tab-btn"  onclick="setColTab('btn')">Button</button>
+  </div>
+  <div class="color-grid" id="color-grid"></div>
+  <div class="edit-panel-actions">
+    <button class="btn-sm" onclick="closeEditPanel()">Cancel</button>
+    <button class="btn-sm" id="edit-apply-sel" onclick="applyToSelection()" style="display:none">Apply to sel.</button>
+    <button class="btn"    onclick="applyEditPanel()" style="padding:6px 20px">Apply</button>
+  </div>
+</div>
+
+<!-- ── Rule editor modal ── -->
+<div class="modal-backdrop" id="ruleModal">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">Add Rule</div>
+    <div class="form-grid">
+      <div class="form-field">
+        <label>Port</label>
+        <select id="ed-port"><option>A</option><option>B</option><option>C</option><option>D</option></select>
+      </div>
+      <div class="form-field">
+        <label>Out ch from → to</label>
+        <div style="display:flex;gap:5px;align-items:center">
+          <div class="universe-box">
+            <button class="step-btn" onclick="stepEd('ed-out',1,512,-1,onEdRangeChange)">−</button>
+            <div class="uni-center"><input type="number" id="ed-out" min="1" max="512" value="1" oninput="onEdRangeChange()"></div>
+            <button class="step-btn" onclick="stepEd('ed-out',1,512,1,onEdRangeChange)">+</button>
+          </div>
+          <span style="color:var(--muted);font-size:11px">→</span>
+          <div class="universe-box">
+            <button class="step-btn" onclick="stepEd('ed-out-to',1,512,-1,onEdRangeChange)">−</button>
+            <div class="uni-center"><input type="number" id="ed-out-to" min="1" max="512" value="1" oninput="onEdRangeChange()"></div>
+            <button class="step-btn" onclick="stepEd('ed-out-to',1,512,1,onEdRangeChange)">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Source</label>
+        <select id="ed-src" onchange="onSrcChange()">
+          <option>DMX</option><option>ARTNET</option><option>WEB</option><option>CONST</option><option>USB</option>
+        </select>
+      </div>
+      <div class="form-field" id="ed-uni-field">
+        <label>Universe</label>
+        <div class="universe-box">
+          <button class="step-btn" onclick="stepEd('ed-uni',0,32767,-1)">−</button>
+          <div class="uni-center"><input type="number" id="ed-uni" min="0" max="32767" value="0"></div>
+          <button class="step-btn" onclick="stepEd('ed-uni',0,32767,1)">+</button>
+        </div>
+      </div>
+      <div class="form-field" id="ed-in-field">
+        <label id="ed-in-lbl">In ch start</label>
+        <div style="display:flex;gap:5px;align-items:center">
+          <div class="universe-box">
+            <button class="step-btn" onclick="stepEd('ed-in',0,512,-1,onEdRangeChange)">−</button>
+            <div class="uni-center"><input type="number" id="ed-in" min="1" max="512" value="1" oninput="onEdRangeChange()"></div>
+            <button class="step-btn" onclick="stepEd('ed-in',0,512,1,onEdRangeChange)">+</button>
+          </div>
+          <span id="ed-in-to-disp" style="font-size:11px;color:var(--accent);white-space:nowrap">→ 1</span>
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Merge</label>
+        <select id="ed-merge">
+          <option value="HTP">HTP — Highest</option>
+          <option value="LTP">LTP — Latest</option>
+          <option value="OVR">OVR — Override</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Priority (0–255)</label>
+        <div class="universe-box">
+          <button class="step-btn" onclick="stepEd('ed-priority',0,255,-1)">−</button>
+          <div class="uni-center"><input type="number" id="ed-priority" min="0" max="255" value="0"></div>
+          <button class="step-btn" onclick="stepEd('ed-priority',0,255,1)">+</button>
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Master idx (0=none)</label>
+        <div class="universe-box">
+          <button class="step-btn" onclick="stepEd('ed-master',0,8,-1)">−</button>
+          <div class="uni-center"><input type="number" id="ed-master" min="0" max="8" value="0"></div>
+          <button class="step-btn" onclick="stepEd('ed-master',0,8,1)">+</button>
+        </div>
+      </div>
+      <div class="form-field" style="grid-column:1/-1">
+        <label>Note <span style="font-weight:400;color:var(--muted)">(32 chars)</span></label>
+        <input type="text" id="ed-note" maxlength="32" placeholder="label optionnel…"
+          style="width:100%;box-sizing:border-box">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-sm" onclick="closeRuleModal()">Cancel</button>
+      <button class="btn-danger" id="btnDelete" onclick="deleteRule()" style="display:none">Delete</button>
+      <button class="btn" onclick="saveRule()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const NUM_FADERS   = 48;
+const MAX_MASTERS  = 8;
+const NUM_ART_UNI  = 4;
+const MERGE_CLS    = { HTP:'htp', LTP:'ltp', OVR:'ovr' };
+
+// ── DEMO MODE — activated by ?demo in URL ─────────────────────────────────────
+const DEMO_MODE = new URLSearchParams(location.search).has('demo');
+if (DEMO_MODE) {
+  // Banner
+  (() => {
+    const b = document.createElement('div');
+    b.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;' +
+      'background:#e87722;color:#fff;text-align:center;font-size:11px;' +
+      'font-weight:700;padding:3px 8px;letter-spacing:.06em;pointer-events:none';
+    b.textContent = '⚡ DEMO MODE — no ESP32 connected';
+    document.body.insertBefore(b, document.body.firstChild);
+    document.body.style.paddingTop = '22px';
+  })();
+
+  // Mutable demo state
+  const _dr = [
+    {port:'A', out:1,  src:'DMX',    uni:0, in:1,   count:8,  merge:'HTP', master:1, priority:0,  note:'Wash front'},
+    {port:'A', out:9,  src:'ARTNET', uni:0, in:9,   count:8,  merge:'HTP', master:1, priority:0,  note:'Wash side'},
+    {port:'A', out:17, src:'WEB',    uni:0, in:1,   count:1,  merge:'LTP', master:2, priority:10, note:'Grand dimmer'},
+    {port:'A', out:18, src:'CONST',  uni:0, in:200, count:1,  merge:'OVR', master:0, priority:0,  note:'Strobe en.'},
+    {port:'A', out:20, src:'DMX',    uni:0, in:20,  count:12, merge:'HTP', master:1, priority:0,  note:'RGB front'},
+    {port:'B', out:1,  src:'ARTNET', uni:1, in:1,   count:24, merge:'HTP', master:1, priority:0,  note:'LED bar 1'},
+    {port:'B', out:25, src:'ARTNET', uni:1, in:25,  count:24, merge:'HTP', master:1, priority:0,  note:'LED bar 2'},
+    {port:'C', out:1,  src:'DMX',    uni:1, in:1,   count:16, merge:'LTP', master:0, priority:5,  note:'Follow spot'},
+    {port:'C', out:30, src:'WEB',    uni:0, in:2,   count:1,  merge:'LTP', master:2, priority:0,  note:'Haze level'},
+    {port:'D', out:1,  src:'CONST',  uni:0, in:0,   count:1,  merge:'OVR', master:0, priority:0,  note:'Park low'},
+  ];
+  const _dm = [
+    {idx:1, src:'WEB', uni:0, in:1, parent:0},
+    {idx:2, src:'WEB', uni:0, in:2, parent:1},
+  ];
+  const _dp = [
+    {name:'A', active:true,  dests:[{type:'UART',   index:2}]},
+    {name:'B', active:true,  dests:[{type:'ARTNET',  universe:1}]},
+    {name:'C', active:false, dests:[]},
+    {name:'D', active:false, dests:[]},
+  ];
+  const _df = new Array(48).fill(0);
+  _df[0]=200; _df[1]=80; _df[2]=160; _df[3]=255; _df[4]=120; _df[5]=90;
+  const _dmv = [200, 80, 255, 255, 255, 255, 255, 255,
+                255, 255, 255, 255, 255, 255, 255, 255];
+  const _demoShows    = ['demo_show.csv', 'repetition.csv', 'standby.csv'];
+  const _demoPresets  = [
+    {id:0, name:'Kirax Show 2024',      desc:'Rules préchargées pour le spectacle'},
+    {id:1, name:'Répétition générale',  desc:'Config répet avec hazer'},
+    {id:2, name:'Stand-by',             desc:"Lumière d'attente scène"},
+  ];
+  const _demoFaderSlots = [];
+  let _activeShow = 'demo_show.csv';
+  let _demoSep        = ',';
+  let _demoUsbEnabled = true;
+  let _demoPhase      = 0;
+
+  // Animation helpers
+  function _dsin(phase, freq, amp, base) {
+    return Math.max(0, Math.min(255, Math.round(base + amp * Math.sin(phase * freq))));
+  }
+  function _demoUni(phase, offset) {
+    const u = new Array(512).fill(0);
+    for (let i = 0; i < 32; i++) u[i] = _dsin(phase, 0.7 + i * 0.04, 60, 110 + (i % 4) * 18);
+    u[0 + offset] = _dsin(phase, 1.1, 90, 165);
+    u[8 + offset] = _dsin(phase, 0.5, 45, 90);
+    return u;
+  }
+  function _demoOut(phase, pi) {
+    const u = new Array(512).fill(0);
+    const base = 70 + pi * 35;
+    for (let i = 0; i < 24; i++) u[i] = _dsin(phase, 0.8 + i * 0.035, 55, base);
+    return u;
+  }
+
+  // Fetch interceptor
+  window.fetch = function(url, opts) {
+    const method = (opts?.method || 'GET').toUpperCase();
+    const us = typeof url === 'string' ? url : url.url;
+    const path = us.split('?')[0];
+    const qp   = new URLSearchParams(us.includes('?') ? us.split('?')[1] : '');
+    function ok(data) {
+      return Promise.resolve(new Response(JSON.stringify(data),
+        {status:200, headers:{'Content-Type':'application/json'}}));
+    }
+    function body() { try { return JSON.parse(opts?.body || '{}'); } catch { return {}; } }
+
+    if (path === '/api/status') {
+      _demoPhase += 0.09;
+      return ok({
+        faders   : _df.slice(),
+        masters  : _dmv.slice(),
+        in       : [_demoUni(_demoPhase, 0), _demoUni(_demoPhase + 1.2, 4)],
+        artnet   : Array.from({length:4}, (_, a) => _demoUni(_demoPhase + a * 0.6, a * 3)),
+        usb          : _demoUni(_demoPhase + 2.1, 7),
+        usb_connected: _demoUsbEnabled,
+        out_ports    : Array.from({length:4}, (_, p) => _demoOut(_demoPhase, p)),
+        rules        : _dr.length,
+        show         : _activeShow,
+        desc         : 'Demo Show — SmartStrips V4',
+      });
+    }
+    if (path === '/api/rules') {
+      if (method === 'POST') {
+        const b = body();
+        if (b.rules)   _dr.splice(0, _dr.length, ...b.rules);
+        if (b.masters) _dm.splice(0, _dm.length, ...b.masters);
+        return ok({ok:true});
+      }
+      return ok({rules: _dr.slice(), masters: _dm.slice()});
+    }
+    if (path === '/api/faders') {
+      if (method === 'POST') {
+        (body().f || []).forEach((v, i) => { if (v !== null && v !== undefined && i < 48) _df[i] = v; });
+        return ok({ok:true});
+      }
+      return ok({f: _df.slice()});
+    }
+    if (path === '/api/masters') {
+      if (method === 'POST') {
+        (body().m || []).forEach((v, i) => { if (i < _dmv.length) _dmv[i] = v; });
+        return ok({ok:true});
+      }
+      return ok({m: _dmv.slice()});
+    }
+    if (path === '/api/ports') {
+      if (method === 'POST') return ok({ok:true});
+      return ok({ports: _dp, artnet_out: {enabled:false}});
+    }
+    if (path === '/api/fader-presets') return ok({slots: _demoFaderSlots});
+    if (path === '/api/fader-preset/save') {
+      const slot = parseInt(qp.get('slot') || '0');
+      const b = body();
+      const ex = _demoFaderSlots.find(s => s.slot === slot);
+      if (ex) { ex.faders = b.faders; ex.masters = b.masters; }
+      else _demoFaderSlots.push({slot, name:`Preset ${slot+1}`, faders:b.faders, masters:b.masters});
+      return ok({ok:true});
+    }
+    if (path === '/api/fader-preset/load') {
+      const slot = parseInt(qp.get('slot') || '0');
+      const found = _demoFaderSlots.find(s => s.slot === slot);
+      return found ? ok({ok:true, faders:found.faders, masters:found.masters}) : ok({ok:false});
+    }
+    if (path === '/api/presets')      return ok({presets: _demoPresets});
+    if (path === '/api/preset/load')      return ok({ok:true});
+    if (path === '/api/preset/load-port') return ok({ok:true});
+    if (path === '/api/shows') return ok({shows: _demoShows.slice()});
+    if (path === '/api/show/preview') {
+      const f = qp.get('file') || '';
+      const descs = { 'repetition.csv':'Répétition générale avec hazer',
+                      'standby.csv':"Lumière d'attente scène" };
+      return ok({desc: descs[f] || 'Demo Show — SmartStrips V4'});
+    }
+    if (path === '/api/show/load')   { _activeShow = qp.get('file') || _activeShow; return ok({ok:true}); }
+    if (path === '/api/show/save')   {
+      const f = qp.get('file');
+      if (f && !_demoShows.includes(f)) _demoShows.push(f);
+      return ok({ok:true});
+    }
+    if (path === '/api/show/upload') return ok({ok:true, file:'/uploads/demo.csv'});
+    if (path === '/api/show/delete') {
+      const f = qp.get('file'); const i = _demoShows.indexOf(f);
+      if (i >= 0) _demoShows.splice(i, 1);
+      return ok({ok:true});
+    }
+    if (path === '/api/config/csv-sep') {
+      if (method === 'POST') { const b = body(); if (b.sep) _demoSep = b.sep; return ok({ok:true}); }
+      return ok({sep: _demoSep});
+    }
+    if (path === '/api/config/usb-dmx') {
+      if (method === 'POST') { const b = body(); if (b.enabled !== undefined) _demoUsbEnabled = !!b.enabled; return ok({ok:true}); }
+      return ok({compiled:true, enabled:_demoUsbEnabled, connected:true});
+    }
+    if (path === '/api/config')    return ok({ok:true});
+    if (path === '/api/wifi')      return ok({ssid:'Demo-WiFi', ap_mode:false, eth_ip:'192.168.1.42'});
+    if (path === '/api/wifi/scan') return ok({networks:[{ssid:'Demo-Network',rssi:-52},{ssid:'SmartStrips-AP',rssi:-68}]});
+    if (path === '/reboot')        return ok({});
+    // Unknown — silently succeed
+    console.debug('[DEMO] unhandled:', method, path);
+    return ok({ok:true});
+  };
+}
+
+// ── State ─────────────────────────────────────────────────────────────────────
+let statusCols = 16;
+let statusPage = 0;
+let faderCols  = parseInt(localStorage.getItem('faderCols'))  || 12;
+let faderRows  = parseInt(localStorage.getItem('faderRows'))  || 1;
+let faderSize  = localStorage.getItem('faderSize')  || 'm';
+let masterSize = localStorage.getItem('masterSize') || 'm';
+let numMasters = parseInt(localStorage.getItem('numMasters')) || 1;
+let presetRows = parseInt(localStorage.getItem('presetRows')) || 0;
+let presetCols = parseInt(localStorage.getItem('presetCols')) || 12;
+let faderFnMode   = localStorage.getItem('fnMode')   || 'flash';
+let presetRecMode = localStorage.getItem('recMode')  || 'all';
+
+// Config state
+let g_ports      = [];
+let configReady  = false;
+let artoutEnabled = false;
+
+// Per-fader state
+let faderValues    = new Array(NUM_FADERS).fill(0);
+let masterValues   = new Array(MAX_MASTERS).fill(255);
+let masterMuted    = new Array(MAX_MASTERS).fill(false);
+let selectedFaders = new Set();
+let modifiedFaders = new Set();
+let flashPrevVal   = new Array(NUM_FADERS).fill(0);
+
+// Preset state
+let faderPresetSlots = [];
+let activePreset     = -1;
+let _holdSlot        = -1;
+let _holdTriggered   = false;
+let _holdTimer       = null;
+let faderValuesInited = false;
+
+// Edit mode (label + colour)
+let editMode     = false;
+let autoEditMode = false;
+let editTarget   = null;  // { key: 'f0'|'m0'|'p5', title: 'F1' }
+let editSelectedColor    = null;  // cell color (fader background)
+let editSelectedBtnColor = null;  // button color (flash btn) — null = use cell color
+let editColorTab = 'cell';        // 'cell' | 'btn'
+let faderMeta  = JSON.parse(localStorage.getItem('faderMeta') || '{}');
+// faderMeta['f0'] = { name:'Wash', color:'#e87722', btnColor:'#f07070' }
+// faderMeta['m0'] = { name:'Master', color:'' }
+// faderMeta['p5'] = { name:'Scene 1', color:'#3ddc84' }
+
+const FADER_COLORS = [
+  null,      '#e87722','#f07070','#f0c040','#3ddc84','#40d0c0',
+  '#74c0fc','#9b94ff','#f07090','#a0c080','#e0a060','#c080a0',
+  '#60c0e0','#80d080','#c09050','#e8e8f8'
+];
+
+// Rules editor state (deep copy from last fetchRules)
+let cachedRules   = [];
+let cachedMasters = [];
+let editIdx       = -1;        // -1 = new rule
+let selectedRules = new Set(); // indices of selected rules
+let filterFrom    = 0;         // 0 = no filter
+let filterTo      = 0;
+let pendingAdds   = null;      // rules waiting for dup resolution
+// Live status snapshot for rule live-values
+let lastStatus = null;
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+  if (name === 'config' && !configReady) { configReady = true; pollConfig(); loadPorts(); loadCsvSep(); loadUsbDmxConfig(); }
+  if (name === 'status') buildStatusDom();
+}
+
+// ── Build faders + masters ────────────────────────────────────────────────────
+function buildFaders() {
+  const zone = document.getElementById('faders-zone');
+  zone.innerHTML = '';
+  const total = Math.min(faderCols * faderRows, NUM_FADERS);
+  zone.style.gridTemplateColumns = `repeat(${faderCols}, 1fr)`;
+
+  for (let i = 0; i < total; i++) {
+    const v      = faderValues[i];
+    const m      = faderMeta[`f${i}`] || {};
+    const col    = m.color    || '';
+    const btnCol = m.btnColor || col;
+    const lbl    = m.name  || '';
+    const btnStyle = btnCol ? `background:${btnCol};border-color:${btnCol}88;color:#111` : '';
+    const isSelected = selectedFaders.has(i);
+    const d = document.createElement('div');
+    d.className = 'fader-cell tablet-fader' + (isSelected ? ' selected' : '');
+    d.id = `fc${i}`;
+
+    // More "tablet-like" vertical fader: bigger slider, vertical orientation, big value thumb, touch-friendly
+    // button font size
+    d.innerHTML = `
+      <div class="fader-outer">
+        <button class="fader-name-btn" id="fb${i}" style="${btnStyle}"
+          onmousedown="onFaderBtnDown(${i})"
+          ontouchstart="onFaderBtnDown(${i});event.preventDefault()"
+          onmouseup="onFaderBtnUp(${i})"
+          ontouchend="onFaderBtnUp(${i})"
+          onclick="onFaderBtnClick(${i})">
+          <div style="font-size:11px;font-weight:600;line-height:1.2;">F${i+1}</div>
+          <div style="font-size:9px;font-weight:400;margin-top:2px;opacity:.9;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:72px">${lbl || '\u00A0'}</div>
+        </button>
+        <div class="fader-slider-wrap">
+          <input type="range" min="0" max="255" value="${v}" id="f${i}" class="tablet-range"
+            oninput="onFader(${i},this.value)">
+          <div class="fader-val tablet-fader-val" id="fv${i}" style="cursor:pointer"
+            onclick="onFaderValClick(${i})" ondblclick="onFaderValDblClick(${i})">${v}</div>
+        </div>
+      </div>
+    `;
+    if (col) {
+      d.style.setProperty('--fader-color',  col);
+      d.style.setProperty('--fader-glow',   col + '40');   /* 25% alpha pour le halo */
+      d.style.setProperty('--fader-bg',     col + '1a');   /* 10% alpha pour le badge */
+      d.style.setProperty('--fader-border', col + '55');   /* 33% alpha pour la bordure du badge */
+      d.style.borderColor = col + '88';
+      d.style.background  = col + '14';
+    }
+    zone.appendChild(d);
+  }
+  buildMasters();
+  renderPresets();
+}
+
+function buildMasters() {
+  const strip = document.getElementById('masters-strip');
+  strip.innerHTML = '';
+  for (let i = 0; i < numMasters; i++) {
+    const v     = masterValues[i] ?? 255;
+    const muted = masterMuted[i] || false;
+    const m      = faderMeta[`m${i}`] || {};
+    const col    = m.color    || '';
+    const btnCol = m.btnColor || col;
+    const lbl    = m.name  || '';
+    const btnStyle = btnCol ? `background:${btnCol};border-color:${btnCol}88;color:#111` : '';
+    const d = document.createElement('div');
+    d.className = 'fader-cell master-cell' + (muted ? ' muted' : '');
+    d.id = `mc${i}`;
+    d.innerHTML = `
+      <button class="fader-name-btn${muted ? ' muted' : ''}" id="mb${i}"
+        style="${btnStyle}"
+        onclick="onMasterBtnClick(${i})">M${i+1}<div style="font-size:9px;font-weight:400;margin-top:1px;opacity:.8">${lbl || '\u00A0'}</div></button>
+      <input type="range" min="0" max="255" value="${v}" id="m${i}"
+        oninput="onMaster(${i},this.value)">
+      <div class="fader-val" id="mv${i}">${v}</div>`;
+    strip.appendChild(d);
+  }
+}
+
+// ── Fader layout controls ─────────────────────────────────────────────────────
+function setFaderCols(n) {
+  faderCols = n; localStorage.setItem('faderCols', n);
+  document.querySelectorAll('#faderColBtns .pill').forEach(b =>
+    b.classList.toggle('active', parseInt(b.textContent) === n));
+  buildFaders();
+}
+function setFaderRows(n) {
+  faderRows = n; localStorage.setItem('faderRows', n);
+  document.querySelectorAll('#faderRowBtns .pill').forEach(b =>
+    b.classList.toggle('active', parseInt(b.textContent) === n));
+  buildFaders();
+}
+function setNumMasters(n) {
+  numMasters = n; localStorage.setItem('numMasters', n);
+  document.querySelectorAll('#masterCountBtns .pill').forEach(b =>
+    b.classList.toggle('active', parseInt(b.textContent) === n));
+  buildMasters();
+}
+function setFaderSize(sz) {
+  faderSize = sz; localStorage.setItem('faderSize', sz);
+  const card = document.querySelector('.faders-card');
+  card.classList.remove('fader-sz-s', 'fader-sz-l');
+  if (sz !== 'm') card.classList.add('fader-sz-' + sz);
+  document.querySelectorAll('#faderSizeBtns .pill').forEach(b =>
+    b.classList.toggle('active', b.dataset.sz === sz));
+}
+function setMasterSize(sz) {
+  masterSize = sz; localStorage.setItem('masterSize', sz);
+  const area = document.querySelector('.masters-area');
+  area.classList.remove('master-sz-s', 'master-sz-l');
+  if (sz !== 'm') area.classList.add('master-sz-' + sz);
+  document.querySelectorAll('#masterSizeBtns .pill').forEach(b =>
+    b.classList.toggle('active', b.dataset.sz === sz));
+}
+function setPresetRows(n) {
+  presetRows = n; localStorage.setItem('presetRows', n);
+  document.querySelectorAll('#presetRowBtns .pill').forEach(b => {
+    const v = b.textContent === 'Off' ? 0 : parseInt(b.textContent);
+    b.classList.toggle('active', v === n);
+  });
+  renderPresets();
+}
+function setPresetCols(n) {
+  presetCols = n; localStorage.setItem('presetCols', n);
+  document.querySelectorAll('#presetColBtns .pill').forEach(b =>
+    b.classList.toggle('active', parseInt(b.textContent) === n));
+  renderPresets();
+}
+function setFnMode(m) {
+  faderFnMode = m; localStorage.setItem('fnMode', m);
+  document.querySelectorAll('#fnModeBtns .pill').forEach(b =>
+    b.classList.toggle('active', b.textContent.toLowerCase() === m));
+}
+function setPresetRecMode(m) {
+  presetRecMode = m; localStorage.setItem('recMode', m);
+  const map = { all:'All', allfaders:'All Faders', sel:'Selection', dyn:'Dynamic' };
+  document.querySelectorAll('#recModeBtns .pill').forEach(b =>
+    b.classList.toggle('active', b.textContent === map[m]));
+  const showSel = (m === 'sel' || m === 'dyn');
+  document.getElementById('btnSelectAllFaders').style.display  = showSel ? '' : 'none';
+  document.getElementById('btnDeselectAllFaders').style.display = showSel ? '' : 'none';
+}
+
+// ── Fader button actions ──────────────────────────────────────────────────────
+function onFaderBtnDown(idx) {
+  if (editMode) return;
+  if (faderFnMode !== 'flash') return;
+  flashPrevVal[idx] = faderValues[idx];
+  setFaderVal(idx, 255);
+}
+function onFaderBtnUp(idx) {
+  if (editMode) return;
+  if (faderFnMode !== 'flash') return;
+  setFaderVal(idx, flashPrevVal[idx]);
+}
+function onFaderBtnClick(idx) {
+  if (editMode) { openEditPanel(`f${idx}`, `F${idx+1}`); return; }
+  if (faderFnMode === 'on')          setFaderVal(idx, 255);
+  else if (faderFnMode === 'off')    setFaderVal(idx, 0);
+  else if (faderFnMode === 'sel')    toggleSelectFader(idx);
+}
+function setFaderVal(idx, val) {
+  const el = document.getElementById(`f${idx}`);
+  if (!el) return;
+  el.value = val;
+  onFader(idx, val);
+}
+
+// ── Selection ─────────────────────────────────────────────────────────────────
+function toggleSelectFader(idx) {
+  if (selectedFaders.has(idx)) { selectedFaders.delete(idx); modifiedFaders.delete(idx); }
+  else                         { selectedFaders.add(idx); }
+  document.getElementById(`fc${idx}`)?.classList.toggle('selected', selectedFaders.has(idx));
+}
+function selectAllFaders() {
+  const total = Math.min(faderCols * faderRows, NUM_FADERS);
+  for (let i = 0; i < total; i++) {
+    selectedFaders.add(i); modifiedFaders.add(i);
+    document.getElementById(`fc${i}`)?.classList.add('selected');
+  }
+}
+function selectNoFaders() {
+  selectedFaders.clear(); modifiedFaders.clear();
+  document.querySelectorAll('.fader-cell.selected').forEach(el => el.classList.remove('selected'));
+}
+
+// ── Master mute ───────────────────────────────────────────────────────────────
+function toggleMasterMute(idx) {
+  masterMuted[idx] = !masterMuted[idx];
+  document.getElementById(`mc${idx}`)?.classList.toggle('muted', masterMuted[idx]);
+  document.getElementById(`mb${idx}`)?.classList.toggle('muted', masterMuted[idx]);
+  const dispVal = masterMuted[idx] ? 0 : masterValues[idx];
+  const elV = document.getElementById(`mv${idx}`);
+  if (elV) elV.textContent = dispVal;
+  sendMasters();
+}
+
+function onMasterBtnClick(idx) {
+  if (editMode) { openEditPanel(`m${idx}`, `M${idx+1}`); return; }
+  toggleMasterMute(idx);
+}
+
+// ── Preset rendering ──────────────────────────────────────────────────────────
+function renderPresets() {
+  const zone = document.getElementById('presets-zone');
+  if (!zone) return;
+  zone.style.display = presetRows > 0 ? 'grid' : 'none';
+  if (presetRows === 0) { zone.innerHTML = ''; return; }
+
+  zone.style.gridTemplateColumns = `repeat(${presetCols}, 1fr)`;
+  const count = presetCols * presetRows;
+  zone.innerHTML = '';
+  for (let i = 0; i < count; i++) {
+    const slot  = faderPresetSlots.find(s => s.slot === i);
+    const pm    = faderMeta[`p${i}`] || {};
+    const col   = pm.color || '';
+    const name  = pm.name  || slot?.name || (i + 1);
+    const isUsed = !!(slot);
+    const btnStyle = col ? `background:${col};border-color:${col}88;color:#111` : '';
+    const btn = document.createElement('div');
+    btn.className = 'preset-btn' + (isUsed ? ' used' : '') + (i === activePreset ? ' preset-active' : '');
+    btn.id = `ps${i}`;
+    btn.style.cssText = btnStyle;
+    btn.innerHTML = `<span>${name}</span><div class="preset-hold-bar" id="ph${i}"></div>`;
+    btn.addEventListener('pointerdown', e => { e.preventDefault(); startPresetHold(i); });
+    btn.addEventListener('pointerup',   e => { e.preventDefault(); endPresetHold(i, false); });
+    btn.addEventListener('pointerleave',  () => endPresetHold(i, true));
+    btn.addEventListener('pointercancel', () => endPresetHold(i, true));
+    zone.appendChild(btn);
+  }
+}
+
+function startPresetHold(slot) {
+  if (editMode) { openEditPanel(`p${slot}`, `Preset ${slot+1}`); return; }
+  _holdSlot = slot; _holdTriggered = false;
+  const bar = document.getElementById(`ph${slot}`);
+  if (bar) { bar.style.transition = 'width .5s linear'; bar.style.width = '100%'; }
+  _holdTimer = setTimeout(() => {
+    _holdTriggered = true;
+    const b = document.getElementById(`ph${slot}`);
+    if (b) { b.style.transition = 'none'; b.style.width = '0'; }
+    savePreset(slot);
+    _holdSlot = -1;
+  }, 500);
+}
+function endPresetHold(slot, cancel) {
+  if (_holdSlot !== slot) return;
+  clearTimeout(_holdTimer);
+  const bar = document.getElementById(`ph${slot}`);
+  if (bar) { bar.style.transition = 'none'; bar.style.width = '0'; }
+  _holdSlot = -1;
+  if (!cancel && !_holdTriggered) loadFaderPreset(slot);
+  _holdTriggered = false;
+}
+
+async function fetchFaderPresets() {
+  try {
+    const r = await fetch('/api/fader-presets');
+    const j = await r.json();
+    faderPresetSlots = j.slots || [];
+    renderPresets();
+  } catch(e) {}
+}
+
+async function loadFaderPreset(slot) {
+  try {
+    const r = await fetch(`/api/fader-preset/load?slot=${slot}`, {method:'POST'});
+    const j = await r.json();
+    if (!j.ok) return;
+    j.faders.forEach((v, i) => {
+      if (v === null || v === undefined) return;
+      faderValues[i] = v;
+      const el = document.getElementById(`f${i}`);
+      const vEl = document.getElementById(`fv${i}`);
+      if (el) el.value = v;
+      if (vEl) vEl.textContent = v;
+    });
+    j.masters.forEach((v, i) => {
+      if (v === null || v === undefined) return;
+      masterValues[i] = v;
+      const el = document.getElementById(`m${i}`);
+      const vEl = document.getElementById(`mv${i}`);
+      if (el) el.value = v;
+      if (vEl) vEl.textContent = v;
+    });
+    activePreset = slot;
+    renderPresets();
+  } catch(e) {}
+}
+
+async function savePreset(slot) {
+  const faders = Array.from({length: NUM_FADERS}, (_, i) => {
+    if (presetRecMode === 'all' || presetRecMode === 'allfaders') return faderValues[i];
+    if (presetRecMode === 'sel' && selectedFaders.has(i)) return faderValues[i];
+    if (presetRecMode === 'dyn' && modifiedFaders.has(i)) return faderValues[i];
+    return null;
+  });
+  const masters = presetRecMode === 'allfaders' ? [] : masterValues.slice(0, numMasters);
+  try {
+    const r = await fetch(`/api/fader-preset/save?slot=${slot}`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({faders, masters})
+    });
+    const j = await r.json();
+    if (j.ok) {
+      activePreset = slot;
+      await fetchFaderPresets();
+      if (autoEditMode) openEditPanel(`p${slot}`, `Preset ${slot+1}`);
+    }
+  } catch(e) {}
+}
+
+// ── All faders to zero ────────────────────────────────────────────────────────
+function allMastersZero() {
+  for (let i = 0; i < numMasters; i++) {
+    masterValues[i] = 0;
+    const el  = document.getElementById(`m${i}`);
+    const vEl = document.getElementById(`mv${i}`);
+    if (el)  el.value = 0;
+    if (vEl) vEl.textContent = 0;
+  }
+  sendMasters();
+}
+
+let blackoutActive = false;
+const blackoutSnapshot = { faders: null, masters: null };
+
+function toggleBlackout() {
+  const btn = document.getElementById('btnBlackout');
+  if (!blackoutActive) {
+    blackoutSnapshot.faders  = [...faderValues];
+    blackoutSnapshot.masters = [...masterValues];
+    blackoutActive = true;
+    btn.classList.add('blackout-on');
+    allFadersZero();
+    allMastersZero();
+  } else {
+    blackoutActive = false;
+    btn.classList.remove('blackout-on');
+    // Restore faders
+    blackoutSnapshot.faders.forEach((v, i) => {
+      faderValues[i] = v;
+      const el  = document.getElementById(`f${i}`);
+      const vEl = document.getElementById(`fv${i}`);
+      if (el)  el.value = v;
+      if (vEl) vEl.textContent = v;
+    });
+    fetch('/api/faders', { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ f: faderValues }) });
+    // Restore masters
+    blackoutSnapshot.masters.forEach((v, i) => {
+      masterValues[i] = v;
+      const el  = document.getElementById(`m${i}`);
+      const vEl = document.getElementById(`mv${i}`);
+      if (el)  el.value = v;
+      if (vEl) vEl.textContent = v;
+    });
+    sendMasters();
+  }
+}
+
+function allFadersZero() {
+  faderValues.fill(0);
+  for (let i = 0; i < NUM_FADERS; i++) {
+    const el  = document.getElementById(`f${i}`);
+    const vEl = document.getElementById(`fv${i}`);
+    if (el)  el.value = 0;
+    if (vEl) vEl.textContent = 0;
+  }
+  fetch('/api/faders', { method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ f: new Array(NUM_FADERS).fill(0) }) });
+  activePreset = -1;
+  if (presetRecMode === 'dyn') modifiedFaders.clear();
+}
+
+// ── Edit mode ─────────────────────────────────────────────────────────────────
+function toggleEditMode() {
+  editMode = !editMode;
+  document.getElementById('btnEditMode')?.classList.toggle('edit-mode-active', editMode);
+}
+
+function toggleAutoEdit() {
+  autoEditMode = !autoEditMode;
+  document.getElementById('btnAutoEdit')?.classList.toggle('edit-mode-active', autoEditMode);
+}
+
+function openEditPanel(key, title) {
+  editTarget = { key, title };
+  const m = faderMeta[key] || {};
+  editSelectedColor    = m.color    || null;
+  editSelectedBtnColor = m.btnColor || null;
+  editColorTab = 'cell';
+
+  document.getElementById('edit-panel-title').textContent = title;
+
+  // When multiple faders selected: clear name so it's opt-in (blank = keep existing)
+  const isFader   = key.startsWith('f');
+  const selCount  = isFader ? selectedFaders.size : 0;
+  const multiSel  = isFader && selCount >= 2;
+  document.getElementById('edit-name-input').value = multiSel ? '' : (m.name || '');
+  if (multiSel) document.getElementById('edit-name-input').placeholder = `Keep names (${selCount} selected)`;
+  else          document.getElementById('edit-name-input').placeholder  = 'Label (optional)';
+
+  // Sync color tab buttons
+  setColTab('cell', true);
+
+  // Show "Apply to selection" only when editing a fader with ≥2 faders selected
+  const selBtn = document.getElementById('edit-apply-sel');
+  if (selBtn) {
+    selBtn.style.display = multiSel ? '' : 'none';
+    if (multiSel) selBtn.textContent = `Apply to sel. (${selCount})`;
+  }
+  document.getElementById('edit-backdrop').style.display = 'block';
+  document.getElementById('edit-panel').style.display    = 'block';
+  setTimeout(() => document.getElementById('edit-name-input').focus(), 50);
+}
+
+function closeEditPanel() {
+  document.getElementById('edit-backdrop').style.display = 'none';
+  document.getElementById('edit-panel').style.display    = 'none';
+  editTarget = null;
+}
+
+function applyEditPanel() {
+  if (!editTarget) return;
+  const key  = editTarget.key;
+  const name = document.getElementById('edit-name-input').value.trim().slice(0, 12);
+  if (!faderMeta[key]) faderMeta[key] = {};
+  faderMeta[key].name     = name;
+  faderMeta[key].color    = editSelectedColor    || '';
+  faderMeta[key].btnColor = editSelectedBtnColor || '';
+  localStorage.setItem('faderMeta', JSON.stringify(faderMeta));
+  closeEditPanel();
+  updateMetaButton(key);
+}
+
+function applyToSelection() {
+  if (!editTarget || !editTarget.key.startsWith('f')) return;
+  const name     = document.getElementById('edit-name-input').value.trim().slice(0, 12);
+  const color    = editSelectedColor    || '';
+  const btnColor = editSelectedBtnColor || '';
+  selectedFaders.forEach(idx => {
+    const k = `f${idx}`;
+    if (!faderMeta[k]) faderMeta[k] = {};
+    // Only update name when user explicitly typed something
+    if (name) faderMeta[k].name = name;
+    faderMeta[k].color    = color;
+    faderMeta[k].btnColor = btnColor;
+    updateMetaButton(k);
+  });
+  localStorage.setItem('faderMeta', JSON.stringify(faderMeta));
+  closeEditPanel();
+}
+
+function updateMetaButton(key) {
+  const m      = faderMeta[key] || {};
+  const col    = m.color    || '';
+  const btnCol = m.btnColor || col;
+  const lbl    = m.name  || '';
+  const cellStyle = col    ? `background:${col};border-color:${col}88;color:#111`       : '';
+  const btnStyle  = btnCol ? `background:${btnCol};border-color:${btnCol}88;color:#111` : '';
+  if (key.startsWith('f')) {
+    const idx  = parseInt(key.slice(1));
+    const btn  = document.getElementById(`fb${idx}`);
+    const cell = document.getElementById(`fc${idx}`);
+    if (!btn) return;
+    btn.style.cssText = btnStyle;
+    btn.innerHTML = `F${idx+1}<div style="font-size:8px;font-weight:400;margin-top:1px;opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:52px">${lbl || '\u00A0'}</div>`;
+    if (cell) {
+      if (col) {
+        cell.style.setProperty('--fader-color',  col);
+        cell.style.setProperty('--fader-glow',   col + '40');
+        cell.style.setProperty('--fader-bg',     col + '1a');
+        cell.style.setProperty('--fader-border', col + '55');
+        cell.style.borderColor = col + '88';
+        cell.style.background  = col + '14';
+      } else {
+        ['--fader-color','--fader-glow','--fader-bg','--fader-border'].forEach(p => cell.style.removeProperty(p));
+        cell.style.borderColor = '';
+        cell.style.background  = '';
+      }
+    }
+  } else if (key.startsWith('m')) {
+    const idx  = parseInt(key.slice(1));
+    const btn  = document.getElementById(`mb${idx}`);
+    const cell = document.getElementById(`mc${idx}`);
+    if (!btn) return;
+    const wasMuted = btn.classList.contains('muted');
+    btn.style.cssText = btnStyle;
+    if (wasMuted) btn.classList.add('muted');
+    btn.innerHTML = `M${idx+1}<div style="font-size:8px;font-weight:400;margin-top:1px;opacity:.8">${lbl || '\u00A0'}</div>`;
+    if (cell) {
+      if (col) { cell.style.borderColor = col + '88'; cell.style.background = col + '14'; }
+      else      { cell.style.borderColor = ''; cell.style.background = ''; }
+    }
+  } else if (key.startsWith('p')) {
+    const idx = parseInt(key.slice(1));
+    const btn = document.getElementById(`ps${idx}`);
+    if (!btn) return;
+    btn.style.cssText = btnStyle;
+    const slot    = faderPresetSlots.find(s => s.slot === idx);
+    const display = lbl || slot?.name || (idx + 1);
+    const sp = btn.querySelector('span');
+    if (sp) sp.textContent = display;
+  }
+}
+
+function initColorGrid() {
+  const grid = document.getElementById('color-grid');
+  if (!grid || grid.childElementCount > 0) return;
+  const none = document.createElement('div');
+  none.className = 'color-swatch none-swatch';
+  none.dataset.color = '';
+  none.textContent = '✕';
+  none.addEventListener('click', () => selectColor(null, none));
+  grid.appendChild(none);
+  FADER_COLORS.slice(1).forEach(c => {
+    const sw = document.createElement('div');
+    sw.className = 'color-swatch';
+    sw.style.background = c;
+    sw.dataset.color = c;
+    sw.addEventListener('click', () => selectColor(c, sw));
+    grid.appendChild(sw);
+  });
+}
+
+function setColTab(tab, silent) {
+  editColorTab = tab;
+  document.getElementById('col-tab-cell')?.classList.toggle('active', tab === 'cell');
+  document.getElementById('col-tab-btn')?.classList.toggle('active',  tab === 'btn');
+  // Sync swatch highlight to the current tab's color
+  const cur = tab === 'btn' ? editSelectedBtnColor : editSelectedColor;
+  document.querySelectorAll('.color-swatch').forEach(sw => {
+    sw.classList.toggle('active', (sw.dataset.color || null) === (cur || null));
+  });
+}
+
+function selectColor(color, swatchEl) {
+  if (editColorTab === 'btn') editSelectedBtnColor = color || null;
+  else                        editSelectedColor    = color || null;
+  document.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+  swatchEl.classList.add('active');
+}
+
+// ── Source visibility ─────────────────────────────────────────────────────────
+let hiddenVis = new Set(JSON.parse(localStorage.getItem('hiddenVis') || '[]'));
+
+function toggleVis(key) {
+  if (hiddenVis.has(key)) hiddenVis.delete(key); else hiddenVis.add(key);
+  localStorage.setItem('hiddenVis', JSON.stringify([...hiddenVis]));
+  applyVisibility();
+}
+
+function applyVisibility() {
+  ['vf','mf','in0','in1','in2','art0','art1','art2','art3','usb','porta','portb','portc','portd'].forEach(key => {
+    const hidden = hiddenVis.has(key);
+    document.getElementById(`vis-btn-${key}`)?.classList.toggle('hidden', hidden);
+    document.getElementById(`vis-${key}-bars`)?.style &&
+      (document.getElementById(`vis-${key}-bars`).style.display = hidden ? 'none' : '');
+    document.getElementById(`vis-${key}-sliders`)?.style &&
+      (document.getElementById(`vis-${key}-sliders`).style.display = hidden ? 'none' : '');
+  });
+}
+
+// ── Status DOM build ──────────────────────────────────────────────────────────
+function updatePgInfo() {
+  const start = statusPage * statusCols + 1;
+  const end = Math.min(start + statusCols - 1, 512);
+  document.getElementById('pgInfo').textContent = start + '–' + end;
+}
+
+function makeBarsRow(containerId, uIdx, cls) {
+  const row = document.getElementById(containerId);
+  if (!row) return;
+  row.innerHTML = '';
+  const start = statusPage * statusCols;
+  for (let c = 0; c < statusCols; c++) {
+    const ch = start + c;
+    const cell = document.createElement('div');
+    cell.className = 'bar-cell';
+    cell.innerHTML = `
+      <div class="bar-ch">${ch + 1}</div>
+      <div class="bar">
+        <div class="bar-fill ${cls}" id="bar-${uIdx}-${c}" style="width:0%"></div>
+        <span class="bar-val" id="bval-${uIdx}-${c}">0</span>
+      </div>`;
+    row.appendChild(cell);
+  }
+}
+
+function makeSlidersRow(containerId, uIdx, cls) {
+  const row = document.getElementById(containerId);
+  if (!row) return;
+  row.innerHTML = '';
+  const start = statusPage * statusCols;
+  for (let c = 0; c < statusCols; c++) {
+    const ch = start + c;
+    const d = document.createElement('div');
+    d.className = `dmx-cell ${cls}`;
+    d.innerHTML = `
+      <div class="dmx-ch-lbl">${ch + 1}</div>
+      <input type="range" min="0" max="255" value="0" id="dslider-${uIdx}-${c}" tabindex="-1">
+      <div class="dmx-ch-val" id="dval-${uIdx}-${c}">0</div>`;
+    row.appendChild(d);
+  }
+}
+
+function makeFixedBarsRow(containerId, prefix, cls, count) {
+  const row = document.getElementById(containerId);
+  if (!row) return;
+  row.innerHTML = '';
+  for (let i = 0; i < count; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'bar-cell';
+    cell.innerHTML = `
+      <div class="bar-ch">${i + 1}</div>
+      <div class="bar">
+        <div class="bar-fill ${cls}" id="bar-${prefix}-${i}" style="width:0%"></div>
+        <span class="bar-val" id="bval-${prefix}-${i}">0</span>
+      </div>`;
+    row.appendChild(cell);
+  }
+}
+
+function makeFixedSlidersRow(containerId, prefix, cls, count) {
+  const row = document.getElementById(containerId);
+  if (!row) return;
+  row.innerHTML = '';
+  for (let i = 0; i < count; i++) {
+    const d = document.createElement('div');
+    d.className = `dmx-cell ${cls}`;
+    d.innerHTML = `
+      <div class="dmx-ch-lbl">${i + 1}</div>
+      <input type="range" min="0" max="255" value="0" id="dslider-${prefix}-${i}" tabindex="-1">
+      <div class="dmx-ch-val" id="dval-${prefix}-${i}">0</div>`;
+    row.appendChild(d);
+  }
+}
+
+function makeVfBarsRow(containerId) {
+  const row = document.getElementById(containerId);
+  if (!row) return;
+  row.innerHTML = '';
+  const start = statusPage * statusCols;
+  for (let c = 0; c < statusCols; c++) {
+    const ch = start + c;
+    if (ch >= NUM_FADERS) break;
+    const cell = document.createElement('div');
+    cell.className = 'bar-cell';
+    cell.innerHTML = `
+      <div class="bar-ch">${ch + 1}</div>
+      <div class="bar">
+        <div class="bar-fill" id="bar-vf-${c}" style="width:0%"></div>
+        <span class="bar-val" id="bval-vf-${c}">0</span>
+      </div>`;
+    row.appendChild(cell);
+  }
+}
+
+function makeVfSlidersRow(containerId) {
+  const row = document.getElementById(containerId);
+  if (!row) return;
+  row.innerHTML = '';
+  const start = statusPage * statusCols;
+  for (let c = 0; c < statusCols; c++) {
+    const ch = start + c;
+    if (ch >= NUM_FADERS) break;
+    const d = document.createElement('div');
+    d.className = 'dmx-cell';
+    d.innerHTML = `
+      <div class="dmx-ch-lbl">${ch + 1}</div>
+      <input type="range" min="0" max="255" value="0" id="dslider-vf-${c}" tabindex="-1">
+      <div class="dmx-ch-val" id="dval-vf-${c}">0</div>`;
+    row.appendChild(d);
+  }
+}
+
+function buildStatusDom() {
+  const start = statusPage * statusCols;
+
+  // VF (virtual faders — paginated like DMX, uses statusCols/statusPage)
+  makeVfBarsRow('bars-vf');
+  makeVfSlidersRow('sliders-vf');
+
+  // MF (masters — fixed 8)
+  makeFixedBarsRow('bars-mf', 'mf', 'mf', MAX_MASTERS);
+  makeFixedSlidersRow('sliders-mf', 'mf', '', MAX_MASTERS);
+
+  // DMX IN rows
+  makeBarsRow('bars-in0', 0, 'dmx');
+  makeBarsRow('bars-in1', 1, 'dmx');
+  makeBarsRow('bars-in2', 'in2', 'dmx');
+  makeSlidersRow('sliders-in0', 0, 'dmx');
+  makeSlidersRow('sliders-in1', 1, 'dmx');
+  makeSlidersRow('sliders-in2', 'in2', 'dmx');
+
+  // ArtNet rows (u=2..2+NUM_ART_UNI-1)
+  const bac = document.getElementById('bars-artnet-container');
+  const sac = document.getElementById('sliders-artnet-container');
+  bac.innerHTML = ''; sac.innerHTML = '';
+  for (let a = 0; a < NUM_ART_UNI; a++) {
+    const uIdx = 2 + a;
+    const bDiv = document.createElement('div');
+    bDiv.id = `vis-art${a}-bars`;
+    bDiv.className = 'dmx-uni';
+    bDiv.style.display = hiddenVis.has(`art${a}`) ? 'none' : '';
+    bDiv.innerHTML = `<div class="dmx-uni-hdr uni-hdr-art">ArtNet ${a}</div><div class="bar-row" id="bars-art${a}"></div>`;
+    bac.appendChild(bDiv);
+    for (let c = 0; c < statusCols; c++) {
+      const ch = start + c;
+      const cell = document.createElement('div');
+      cell.className = 'bar-cell';
+      cell.innerHTML = `
+        <div class="bar-ch">${ch + 1}</div>
+        <div class="bar">
+          <div class="bar-fill artnet" id="bar-${uIdx}-${c}" style="width:0%"></div>
+          <span class="bar-val" id="bval-${uIdx}-${c}">0</span>
+        </div>`;
+      bDiv.querySelector('.bar-row').appendChild(cell);
+    }
+
+    const sDiv = document.createElement('div');
+    sDiv.id = `vis-art${a}-sliders`;
+    sDiv.className = 'dmx-uni';
+    sDiv.style.display = hiddenVis.has(`art${a}`) ? 'none' : '';
+    sDiv.innerHTML = `<div class="dmx-uni-hdr uni-hdr-art">ArtNet ${a}</div><div class="slider-uni" id="sliders-art${a}"></div>`;
+    sac.appendChild(sDiv);
+    makeSlidersRow(`sliders-art${a}`, uIdx, 'artnet');
+  }
+
+  // USB DMX IN row
+  makeBarsRow('bars-usb', 'usb', 'dmx');
+  makeSlidersRow('sliders-usb', 'usb', 'dmx');
+
+  // PORT rows A–D
+  ['a','b','c','d'].forEach(p => {
+    makeBarsRow(`bars-port${p}`, `port${p}`, 'out');
+    makeSlidersRow(`sliders-port${p}`, `port${p}`, 'out');
+  });
+
+  updatePgInfo();
+  applyVisibility();
+}
+
+function setStatusCols(n) {
+  statusCols = n; statusPage = 0;
+  document.querySelectorAll('#colBtns .pill').forEach(b => {
+    b.classList.toggle('active', parseInt(b.textContent) === n);
+  });
+  buildStatusDom();
+}
+function prevPage() { if (statusPage > 0) { statusPage--; buildStatusDom(); } }
+function nextPage() { if ((statusPage + 1) * statusCols < 512) { statusPage++; buildStatusDom(); } }
+
+function setDmxView(mode) {
+  document.getElementById('view-bars').classList.toggle('active',    mode === 'bars');
+  document.getElementById('view-sliders').classList.toggle('active', mode === 'sliders');
+  document.getElementById('pill-bars').classList.toggle('active',    mode === 'bars');
+  document.getElementById('pill-sliders').classList.toggle('active', mode === 'sliders');
+}
+
+// ── Fader send ────────────────────────────────────────────────────────────────
+let faderTimer = null;
+const faderPending = new Array(NUM_FADERS).fill(null);
+
+let _faderValTimer = null;
+function onFaderValClick(idx) {
+  clearTimeout(_faderValTimer);
+  _faderValTimer = setTimeout(() => {
+    const el = document.getElementById(`fv${idx}`);
+    if (!el) return;
+    const cur = faderValues[idx] ?? 0;
+    el.innerHTML = `<input type="number" id="fve${idx}" min="0" max="255" value="${cur}"
+      style="width:42px;text-align:center;background:#111;border:1px solid #0ff;color:#0ff;border-radius:4px;font-size:12px;padding:0"
+      onblur="commitFaderVal(${idx})"
+      onkeydown="if(event.key==='Enter')commitFaderVal(${idx});if(event.key==='Escape'){event.preventDefault();document.getElementById('fv${idx}').textContent=faderValues[${idx}]??0;}">`;
+    const inp = document.getElementById(`fve${idx}`);
+    if (inp) { inp.focus(); inp.select(); }
+  }, 220);
+}
+function onFaderValDblClick(idx) {
+  clearTimeout(_faderValTimer);
+  setFaderVal(idx, 0);
+}
+function commitFaderVal(idx) {
+  const inp = document.getElementById(`fve${idx}`);
+  if (!inp) return;
+  setFaderVal(idx, Math.max(0, Math.min(255, parseInt(inp.value) || 0)));
+}
+
+function onFader(idx, val) {
+  faderValues[idx] = parseInt(val);
+  const vEl = document.getElementById(`fv${idx}`);
+  if (vEl) vEl.textContent = val;
+  if (presetRecMode === 'dyn') {
+    modifiedFaders.add(idx);
+    document.getElementById(`fc${idx}`)?.classList.add('selected');
+  }
+  activePreset = -1;
+  faderPending[idx] = parseInt(val);
+  clearTimeout(faderTimer);
+  faderTimer = setTimeout(() => {
+    const body = { f: Array.from({length: NUM_FADERS}, (_, i) =>
+      faderPending[i] !== null ? faderPending[i] : faderValues[i]) };
+    faderPending.fill(null);
+    fetch('/api/faders', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+  }, 30);
+}
+
+function onMaster(idx, val) {
+  masterValues[idx] = parseInt(val);
+  const vEl = document.getElementById(`mv${idx}`);
+  if (vEl) vEl.textContent = val;
+  sendMasters();
+}
+
+function sendMasters() {
+  const full = Array.from({length: MAX_MASTERS}, (_, i) =>
+    masterMuted[i] ? 0 : (masterValues[i] ?? 255));
+  fetch('/api/masters', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({m: full}) });
+}
+
+// ── Presets ───────────────────────────────────────────────────────────────────
+async function fetchPresets() {
+  try {
+    const r = await fetch('/api/presets');
+    const j = await r.json();
+    const card = document.getElementById('presets-card');
+    card.innerHTML = '';
+    (j.presets || []).forEach(p => {
+      const row = document.createElement('div');
+      row.className = 'card-row';
+      row.style.cssText = 'gap:10px;flex-wrap:wrap';
+      row.innerHTML = `
+        <div style="flex:1;min-width:0">
+          <div style="font-size:13px;font-weight:600">${p.name}</div>
+          <div style="font-size:12px;color:var(--muted)">${p.desc}</div>
+        </div>
+        <button class="btn-sm" onclick="loadPreset(${p.id})">Load Rules</button>
+        <button class="btn-sm" onclick="loadPresetPort(${p.id})" style="color:var(--accent)">Load Ports</button>`;
+      card.appendChild(row);
+    });
+    if (!j.presets || j.presets.length === 0)
+      card.innerHTML = '<div class="card-row" style="color:var(--muted);font-size:12px">No presets available.</div>';
+  } catch(e) { console.warn('fetchPresets', e); }
+}
+
+async function loadPresetPort(id) {
+  try {
+    const r = await fetch(`/api/preset/load-port?id=${id}`, { method: 'POST' });
+    const j = await r.json();
+    if (!j.ok) { alert('Port preset load failed'); return; }
+    await loadPorts();
+  } catch(e) { console.warn('loadPresetPort', e); }
+}
+
+async function loadPreset(id) {
+  try {
+    const r = await fetch(`/api/preset/load?id=${id}`, { method: 'POST' });
+    const j = await r.json();
+    if (!j.ok) { alert('Preset load failed'); return; }
+    document.getElementById('showDescRow').textContent = j.desc || '';
+    document.getElementById('showActiveRow').textContent = j.desc || `Preset ${id}`;
+    await fetchRules();
+  } catch(e) { alert('Error: ' + e); }
+}
+
+// ── Show ──────────────────────────────────────────────────────────────────────
+async function fetchShows() {
+  try {
+    const r = await fetch('/api/shows');
+    const j = await r.json();
+    const sel = document.getElementById('showSel');
+    sel.innerHTML = '';
+    (j.files || []).forEach(f => {
+      const o = document.createElement('option');
+      o.value = f; o.textContent = f.replace(/^\//, '');
+      if (f === j.active) o.selected = true;
+      sel.appendChild(o);
+    });
+    sel.onchange = () => previewShow(sel.value);
+    setActiveShow(j.active || '', '');
+    previewShow(sel.value);
+  } catch(e) {}
+}
+
+let activeShowPath = '';  // current show path for export filename suggestion
+
+function setActiveShow(name, desc) {
+  activeShowPath = name || '';
+  const shortName = name.replace(/^\//, '') || '—';
+  document.getElementById('showSub').textContent = shortName + (desc ? ' — ' + desc : '');
+  document.getElementById('showActiveRow').textContent = shortName;
+  document.getElementById('showDescRow').textContent = desc || '';
+  document.getElementById('s-show').textContent = shortName;
+  // Pre-fill save fields
+  document.getElementById('saveFilename').value = shortName !== '—' ? shortName : '';
+  document.getElementById('saveDesc').value     = desc || '';
+}
+
+async function loadShow() {
+  const file = document.getElementById('showSel').value;
+  try {
+    const r = await fetch('/api/show/load?file=' + encodeURIComponent(file), {method:'POST'});
+    const j = await r.json();
+    if (j.ok) {
+      setActiveShow(file, j.desc || '');
+      showSaveMsg(`✓ ${j.rules ?? '?'} rules, ${j.masters ?? '?'} masters`);
+      fetchRules();
+    } else {
+      showSaveMsg('✗ ' + (j.error || 'load error'));
+    }
+  } catch(e) { showSaveMsg('✗ network error'); }
+}
+
+async function saveShow() {
+  let name = document.getElementById('saveFilename').value.trim();
+  const desc = document.getElementById('saveDesc').value.trim();
+  if (!name) { showSaveMsg('✗ filename required'); return; }
+  if (!name.toLowerCase().endsWith('.csv')) name += '.csv';
+  try {
+    const r = await fetch('/api/show/save?file=' + encodeURIComponent(name), {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ desc })
+    });
+    const j = await r.json();
+    if (j.ok) {
+      showSaveMsg('✓ saved');
+      await fetchShows();
+      // Select the just-saved file in the dropdown
+      const sel = document.getElementById('showSel');
+      const shortName = name.replace(/^\//, '');
+      for (const o of sel.options) { if (o.textContent === shortName) { o.selected = true; break; } }
+      setActiveShow('/' + shortName, desc);
+    } else {
+      showSaveMsg('✗ ' + (j.error || 'save failed'));
+    }
+  } catch(e) { showSaveMsg('✗ network error'); }
+}
+
+function showSaveMsg(txt) {
+  const el = document.getElementById('saveMsg');
+  el.textContent = txt;
+  setTimeout(() => el.textContent = '', 4000);
+}
+
+// ── Download from SD ──────────────────────────────────────────────────────────
+function downloadShow() {
+  const file = document.getElementById('showSel').value;
+  if (!file) return;
+  triggerDownload('/api/show/download?file=' + encodeURIComponent(file), '');
+}
+
+async function downloadAllShows() {
+  const btn = document.getElementById('btnDownloadAll');
+  try {
+    const r = await fetch('/api/shows');
+    const j = await r.json();
+    const files = j.files || [];
+    if (files.length === 0) { alert('No files on SD card.'); return; }
+    if (btn) { btn.textContent = `Downloading 0/${files.length}…`; btn.disabled = true; }
+    for (let i = 0; i < files.length; i++) {
+      if (btn) btn.textContent = `Downloading ${i+1}/${files.length}…`;
+      triggerDownload('/api/show/download?file=' + encodeURIComponent(files[i]), '');
+      if (i < files.length - 1) await new Promise(r => setTimeout(r, 600));
+    }
+  } finally {
+    if (btn) { btn.textContent = 'Download all'; btn.disabled = false; }
+  }
+}
+
+// ── Export current rules as CSV (browser-side, no SD needed) ─────────────────
+let g_csvSep = ',';  // loaded from /api/config/csv-sep on config tab open
+
+async function loadCsvSep() {
+  try {
+    const r = await fetch('/api/config/csv-sep');
+    const j = await r.json();
+    const raw = j.sep === 'tab' ? '\t' : (j.sep === ';' ? ';' : ',');
+    g_csvSep = raw;
+    // Update pill buttons
+    document.querySelectorAll('#csvSepBtns .pill').forEach(b => {
+      b.classList.toggle('active', b.dataset.sep === (j.sep === '\t' ? 'tab' : j.sep));
+    });
+  } catch(e) {}
+}
+
+async function setCsvSep(sep) {
+  g_csvSep = sep === 'tab' ? '\t' : sep;
+  try {
+    await fetch('/api/config/csv-sep', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ sep })
+    });
+    const status = document.getElementById('csvSepStatus');
+    if (status) { status.textContent = 'Saved'; setTimeout(() => status.textContent = '', 1500); }
+  } catch(e) {}
+  document.querySelectorAll('#csvSepBtns .pill').forEach(b => {
+    b.classList.toggle('active', b.dataset.sep === sep);
+  });
+}
+
+// ── USB DMX config ────────────────────────────────────────────────────────────
+let _usbDmxEnabled  = false;
+let _usbDmxCompiled = false;
+
+async function loadUsbDmxConfig() {
+  try {
+    const r = await fetch('/api/config/usb-dmx');
+    const j = await r.json();
+    _usbDmxEnabled  = !!j.enabled;
+    _usbDmxCompiled = !!j.compiled;
+    updateUsbDmxUI(j);
+  } catch(e) {}
+}
+
+function updateUsbDmxUI(j) {
+  const toggle = document.getElementById('usbDmxToggle');
+  const dot    = document.getElementById('usbDmxDot');
+  const status = document.getElementById('usbDmxStatus');
+  const note   = document.getElementById('usbDmxNote');
+  if (!toggle) return;
+  const en   = j.enabled  ?? _usbDmxEnabled;
+  const comp = j.compiled ?? _usbDmxCompiled;
+  const conn = !!j.connected;
+  toggle.textContent = en ? 'ON' : 'OFF';
+  toggle.classList.toggle('on', en);
+  toggle.disabled = !comp;
+  if (note) note.style.display = comp ? 'none' : '';
+  if (dot)  { dot.style.background = conn ? '#3ddc84' : (en ? '#f07070' : 'var(--border)'); }
+  if (status) status.textContent = !comp ? 'not compiled'
+                                 : conn  ? 'connected'
+                                 : en    ? 'no signal'
+                                 :         'disabled';
+}
+
+async function toggleUsbDmx() {
+  _usbDmxEnabled = !_usbDmxEnabled;
+  updateUsbDmxUI({ enabled: _usbDmxEnabled, compiled: _usbDmxCompiled });
+  try {
+    await fetch('/api/config/usb-dmx', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ enabled: _usbDmxEnabled })
+    });
+  } catch(e) {}
+}
+
+async function previewShow(file) {
+  const pv = document.getElementById('show-preview');
+  if (!pv || !file) { if (pv) pv.style.display = 'none'; return; }
+  try {
+    const r = await fetch(`/api/show/preview?file=${encodeURIComponent(file)}`);
+    const j = await r.json();
+    if (j.desc) { pv.textContent = `📝 ${j.desc}`; pv.style.display = ''; }
+    else pv.style.display = 'none';
+  } catch(e) { pv.style.display = 'none'; }
+}
+
+function exportCurrentRules() {
+  const sep  = g_csvSep;
+  const s    = sep === '\t' ? '\t' : sep;
+  const desc = document.getElementById('showDescRow')?.textContent?.trim() || '';
+  const rawName  = activeShowPath.replace(/^\//, '') || 'rules_export.csv';
+  const filename = rawName.endsWith('.csv') ? rawName : rawName + '.csv';
+
+  const sepLabel = sep === ';' ? 'semicolon' : sep === '\t' ? 'tab' : 'comma';
+  let csv = '';
+  if (desc) csv += `# ${desc}\n`;
+  csv += `# SmartStrips DMX Show — separator: ${sepLabel}\n`;
+  csv += `# RULE${s}port${s}out_ch${s}src${s}uni${s}in_ch${s}count${s}merge${s}master${s}priority${s}note\n`;
+  csv += `# MASTER${s}idx${s}src${s}uni${s}in_ch${s}parent_master\n`;
+  csv += `# PORT${s}port${s}type${s}index\n`;
+
+  cachedRules.forEach(r => {
+    const safeNote = (r.note || '').replace(new RegExp('\\' + s, 'g'), ' ');
+    csv += `RULE${s}${r.port||'A'}${s}${r.out}${s}${r.src}${s}${r.uni??0}${s}${r.in??1}${s}${r.count||1}${s}${r.merge||'HTP'}${s}${r.master??0}${s}${r.priority??0}${s}${safeNote}\n`;
+  });
+  cachedMasters.forEach(m => {
+    const pSuffix = m.parent ? `${s}${m.parent}` : '';
+    csv += `MASTER${s}${m.idx}${s}${m.src}${s}${m.uni??0}${s}${m.in}${pSuffix}\n`;
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url  = URL.createObjectURL(blob);
+  triggerDownload(url, filename);
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+// ── Global show (JSON) export / import ───────────────────────────────────────
+function exportGlobalShow() {
+  const desc    = document.getElementById('showDescRow')?.textContent?.trim() || '';
+  const rawName = activeShowPath.replace(/^\//, '') || 'smartstrips_global';
+  const stem    = rawName.replace(/\.csv$/i, '');
+  const data = {
+    version  : 1,
+    date     : new Date().toISOString(),
+    show     : stem,
+    desc     : desc,
+    faderMeta: faderMeta,
+    rules    : cachedRules,
+    masters  : cachedMasters,
+    ports    : g_ports,
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url  = URL.createObjectURL(blob);
+  triggerDownload(url, stem + '_global.json');
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
+}
+
+function onPickGlobalFile(e) {
+  const file = e.target.files?.[0];
+  if (file) importGlobalShow(file);
+  e.target.value = '';
+}
+
+async function importGlobalShow(file) {
+  let data;
+  try { data = JSON.parse(await file.text()); } catch { alert('Invalid JSON file'); return; }
+  if (!data.version) { alert('Not a SmartStrips global show file'); return; }
+
+  let tasks = [];
+
+  if (data.faderMeta && typeof data.faderMeta === 'object') {
+    faderMeta = data.faderMeta;
+    localStorage.setItem('faderMeta', JSON.stringify(faderMeta));
+    buildFaders();
+    tasks.push('fader labels');
+  }
+  if (Array.isArray(data.rules) || Array.isArray(data.masters)) {
+    if (data.rules)   cachedRules   = data.rules;
+    if (data.masters) cachedMasters = data.masters;
+    await pushRules();
+    tasks.push('rules');
+  }
+  if (Array.isArray(data.ports)) {
+    g_ports = data.ports;
+    try {
+      await fetch('/api/ports', {method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ports: g_ports})});
+    } catch {}
+    tasks.push('ports');
+  }
+  if (data.show) setActiveShow(data.show + '.csv', data.desc || '');
+  showSaveMsg(`✓ imported: ${tasks.join(', ')}`);
+}
+
+function triggerDownload(url, filename) {
+  const a = document.createElement('a');
+  a.href = url;
+  if (filename) a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+// ── Upload ────────────────────────────────────────────────────────────────────
+function onDragOver(e) {
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.add('drag-over');
+}
+function onDragLeave(e) {
+  document.getElementById('uploadZone').classList.remove('drag-over');
+}
+function onDropFile(e) {
+  e.preventDefault();
+  onDragLeave(e);
+  const file = e.dataTransfer?.files?.[0];
+  if (file) uploadShow(file);
+}
+function onPickFile(e) {
+  const file = e.target.files?.[0];
+  if (file) uploadShow(file);
+  e.target.value = '';  // allow re-uploading same file
+}
+
+async function uploadShow(file) {
+  if (!file.name.toLowerCase().endsWith('.csv')) {
+    showSaveMsg('✗ only .csv files accepted');
+    return;
+  }
+  const prog = document.getElementById('uploadProgress');
+  prog.textContent = 'Uploading…'; prog.classList.add('active');
+
+  const fd = new FormData();
+  fd.append('file', file, file.name);
+  try {
+    const r = await fetch('/api/show/upload', { method: 'POST', body: fd });
+    const j = await r.json();
+    prog.classList.remove('active');
+    if (j.ok) {
+      showSaveMsg('✓ uploaded: ' + (j.file || file.name).replace(/^\//, ''));
+      await fetchShows();
+      // Auto-select the uploaded file
+      const sel = document.getElementById('showSel');
+      const shortName = (j.file || '').replace(/^\//, '');
+      for (const o of sel.options) {
+        if (o.textContent === shortName) { o.selected = true; break; }
+      }
+    } else {
+      showSaveMsg('✗ upload failed');
+    }
+  } catch(e) {
+    prog.classList.remove('active');
+    showSaveMsg('✗ network error');
+  }
+}
+
+// ── Delete file ───────────────────────────────────────────────────────────────
+function confirmDelete() {
+  const file = document.getElementById('showSel').value;
+  if (!file) return;
+  document.getElementById('deleteFileName').textContent = file.replace(/^\//, '');
+  document.getElementById('deleteConfirmRow').style.display = '';
+}
+function cancelDelete() {
+  document.getElementById('deleteConfirmRow').style.display = 'none';
+}
+async function doDeleteFile() {
+  const file = document.getElementById('showSel').value;
+  cancelDelete();
+  try {
+    const r = await fetch('/api/show/delete?file=' + encodeURIComponent(file), {method:'POST'});
+    const j = await r.json();
+    if (j.ok) {
+      showSaveMsg('✓ deleted');
+      await fetchShows();
+      setActiveShow('', '');
+    } else {
+      showSaveMsg('✗ ' + (j.error || 'delete failed'));
+    }
+  } catch(e) { showSaveMsg('✗ network error'); }
+}
+
+// ── Rules ─────────────────────────────────────────────────────────────────────
+const SRC_COLOR = { DMX:'tag-dmx', ARTNET:'tag-artnet', WEB:'tag-web', CONST:'tag-const' };
+
+function tag(val) {
+  const cls = SRC_COLOR[val] || 'tag-dmx';
+  return `<span class="tag ${cls}">${val}</span>`;
+}
+
+function getRuleInVal(rule) {
+  if (!lastStatus) return null;
+  const ch0 = (rule.in || 1) - 1;
+  if (rule.src === 'DMX') {
+    const uni = lastStatus.in?.[rule.uni || 0];
+    return uni ? (uni[ch0] ?? 0) : 0;
+  }
+  if (rule.src === 'ARTNET') {
+    const uni = lastStatus.artnet?.[rule.uni || 0];
+    return uni ? (uni[ch0] ?? 0) : 0;
+  }
+  if (rule.src === 'WEB') {
+    return lastStatus.faders?.[(rule.in || 1) - 1] ?? 0;
+  }
+  if (rule.src === 'CONST') {
+    return rule.in ?? 0;  // in_ch holds the constant value
+  }
+  return null;
+}
+
+function getRuleOutVal(rule) {
+  if (!lastStatus) return null;
+  const portIdx = {A:0,B:1,C:2,D:3}[rule.port||'A'] || 0;
+  const outArr = lastStatus.out_ports?.[portIdx] ?? (portIdx===0 ? lastStatus.out : null);
+  if (!outArr) return null;
+  return outArr[(rule.out||1)-1] ?? 0;
+}
+
+function lvBadge(v) {
+  if (v === null || v === undefined) return '<span class="lv">—</span>';
+  const cls = v > 0 ? 'nonzero' : '';
+  return `<span class="lv ${cls}">${v}</span>`;
+}
+
+async function fetchRules() {
+  try {
+    const r = await fetch('/api/rules');
+    const j = await r.json();
+    cachedRules   = j.rules   || [];
+    cachedMasters = j.masters || [];
+    selectedRules.clear();
+    renderRules();
+  } catch(e) {
+    document.getElementById('rules-tbl-wrap').innerHTML =
+      '<div class="rules-empty">Could not reach /api/rules</div>';
+  }
+}
+
+const TRASH_SVG = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,4 14,4"/><path d="M5 4V3h6v1"/><rect x="3" y="4" width="10" height="9" rx="1"/><line x1="6" y1="7" x2="6" y2="11"/><line x1="10" y1="7" x2="10" y2="11"/></svg>`;
+
+
+function getVisibleIndices() {
+  return cachedRules.map((r, i) => i).filter(i => {
+    if (!filterFrom && !filterTo) return true;
+    const out = cachedRules[i].out;
+    if (filterFrom && out < filterFrom) return false;
+    if (filterTo   && out > filterTo)   return false;
+    return true;
+  });
+}
+
+function renderRules() {
+  const rules   = cachedRules;
+  const masters = cachedMasters;
+
+  document.getElementById('rules-count').textContent =
+    `${rules.length} rule${rules.length !== 1 ? 's' : ''}, ${masters.length} master${masters.length !== 1 ? 's' : ''}`;
+
+  const visIdx = getVisibleIndices();
+  const rw = document.getElementById('rules-tbl-wrap');
+
+  let h = `<table class="rules-tbl"><thead><tr>
+    <th class="sel-col"><input type="checkbox" id="sel-all" onchange="toggleSelectAll(this)" title="Select all visible"></th>
+    <th>#</th><th>Port</th><th>Out</th><th>Out→</th><th>Src</th><th>Uni</th><th>In</th><th>In→</th><th>Merge</th><th>Prio</th><th>Master</th><th>Note</th><th></th>
+  </tr></thead><tbody>`;
+
+  if (rules.length === 0) {
+    h += `<tr><td colspan="14" class="rules-empty" style="padding:14px">No rules — load a show or preset, or add below.</td></tr>`;
+  } else if (visIdx.length === 0) {
+    h += `<tr><td colspan="14" class="rules-empty" style="padding:14px">No rules match current filter.</td></tr>`;
+  } else {
+    visIdx.forEach(i => {
+      const r = rules[i];
+      const noUni = r.src === 'CONST' || r.src === 'WEB';
+      const sel = selectedRules.has(i);
+      const cnt   = r.count || 1;
+      const outTo = cnt > 1 ? r.out + cnt - 1 : null;
+      const inFrom = r.in || 1;
+      const inTo   = cnt > 1 ? inFrom + cnt - 1 : null;
+      h += `<tr class="${sel ? 'row-sel' : ''}">
+        <td class="sel-col"><input type="checkbox" id="sel-${i}" ${sel ? 'checked' : ''}
+          onchange="toggleSelectRule(${i})"></td>
+        <td style="color:var(--muted)">${i+1}</td>
+        <td style="font-weight:700;color:var(--accent)">${r.port||'A'}</td>
+        <td>${r.out}</td>
+        <td>${outTo ? `<span style="color:var(--accent)">${outTo}</span>` : '<span style="color:var(--muted)">—</span>'}</td>
+        <td>${tag(r.src)}</td>
+        <td>${noUni ? '<span style="color:var(--muted)">—</span>' : r.uni}</td>
+        <td>${inFrom}</td>
+        <td>${inTo ? `<span style="color:var(--accent)">${inTo}</span>` : '<span style="color:var(--muted)">—</span>'}</td>
+        <td><span class="badge ${MERGE_CLS[r.merge||'HTP']||'htp'}">${r.merge||'HTP'}</span></td>
+        <td>${r.priority||0}</td>
+        <td>${r.master || '—'}</td>
+        <td style="max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+          font-size:11px;color:var(--muted)" title="${r.note||''}">${r.note||''}</td>
+        <td style="display:flex;gap:3px;align-items:center">
+          <button class="btn-sm" onclick="openRuleModal(${i})">Edit</button>
+          <button class="btn-icon" onclick="deleteRuleAt(${i})" title="Delete">${TRASH_SVG}</button>
+        </td>
+      </tr>`;
+    });
+  }
+
+  h += '</tbody></table>';
+  rw.innerHTML = h;
+
+        // <td id="lv-in-${i}">${lvBadge(getRuleInVal(r))}</td>
+        // <td id="lv-out-${i}">${lvBadge(getRuleOutVal(r))}</td>
+
+  // Sync select-all checkbox state
+  const selAll = document.getElementById('sel-all');
+  if (selAll && visIdx.length > 0)
+    selAll.checked = visIdx.every(i => selectedRules.has(i));
+
+  // Sync add-row out-from suggestion (next free channel — expand full range for range rules)
+  const usedOuts = new Set();
+  rules.forEach(r => { for (let i = 0; i < (r.count || 1); i++) usedOuts.add(r.out + i); });
+  let nextFree = 1;
+  while (usedOuts.has(nextFree) && nextFree <= 512) nextFree++;
+  const arFrom = document.getElementById('ar-out-from');
+  const arTo   = document.getElementById('ar-out-to');
+  if (arFrom && !arFrom._touched) arFrom.value = nextFree;
+  if (arTo   && !arTo._touched)   arTo.value   = nextFree;
+  onArRangeChange();
+
+  updateBulkPanel();
+
+  // Update filter status
+  const fltStatus = document.getElementById('filter-status');
+  if (fltStatus) {
+    if (filterFrom || filterTo) {
+      fltStatus.textContent = `Showing ${visIdx.length} of ${rules.length} rules`;
+    } else {
+      fltStatus.textContent = '';
+    }
+  }
+
+  const mw = document.getElementById('masters-tbl-wrap');
+  if (masters.length === 0) {
+    mw.innerHTML = '<div class="rules-empty">No masters defined — add one below.</div>';
+  } else {
+    let mt = `<table class="rules-tbl"><thead><tr>
+      <th>M#</th><th>Src</th><th>Uni</th><th>In</th><th>Parent</th><th></th>
+    </tr></thead><tbody>`;
+    masters.forEach((ms, i) => {
+      const parentDisp = ms.parent ? `<span style="color:var(--accent)">M${ms.parent}</span>` : '<span style="color:var(--muted)">—</span>';
+      mt += `<tr>
+        <td style="font-weight:700;color:var(--accent)">M${ms.idx}</td>
+        <td>${tag(ms.src)}</td>
+        <td>${ms.src === 'WEB' ? '<span style="color:var(--muted)">—</span>' : ms.uni}</td>
+        <td>${ms.in}</td>
+        <td>${parentDisp}</td>
+        <td><button class="btn-icon" onclick="deleteMasterAt(${i})" title="Delete">${TRASH_SVG}</button></td>
+      </tr>`;
+    });
+    mt += '</tbody></table>';
+    mw.innerHTML = mt;
+  }
+}
+
+// ── Modal range helpers ───────────────────────────────────────────────────────
+function onEdRangeChange() {
+  const outFrom = parseInt(document.getElementById('ed-out').value)    || 1;
+  const outTo   = parseInt(document.getElementById('ed-out-to').value) || outFrom;
+  const count   = Math.max(1, outTo - outFrom + 1);
+  const inFrom  = parseInt(document.getElementById('ed-in').value) || 0;
+  const disp    = document.getElementById('ed-in-to-disp');
+  const src     = document.getElementById('ed-src')?.value;
+  if (disp && src !== 'CONST') disp.textContent = `→ ${inFrom + count - 1}`;
+}
+
+// ── Add rules form ────────────────────────────────────────────────────────────
+function stepArOutFrom(d) {
+  const el = document.getElementById('ar-out-from');
+  el.value = Math.max(1, Math.min(512, (parseInt(el.value) || 1) + d));
+  el._touched = true;
+  const arTo = document.getElementById('ar-out-to');
+  if (arTo && !arTo._touched) arTo.value = el.value;
+  onArRangeChange();
+}
+function stepArOutTo(d) {
+  const el = document.getElementById('ar-out-to');
+  el.value = Math.max(1, Math.min(512, (parseInt(el.value) || 1) + d));
+  el._touched = true;
+  onArRangeChange();
+}
+function stepArCount(d) {
+  const el = document.getElementById('ar-count');
+  el.value = Math.max(1, Math.min(512, (parseInt(el.value) || 1) + d));
+  onArCountChange();
+}
+function stepArIn(d) {
+  const el = document.getElementById('ar-in');
+  const mn = parseInt(el.min) || 0;
+  const mx = parseInt(el.max) || 512;
+  el.value = Math.max(mn, Math.min(mx, (parseInt(el.value) || mn) + d));
+}
+function stepArUni(d) {
+  const el = document.getElementById('ar-uni');
+  el.value = Math.max(0, Math.min(15, (parseInt(el.value) || 0) + d));
+}
+function stepArMaster(d) {
+  const el = document.getElementById('ar-master');
+  el.value = Math.max(0, Math.min(16, (parseInt(el.value) || 0) + d));
+}
+function stepArPriority(d) {
+  const el = document.getElementById('ar-priority');
+  el.value = Math.max(0, Math.min(255, (parseInt(el.value) || 0) + d));
+}
+function stepEd(id, mn, mx, d, cb) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.value = Math.max(mn, Math.min(mx, (parseInt(el.value) || mn) + d));
+  if (cb) cb();
+}
+
+function stepBe(id, mn, mx, d, cb) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const cur = parseInt(el.value);
+  el.value = Math.max(mn, Math.min(mx, (Number.isFinite(cur) ? cur : mn) + d));
+  if (cb) cb();
+}
+
+function onArRangeChange() {
+  const from = parseInt(document.getElementById('ar-out-from').value) || 1;
+  const to   = parseInt(document.getElementById('ar-out-to').value)   || from;
+  const cnt  = document.getElementById('ar-count');
+  if (cnt) cnt.value = Math.max(1, to - from + 1);
+}
+function onArCountChange() {
+  const from  = parseInt(document.getElementById('ar-out-from').value) || 1;
+  const count = Math.max(1, parseInt(document.getElementById('ar-count').value) || 1);
+  const arTo  = document.getElementById('ar-out-to');
+  if (arTo) { arTo.value = from + count - 1; arTo._touched = true; }
+}
+
+function onAddSrcChange() {
+  const src     = document.getElementById('ar-src').value;
+  const uniCell = document.getElementById('ar-uni-cell');
+  const inInput = document.getElementById('ar-in');
+  const inLabel = document.getElementById('ar-in-label');
+  uniCell.classList.toggle('dim', src === 'WEB' || src === 'CONST' || src === 'USB');
+  if (src === 'CONST') {
+    inInput.min = 0; inInput.max = 255; inInput.placeholder = 'val';
+    inLabel.textContent = 'Value (0-255)';
+  } else if (src === 'WEB') {
+    inInput.min = 1; inInput.max = 48;  inInput.placeholder = 'fader';
+    inLabel.textContent = 'Fader start';
+  } else {
+    inInput.min = 1; inInput.max = 512; inInput.placeholder = 'ch';
+    inLabel.textContent = src === 'USB' ? 'USB ch start' : 'In ch start';
+  }
+}
+
+function addFromRow() {
+  const outFrom = parseInt(document.getElementById('ar-out-from').value) || 1;
+  const outTo   = parseInt(document.getElementById('ar-out-to').value)   || outFrom;
+  const src     = document.getElementById('ar-src').value;
+  const uni     = parseInt(document.getElementById('ar-uni').value)    || 0;
+  const inStart = parseInt(document.getElementById('ar-in').value)     || (src === 'CONST' ? 0 : 1);
+  const master  = parseInt(document.getElementById('ar-master').value) || 0;
+  const count = Math.abs(outTo - outFrom) + 1;
+
+  const port     = document.getElementById('ar-port').value     || 'A';
+  const merge    = document.getElementById('ar-merge').value    || 'HTP';
+  const priority = parseInt(document.getElementById('ar-priority').value) || 0;
+  const note     = (document.getElementById('ar-note')?.value || '').trim().slice(0, 32);
+
+  // Always 1 range rule: OUT channels auto-increment IN channels (offset by position)
+  const newRules = [{ port, out: outFrom, src, uni, in: inStart, count, merge, priority, master, note }];
+
+  // Duplicate detection — expand all existing rules to their full out-ch range
+  const existingOuts = new Set();
+  cachedRules.forEach(r => { for (let i = 0; i < (r.count||1); i++) existingOuts.add(r.out + i); });
+  const dups = newRules.flatMap(r => {
+    const conflicts = [];
+    for (let i = 0; i < (r.count||1); i++) { if (existingOuts.has(r.out + i)) conflicts.push(r.out + i); }
+    return conflicts;
+  });
+  if (dups.length > 0) {
+    pendingAdds = newRules;
+    const warn = document.getElementById('dup-warn-row');
+    const chList = dups.length <= 8 ? dups.map(r => r.out).join(', ') : `${dups.length} channels`;
+    warn.innerHTML = `<span style="color:#e8a020">⚠ Output channel${dups.length!==1?'s':''} already have rules: ${chList}</span>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="btn-sm" onclick="doAddRules('skip')">Skip existing</button>
+        <button class="btn" onclick="doAddRules('overwrite')">Overwrite</button>
+        <button class="btn-sm" onclick="cancelAdd()">Cancel</button>
+      </div>`;
+    warn.style.display = '';
+    return;
+  }
+  document.getElementById('dup-warn-row').style.display = 'none';
+  const arFrom = document.getElementById('ar-out-from');
+  const arTo2  = document.getElementById('ar-out-to');
+  arFrom._touched = false;
+  if (arTo2) arTo2._touched = false;
+  cachedRules.push(...newRules);
+  pushRules();
+}
+
+function doAddRules(mode) {
+  if (!pendingAdds) return;
+  document.getElementById('dup-warn-row').style.display = 'none';
+  if (mode === 'overwrite') {
+    // Build set of all out channels the new rules claim
+    const claimedOuts = new Set();
+    pendingAdds.forEach(nr => { for (let i = 0; i < (nr.count||1); i++) claimedOuts.add(nr.out + i); });
+    // Remove any existing rule that overlaps
+    cachedRules = cachedRules.filter(r => {
+      for (let i = 0; i < (r.count||1); i++) { if (claimedOuts.has(r.out + i)) return false; }
+      return true;
+    });
+    cachedRules.push(...pendingAdds);
+  } else {
+    // Skip — only add rules whose entire out range is free
+    const existingOuts = new Set();
+    cachedRules.forEach(r => { for (let i = 0; i < (r.count||1); i++) existingOuts.add(r.out + i); });
+    cachedRules.push(...pendingAdds.filter(r => {
+      for (let i = 0; i < (r.count||1); i++) { if (existingOuts.has(r.out + i)) return false; }
+      return true;
+    }));
+  }
+  pendingAdds = null;
+  pushRules();
+}
+
+function cancelAdd() {
+  pendingAdds = null;
+  document.getElementById('dup-warn-row').style.display = 'none';
+}
+
+// ── Masters CRUD ──────────────────────────────────────────────────────────────
+function deleteMasterAt(i) {
+  cachedMasters.splice(i, 1);
+  saveRules();
+}
+
+function onAmSrcChange() {
+  const src = document.getElementById('am-src').value;
+  const uniCell = document.getElementById('am-uni-cell');
+  const inLabel = document.getElementById('am-in-label');
+  uniCell.style.display = (src === 'WEB') ? 'none' : '';
+  if (src === 'WEB') {
+    inLabel.textContent = 'Fader (1-48)';
+    document.getElementById('am-in').max = 48;
+  } else {
+    inLabel.textContent = 'In ch';
+    document.getElementById('am-in').max = 512;
+  }
+}
+
+function stepAm(id, mn, mx, d) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.value = Math.max(mn, Math.min(mx, (parseInt(el.value) || mn) + d));
+}
+
+function addMasterFromRow() {
+  const idx    = parseInt(document.getElementById('am-idx').value) || 1;
+  const src    = document.getElementById('am-src').value;
+  const uni    = parseInt(document.getElementById('am-uni').value) || 0;
+  const inCh   = parseInt(document.getElementById('am-in').value)  || 1;
+  const parent = parseInt(document.getElementById('am-parent').value) || 0;
+
+  if (cachedMasters.find(m => m.idx === idx)) {
+    alert(`Master M${idx} already exists — delete it first or use a different index.`);
+    return;
+  }
+  if (parent !== 0 && parent >= idx) {
+    alert(`Parent (M${parent}) must have a lower index than this master (M${idx}).`);
+    return;
+  }
+
+  cachedMasters.push({ idx, src, uni, in: inCh, parent });
+  cachedMasters.sort((a, b) => a.idx - b.idx);
+  saveRules();
+}
+
+// mark ar-out-from / ar-out-to as user-touched + sync ar-count
+document.addEventListener('DOMContentLoaded', () => {
+  const elF = document.getElementById('ar-out-from');
+  const elT = document.getElementById('ar-out-to');
+  if (elF) elF.addEventListener('input', () => {
+    elF._touched = true;
+    if (elT && !elT._touched) elT.value = elF.value;  // keep count=1 when To untouched
+    onArRangeChange();
+  });
+  if (elT) elT.addEventListener('input', () => { elT._touched = true; onArRangeChange(); });
+});
+
+// ── Filter ────────────────────────────────────────────────────────────────────
+function applyFilter() {
+  filterFrom = parseInt(document.getElementById('flt-from').value) || 0;
+  filterTo   = parseInt(document.getElementById('flt-to').value)   || 0;
+  document.getElementById('btnClearFilter').style.display = (filterFrom || filterTo) ? '' : 'none';
+  selectedRules.clear();
+  renderRules();
+}
+
+function clearFilter() {
+  filterFrom = filterTo = 0;
+  document.getElementById('flt-from').value = '';
+  document.getElementById('flt-to').value   = '';
+  document.getElementById('btnClearFilter').style.display = 'none';
+  document.getElementById('filter-status').textContent    = '';
+  selectedRules.clear();
+  renderRules();
+}
+
+// ── Selection ─────────────────────────────────────────────────────────────────
+function toggleSelectRule(idx) {
+  if (selectedRules.has(idx)) selectedRules.delete(idx);
+  else selectedRules.add(idx);
+  // sync row highlight
+  const row = document.querySelector(`#sel-${idx}`)?.closest('tr');
+  if (row) row.classList.toggle('row-sel', selectedRules.has(idx));
+  // sync select-all checkbox
+  const vis = getVisibleIndices();
+  const selAll = document.getElementById('sel-all');
+  if (selAll) selAll.checked = vis.length > 0 && vis.every(i => selectedRules.has(i));
+  updateBulkPanel();
+}
+
+function toggleSelectAll(chk) {
+  const vis = getVisibleIndices();
+  vis.forEach(i => {
+    if (chk.checked) selectedRules.add(i); else selectedRules.delete(i);
+    const cb = document.getElementById(`sel-${i}`);
+    if (cb) { cb.checked = chk.checked; cb.closest('tr').classList.toggle('row-sel', chk.checked); }
+  });
+  updateBulkPanel();
+}
+
+function clearSelection() {
+  selectedRules.clear();
+  renderRules();
+}
+
+function updateBeInTo() {
+  const outFrom = parseInt(document.getElementById('be-out-from').value) || 0;
+  const outTo   = parseInt(document.getElementById('be-out-to').value)   || 0;
+  const inFrom  = parseInt(document.getElementById('be-in').value)       || 0;
+  const cnt = (outTo >= outFrom && outFrom > 0) ? outTo - outFrom + 1 : null;
+  const el = document.getElementById('be-in-to');
+  if (el) el.textContent = (cnt && inFrom) ? `→ ${inFrom + cnt - 1}` : '—';
+}
+
+function updateBulkPanel() {
+  const n = selectedRules.size;
+  const card = document.getElementById('bulk-edit-card');
+  if (!card) return;
+  card.style.display = n > 0 ? '' : 'none';
+  document.getElementById('bulk-count-label').textContent =
+    `${n} rule${n !== 1 ? 's' : ''} selected — apply changes:`;
+
+  // Pre-fill Out from/to, In from, and Note when exactly 1 rule is selected
+  const beOutFrom = document.getElementById('be-out-from');
+  const beOutTo   = document.getElementById('be-out-to');
+  const beIn      = document.getElementById('be-in');
+  const beNote    = document.getElementById('be-note');
+  if (n === 1) {
+    const r   = cachedRules[[...selectedRules][0]];
+    const cnt = r.count || 1;
+    if (beOutFrom) beOutFrom.value = r.out || 1;
+    if (beOutTo)   beOutTo.value   = (r.out || 1) + cnt - 1;
+    if (beIn)      beIn.value      = r.in  || 1;
+    if (beNote)    beNote.value    = r.note || '';
+  } else {
+    if (beOutFrom) beOutFrom.value = '';
+    if (beOutTo)   beOutTo.value   = '';
+    if (beNote)    beNote.value    = '';
+  }
+  updateBeInTo();
+}
+
+// ── Bulk edit ─────────────────────────────────────────────────────────────────
+function applyBulkEdit() {
+  const newSrc      = document.getElementById('be-src').value;
+  const newUniStr   = document.getElementById('be-uni').value.trim();
+  const newOutFromS = document.getElementById('be-out-from').value.trim();
+  const newOutToS   = document.getElementById('be-out-to').value.trim();
+  const newInStr    = document.getElementById('be-in').value.trim();
+  const newMstStr   = document.getElementById('be-master').value.trim();
+  const newPrioStr  = document.getElementById('be-priority').value.trim();
+
+  const newUni     = newUniStr   !== '' ? parseInt(newUniStr)   : null;
+  const newOutFrom = newOutFromS !== '' ? parseInt(newOutFromS) : null;
+  const newOutTo   = newOutToS   !== '' ? parseInt(newOutToS)   : null;
+  const newIn      = newInStr    !== '' ? parseInt(newInStr)    : null;
+  const newMst     = newMstStr   !== '' ? parseInt(newMstStr)   : null;
+  const newPrio    = newPrioStr  !== '' ? parseInt(newPrioStr)  : null;
+  const newPort    = document.getElementById('be-port').value;
+  const newMerge   = document.getElementById('be-merge').value;
+  const newNote    = (document.getElementById('be-note')?.value || '').trim();
+
+  // New count from Out range (only valid for single-rule edit)
+  const newCount = (newOutFrom !== null && newOutTo !== null && newOutTo >= newOutFrom)
+                   ? newOutTo - newOutFrom + 1 : null;
+  const isSingle = selectedRules.size === 1;
+
+  // Sort by out_ch so In ch auto-increment is predictable across multiple rules
+  const sorted = [...selectedRules].sort((a, b) => cachedRules[a].out - cachedRules[b].out);
+  let cumOffset = 0;
+  sorted.forEach((idx) => {
+    const r = cachedRules[idx];
+    if (newSrc)           r.src      = newSrc;
+    if (newUni  !== null) r.uni      = newUni;
+    if (isSingle && newOutFrom !== null) r.out   = newOutFrom;
+    if (isSingle && newCount   !== null) r.count = newCount;
+    if (newIn   !== null) r.in       = newIn + cumOffset;
+    if (newMst  !== null) r.master   = newMst;
+    if (newPrio !== null) r.priority = newPrio;
+    if (newPort)          r.port     = newPort;
+    if (newMerge)         r.merge    = newMerge;
+    if (newNote)          r.note     = newNote.slice(0, 32);
+    cumOffset += (r.count || 1);
+  });
+  pushRules();
+}
+
+async function deleteRuleAt(idx) {
+  if (idx < 0 || idx >= cachedRules.length) return;
+  cachedRules.splice(idx, 1);
+  await pushRules();
+}
+
+async function deleteSelected() {
+  if (!selectedRules.size) return;
+  const sorted = [...selectedRules].sort((a, b) => b - a);
+  sorted.forEach(idx => cachedRules.splice(idx, 1));
+  selectedRules.clear();
+  await pushRules();
+}
+
+// ── Rule editor modal ─────────────────────────────────────────────────────────
+function onSrcChange() {
+  const src      = document.getElementById('ed-src').value;
+  const uniField = document.getElementById('ed-uni-field');
+  const inField  = document.getElementById('ed-in-field');
+  const inLbl    = document.getElementById('ed-in-lbl');
+  const inInput  = document.getElementById('ed-in');
+  const inToDisp = document.getElementById('ed-in-to-disp');
+  uniField.style.display = (src === 'WEB' || src === 'CONST' || src === 'USB') ? 'none' : '';
+  inField.style.display  = '';
+  if (src === 'CONST') {
+    inLbl.textContent = 'Value (0-255)';
+    inInput.min = 0; inInput.max = 255;
+    if (inToDisp) inToDisp.style.display = 'none';
+  } else if (src === 'WEB') {
+    inLbl.textContent = 'Fader (1-48)';
+    inInput.min = 1; inInput.max = 48;
+    if (inToDisp) inToDisp.style.display = '';
+  } else if (src === 'USB') {
+    inLbl.textContent = 'USB ch start';
+    inInput.min = 1; inInput.max = 512;
+    if (inToDisp) inToDisp.style.display = '';
+  } else {
+    inLbl.textContent = 'In ch start';
+    inInput.min = 1; inInput.max = 512;
+    if (inToDisp) inToDisp.style.display = '';
+  }
+  onEdRangeChange();
+}
+
+function openRuleModal(idx) {
+  editIdx = idx;
+  const isNew = idx === -1;
+  document.getElementById('modalTitle').textContent = isNew ? 'Add Rule' : `Edit Rule #${idx+1}`;
+  document.getElementById('btnDelete').style.display = isNew ? 'none' : '';
+  const r = !isNew ? cachedRules[idx] : {port:'A',out:cachedRules.length+1,src:'DMX',uni:0,in:1,count:1,merge:'HTP',priority:0,master:0};
+  const outFrom = r.out ?? 1;
+  const outTo   = outFrom + (r.count || 1) - 1;
+  document.getElementById('ed-port').value     = r.port     || 'A';
+  document.getElementById('ed-out').value      = outFrom;
+  document.getElementById('ed-out-to').value   = outTo;
+  document.getElementById('ed-src').value      = r.src      ?? 'DMX';
+  document.getElementById('ed-uni').value      = r.uni      ?? 0;
+  document.getElementById('ed-in').value       = r.in ?? 1;  // ?? preserves 0 (CONST value)
+  document.getElementById('ed-merge').value    = r.merge    || 'HTP';
+  document.getElementById('ed-priority').value = r.priority || 0;
+  document.getElementById('ed-master').value   = r.master   ?? 0;
+  document.getElementById('ed-note').value     = r.note     || '';
+  onSrcChange();
+  onEdRangeChange();
+  document.getElementById('ruleModal').classList.add('open');
+}
+
+function closeRuleModal() {
+  document.getElementById('ruleModal').classList.remove('open');
+}
+
+function readModalRule() {
+  const src     = document.getElementById('ed-src').value;
+  const outFrom = parseInt(document.getElementById('ed-out').value)    || 1;
+  const outTo   = parseInt(document.getElementById('ed-out-to').value) || outFrom;
+  const count   = Math.max(1, outTo - outFrom + 1);
+  const inRaw   = parseInt(document.getElementById('ed-in').value);
+  const inFrom  = Number.isFinite(inRaw) ? inRaw : (src === 'CONST' ? 0 : 1);
+  return {
+    port:     document.getElementById('ed-port').value,
+    out:      outFrom,
+    src:      src,
+    uni:      parseInt(document.getElementById('ed-uni').value) || 0,
+    in:       inFrom,
+    count:    count,
+    merge:    document.getElementById('ed-merge').value,
+    priority: parseInt(document.getElementById('ed-priority').value) || 0,
+    master:   parseInt(document.getElementById('ed-master').value) || 0,
+    note:     document.getElementById('ed-note').value.trim().slice(0, 32),
+  };
+}
+
+async function saveRule() {
+  const rule = readModalRule();
+  if (editIdx === -1) {
+    cachedRules.push(rule);
+  } else {
+    cachedRules[editIdx] = rule;
+  }
+  await pushRules();
+  closeRuleModal();
+}
+
+async function deleteRule() {
+  if (editIdx < 0 || editIdx >= cachedRules.length) return;
+  cachedRules.splice(editIdx, 1);
+  await pushRules();
+  closeRuleModal();
+}
+
+async function pushRules() {
+  try {
+    const body = { rules: cachedRules, masters: cachedMasters };
+    const r = await fetch('/api/rules', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    const j = await r.json();
+    if (j.ok) {
+      // Refresh from server to confirm
+      await fetchRules();
+    } else {
+      alert('Save failed: ' + (j.error || 'unknown'));
+    }
+  } catch(e) {
+    alert('Network error saving rules');
+  }
+}
+
+// Close modal on backdrop click
+document.getElementById('ruleModal').addEventListener('click', function(e) {
+  if (e.target === this) closeRuleModal();
+});
+
+// ── Status polling ────────────────────────────────────────────────────────────
+let apiOk = false;
+async function fetchStatus() {
+  const needed = (statusPage + 1) * statusCols;
+  try {
+    const r = await fetch(`/api/status?ch=${needed}`);
+    const j = await r.json();
+    lastStatus = j;
+
+    if (!apiOk) { apiOk = true; document.getElementById('statusDot').classList.add('online'); }
+
+    // Sync fader/master UI from server on first contact
+    if (!faderValuesInited) {
+      faderValuesInited = true;
+      (j.faders || []).forEach((v, i) => {
+        if (i >= NUM_FADERS) return;
+        faderValues[i] = v;
+        const el = document.getElementById(`f${i}`); if (el) el.value = v;
+        const vEl = document.getElementById(`fv${i}`); if (vEl) vEl.textContent = v;
+      });
+      (j.masters || []).forEach((v, i) => {
+        if (i >= MAX_MASTERS) return;
+        masterValues[i] = v;
+        const el = document.getElementById(`m${i}`); if (el) el.value = v;
+        const vEl = document.getElementById(`mv${i}`); if (vEl) vEl.textContent = v;
+      });
+    }
+
+    const sRules = document.getElementById('s-rules');
+    const sMasters = document.getElementById('s-masters');
+    const sShow = document.getElementById('s-show');
+    if (sRules) sRules.textContent = j.rules ?? '—';
+    if (sMasters) sMasters.textContent = (j.masters || []).slice(0, numMasters).join(' ');
+    if (j.show) {
+      const shortName = (j.show || '').replace(/^\//, '') || '—';
+      document.getElementById('showSub').textContent = shortName + (j.desc ? ' — ' + j.desc : '');
+      if (sShow) sShow.textContent = shortName;
+    }
+
+    const start = statusPage * statusCols;
+
+    // VF — virtual faders (paginated, same page as other sources)
+    for (let c = 0; c < statusCols; c++) {
+      const v = (j.faders || [])[start + c] ?? 0;
+      const bar = document.getElementById(`bar-vf-${c}`); if (bar) bar.style.width = (v/255*100)+'%';
+      const bv  = document.getElementById(`bval-vf-${c}`); if (bv) bv.textContent = v;
+      const sl  = document.getElementById(`dslider-vf-${c}`); if (sl) sl.value = v;
+      const dv  = document.getElementById(`dval-vf-${c}`); if (dv) dv.textContent = v;
+    }
+
+    // MF — master faders (all, not paginated)
+    (j.masters || []).forEach((v, i) => {
+      const bar = document.getElementById(`bar-mf-${i}`); if (bar) bar.style.width = (v/255*100)+'%';
+      const bv  = document.getElementById(`bval-mf-${i}`); if (bv) bv.textContent = v;
+      const sl  = document.getElementById(`dslider-mf-${i}`); if (sl) sl.value = v;
+      const dv  = document.getElementById(`dval-mf-${i}`); if (dv) dv.textContent = v;
+    });
+
+    // DMX IN (indices 0,1)
+    (j.in || []).forEach((uni, u) => {
+      for (let c = 0; c < statusCols; c++) {
+        const v = uni[start + c] ?? 0;
+        setBar(u, c, v); setSlider(u, c, v);
+      }
+    });
+
+    // ArtNet (indices 2..2+NUM_ART_UNI-1)
+    (j.artnet || []).forEach((uni, a) => {
+      const uIdx = 2 + a;
+      for (let c = 0; c < statusCols; c++) {
+        const v = uni[start + c] ?? 0;
+        setBar(uIdx, c, v); setSlider(uIdx, c, v);
+      }
+    });
+
+    // USB DMX IN
+    if (j.usb) {
+      for (let c = 0; c < statusCols; c++) {
+        const v = j.usb[start + c] ?? 0;
+        setBar('usb', c, v); setSlider('usb', c, v);
+      }
+    }
+
+    // PORT A–D
+    ['a','b','c','d'].forEach((p, i) => {
+      const portData = j.out_ports?.[i] || (i === 0 ? j.out : []) || [];
+      for (let c = 0; c < statusCols; c++) {
+        const v = portData[start + c] ?? 0;
+        setBar(`port${p}`, c, v); setSlider(`port${p}`, c, v);
+      }
+    });
+
+    // Sync master sliders on faders tab
+    (j.masters || []).slice(0, numMasters).forEach((v, i) => {
+      const el = document.getElementById(`m${i}`);
+      if (el && document.activeElement !== el) {
+        el.value = v;
+        const mv = document.getElementById(`mv${i}`); if (mv) mv.textContent = v;
+      }
+    });
+
+    // Update USB DMX connection dot (config tab)
+    if (j.usb_connected !== undefined) {
+      updateUsbDmxUI({ enabled: _usbDmxEnabled, compiled: _usbDmxCompiled, connected: j.usb_connected });
+    }
+
+    // Update live values in rules table if visible
+    if (document.getElementById('tab-show').classList.contains('active')) {
+      updateRuleLiveValues();
+    }
+
+  } catch(e) {
+    if (apiOk) { apiOk = false; document.getElementById('statusDot').classList.remove('online'); }
+  }
+}
+
+function setBar(uIdx, c, v) {
+  const bar = document.getElementById(`bar-${uIdx}-${c}`);
+  if (bar) bar.style.width = (v / 255 * 100) + '%';
+  const bv = document.getElementById(`bval-${uIdx}-${c}`);
+  if (bv) bv.textContent = v;
+}
+function setSlider(uIdx, c, v) {
+  const sl = document.getElementById(`dslider-${uIdx}-${c}`);
+  if (sl) sl.value = v;
+  const dv = document.getElementById(`dval-${uIdx}-${c}`);
+  if (dv) dv.textContent = v;
+}
+
+function updateRuleLiveValues() {
+  cachedRules.forEach((r, i) => {
+    const inEl  = document.getElementById(`lv-in-${i}`);
+    const outEl = document.getElementById(`lv-out-${i}`);
+    if (inEl)  inEl.innerHTML  = lvBadge(getRuleInVal(r));
+    if (outEl) outEl.innerHTML = lvBadge(getRuleOutVal(r));
+  });
+}
+
+// ── Config tab ────────────────────────────────────────────────────────────────
+
+function updateArtnetOutBtn() {
+  const btn = document.getElementById('artoutToggle');
+  if (!btn) return;
+  btn.textContent = artoutEnabled ? 'ON' : 'OFF';
+  btn.classList.toggle('on', artoutEnabled);
+}
+
+function cfgToggleArtnetOut() { artoutEnabled = !artoutEnabled; updateArtnetOutBtn(); savePortsDebounced(); }
+
+// ── Bulk edit source change ───────────────────────────────────────────────────
+function onBeSrcChange() {
+  const src   = document.getElementById('be-src').value;
+  const beIn  = document.getElementById('be-in');
+  const beInLbl = document.getElementById('be-in-lbl');
+  if (!beIn) return;
+  if (src === 'CONST') {
+    beIn.min = 0; beIn.placeholder = 'val';
+    if (beInLbl) beInLbl.textContent = 'Value (0-255)';
+  } else {
+    beIn.min = 1; beIn.placeholder = '—';
+    if (beInLbl) beInLbl.textContent = 'In ch start';
+  }
+}
+
+// ── Port conflict warnings ─────────────────────────────────────────────────────
+function checkArtnetDups() {
+  const warn = document.getElementById('artnet-dup-warn');
+  if (!warn) return;
+  const seen = {};
+  g_ports.forEach((p, pi) => {
+    if (!p.active) return;
+    (p.dests || []).forEach(d => {
+      if (d.type === 'ARTNET') {
+        const u = d.universe ?? 0;
+        if (!seen[u]) seen[u] = [];
+        seen[u].push(p.name || String.fromCharCode(65 + pi));
+      }
+    });
+  });
+  const dups = Object.entries(seen).filter(([, ports]) => ports.length > 1);
+  if (!dups.length) { warn.style.display = 'none'; return; }
+  warn.style.display = '';
+  warn.textContent = '⚠ ArtNet — même univers sur plusieurs ports : '
+    + dups.map(([u, ports]) => `u${u} → ${ports.join(' & ')}`).join('  |  ');
+}
+
+function checkUartDups() {
+  const warn = document.getElementById('uart-dup-warn');
+  if (!warn) return;
+  const seen = {};
+  g_ports.forEach((p, pi) => {
+    if (!p.active) return;
+    (p.dests || []).forEach(d => {
+      if (d.type === 'UART') {
+        const idx = d.index ?? 0;
+        if (!seen[idx]) seen[idx] = [];
+        seen[idx].push(p.name || String.fromCharCode(65 + pi));
+      }
+    });
+  });
+  const dups = Object.entries(seen).filter(([, ports]) => ports.length > 1);
+  if (!dups.length) { warn.style.display = 'none'; return; }
+  warn.style.display = '';
+  warn.textContent = '⚠ DMX IO — même sortie physique sur plusieurs ports : '
+    + dups.map(([idx, ports]) => `IO${idx} → ${ports.join(' & ')}`).join('  |  ');
+}
+
+// ── Ports auto-save ───────────────────────────────────────────────────────────
+let _savePortsTimer = null;
+function savePortsDebounced() {
+  const el = document.getElementById('portSaveStatus');
+  if (el) el.textContent = '…';
+  clearTimeout(_savePortsTimer);
+  _savePortsTimer = setTimeout(async () => {
+    try {
+      const payload = { ports: g_ports, artnet_out: { enabled: artoutEnabled } };
+      const r = await fetch('/api/ports', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload)});
+      const j = await r.json();
+      checkArtnetDups(); checkUartDups();
+      if (el) { el.textContent = j.ok ? '✓ saved' : '✗ error'; setTimeout(()=>{ if(el) el.textContent=''; }, 2000); }
+    } catch(e) { if (el) { el.textContent = '✗ error'; setTimeout(()=>{ if(el) el.textContent=''; }, 2000); } }
+  }, 600);
+}
+
+async function loadPorts() {
+  try {
+    const r = await fetch('/api/ports', {cache:'no-store'});
+    const j = await r.json();
+    g_ports = (j.ports||[]).map(p=>({name:p.name,active:!!p.active,dests:(p.dests||[]).map(d=>({...d}))}));
+    renderPorts();
+    if (j.artnet_out) {
+      artoutEnabled = j.artnet_out.enabled ?? false;
+      updateArtnetOutBtn();
+    }
+  } catch(e) {}
+}
+
+function renderPorts() {
+  const list = document.getElementById('portsList');
+  if (!list) return;
+  list.innerHTML = '';
+  checkArtnetDups(); checkUartDups();
+  g_ports.forEach((port, pi) => {
+    const wrap = document.createElement('div'); wrap.className = 'port-card';
+    wrap.innerHTML = `<div class="port-header">
+      <span class="port-name">Port ${port.name}</span>
+      <button class="toggle-btn ${port.active?'on':''}" onclick="togglePort(${pi})">${port.active?'ON':'OFF'}</button>
+    </div>
+    <div class="dest-list" id="dests-${pi}"></div>
+    <button class="icon-btn add-dest" onclick="addDest(${pi})">+ Add dest</button>`;
+    list.appendChild(wrap);
+    renderDests(pi);
+  });
+}
+
+function renderDests(pi) {
+  const port = g_ports[pi], dl = document.getElementById('dests-'+pi);
+  if (!dl) return;
+  dl.innerHTML = '';
+  port.dests.forEach((dest, di) => {
+    const row = document.createElement('div'); row.className = 'dest-row';
+    const typeOpts = [['UART','DMX IO'],['ARTNET','ArtNet']]
+      .map(([v,l])=>`<option value="${v}"${dest.type===v?' selected':''}>${l}</option>`).join('');
+    const uniVal = dest.type==='UART' ? (dest.index??0) : (dest.universe??0);
+    const uniMax = dest.type==='UART' ? 2 : 32767;
+    const uniCb  = dest.type==='UART'
+      ? `oninput="g_ports[${pi}].dests[${di}].index=+this.value;savePortsDebounced()"`
+      : `oninput="g_ports[${pi}].dests[${di}].universe=+this.value;savePortsDebounced()"`;
+    row.innerHTML = `
+      <select class="port-type" onchange="changeDest(${pi},${di},this.value)">
+        ${typeOpts}
+      </select>
+
+      <div class="universe-box">
+        <button class="step-btn" onclick="stepUni(${pi},${di},-1)">−</button>
+
+        <div class="uni-center">
+          <input type="number"
+                min="0"
+                max="${uniMax}"
+                value="${uniVal}"
+                ${uniCb}>
+        </div>
+
+        <button class="step-btn" onclick="stepUni(${pi},${di},1)">+</button>
+      </div>
+
+      <button class="icon-btn del-dest" onclick="removeDest(${pi},${di})">✕</button>
+    `;
+
+    dl.appendChild(row);
+  });
+}
+
+function stepUni(pi, di, delta){
+  const dest = g_ports[pi].dests[di];
+
+  if(dest.type === 'UART'){
+    dest.index = Math.max(0, Math.min(2, (dest.index ?? 0) + delta));
+  } else {
+    dest.universe = Math.max(0, Math.min(32767, (dest.universe ?? 0) + delta));
+  }
+
+  savePortsDebounced();
+  renderDests(pi);
+}
+
+function togglePort(pi)  { g_ports[pi].active = !g_ports[pi].active; renderPorts(); savePortsDebounced(); }
+function addDest(pi)     { if (g_ports[pi].dests.length >= 4) return; g_ports[pi].dests.push({type:'UART',index:0}); renderDests(pi); savePortsDebounced(); }
+function removeDest(pi, di) { g_ports[pi].dests.splice(di,1); renderDests(pi); savePortsDebounced(); }
+function changeDest(pi, di, newType) {
+  const d = g_ports[pi].dests[di]; d.type = newType;
+  if (newType==='UART') { d.index=0; delete d.universe; } else { d.universe=0; delete d.index; }
+  renderDests(pi); savePortsDebounced();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // WiFi
+  const scanBtn = document.getElementById('scanBtn');
+  const ssidSelect = document.getElementById('ssidSelect');
+  if (scanBtn) scanBtn.addEventListener('click', async () => {
+    scanBtn.classList.add('spinning');
+    const icon = document.getElementById('scanIcon'); if(icon) icon.classList.add('go');
+    ssidSelect.classList.remove('visible');
+    try {
+      const r = await fetch('/api/wifi/scan',{cache:'no-store'}); if(!r.ok) throw new Error();
+      const data = await r.json();
+      const nets = (data.networks||[]).sort((a,b)=>b.rssi-a.rssi);
+      ssidSelect.innerHTML = '<option value="">— pick a network —</option>';
+      nets.forEach(n=>{const o=document.createElement('option');o.value=n.ssid;
+        o.textContent=(n.open?'🔓':'🔒')+' '+n.ssid+'  '+(n.rssi>-60?'████':n.rssi>-75?'███':'██')+' '+n.rssi+' dBm';
+        ssidSelect.appendChild(o);});
+      if(nets.length) ssidSelect.classList.add('visible');
+    } catch(e) { showSaveMsg('✗ scan failed'); }
+    finally { scanBtn.classList.remove('spinning'); if(icon){icon.classList.remove('go');icon.textContent='📶';} }
+  });
+  if (ssidSelect) ssidSelect.addEventListener('change', ()=>{ if(ssidSelect.value) document.getElementById('wifiSsid').value=ssidSelect.value; });
+  const pwdEye = document.getElementById('pwdEye');
+  if (pwdEye) pwdEye.addEventListener('click',()=>{const el=document.getElementById('wifiPwd');el.type=el.type==='password'?'text':'password';});
+  const saveWifiBtn = document.getElementById('saveWifiBtn');
+  if (saveWifiBtn) saveWifiBtn.addEventListener('click', async () => {
+    const ssid = document.getElementById('wifiSsid').value.trim();
+    if(!ssid){showSaveMsg('✗ SSID required');return;}
+    if(!confirm('Save WiFi credentials and reboot?\n\nSSID: '+ssid))return;
+    try{await fetch('/api/wifi',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ssid,password:document.getElementById('wifiPwd').value})});}catch{}
+    showSaveMsg('📶 Saved — rebooting…');
+  });
+
+  // Network
+  const IP_HINTS = {'0':'DHCP — address assigned by router','1':'Static — fixed IP address'};
+  function getSubnet(){
+    return (parseInt(document.getElementById('ipBaseA').value)||192)+'.'+(parseInt(document.getElementById('ipBaseB').value)||168)+'.'+(parseInt(document.getElementById('ipBaseC').value)||0);
+  }
+  function updateIpPreview(){
+    const subnet=getSubnet(), last=parseInt(document.getElementById('fixedIp').value)||50;
+    const pfx = subnet+'.';
+    const pEl=document.getElementById('fixedIpPrefix'); if(pEl)pEl.textContent=pfx;
+    const gEl=document.getElementById('gwPrefix'); if(gEl)gEl.textContent=pfx;
+    const prev=document.getElementById('ipPreview');
+    if(prev){if(last<1||last>254){prev.textContent='⚠ invalid';prev.classList.add('overflow');}
+    else{prev.textContent=subnet+'.'+last;prev.classList.remove('overflow');}}
+  }
+  function applyIpMode(){
+    const mode=document.getElementById('ipMode').value, show=mode==='1'?'':'none';
+    ['subnetRow','gatewayRow','fixedIpRow'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display=show;});
+    const hint=document.getElementById('ipModeHint'); if(hint)hint.textContent=IP_HINTS[mode]||'';
+    updateIpPreview();
+  }
+  const ipModeEl = document.getElementById('ipMode');
+  if(ipModeEl) ipModeEl.addEventListener('change', applyIpMode);
+  ['fixedIp','ipBaseA','ipBaseB','ipBaseC'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',updateIpPreview);});
+  const saveNetBtn = document.getElementById('saveNetBtn');
+  if(saveNetBtn) saveNetBtn.addEventListener('click', async ()=>{
+    const payload={ip_mode:parseInt(document.getElementById('ipMode').value),
+      fixed_ip:parseInt(document.getElementById('fixedIp').value)||50,
+      ip_base_a:parseInt(document.getElementById('ipBaseA').value)||192,
+      ip_base_b:parseInt(document.getElementById('ipBaseB').value)||168,
+      ip_base_c:parseInt(document.getElementById('ipBaseC').value)||0,
+      ip_gateway_last:parseInt(document.getElementById('ipGwLast').value)||1};
+    try{const r=await fetch('/api/config?save=1',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      if(!r.ok)throw new Error();
+      showSaveMsg('✓ network saved');
+      if(confirm('Reboot now to apply changes?')){fetch('/reboot').catch(()=>{});showSaveMsg('🔄 Rebooting…');}
+    }catch{showSaveMsg('✗ save error');}
+  });
+
+  // OTA
+  function setupUpload({fileInputId,labelId,fileNameId,btnId,progressWrapId,barId,msgId,endpoint,requirePattern,rejectMsg}){
+    const fi=document.getElementById(fileInputId),lbl=document.getElementById(labelId),
+      fn=document.getElementById(fileNameId),btn=document.getElementById(btnId),
+      wrap=document.getElementById(progressWrapId),bar=document.getElementById(barId),
+      msg=document.getElementById(msgId);
+    if(!fi)return;
+    fi.addEventListener('change',()=>{
+      const f=fi.files[0]; if(!f)return;
+      if(requirePattern&&!requirePattern.test(f.name)){fn.textContent='⚠ '+f.name;lbl.classList.remove('has-file');btn.disabled=true;
+        wrap.classList.add('show');bar.className='progress-bar err';bar.style.width='100%';msg.textContent='✗ '+rejectMsg;fi.value='';return;}
+      bar.className='progress-bar';wrap.classList.remove('show');msg.textContent='';
+      fn.textContent=f.name+' ('+(f.size/1024).toFixed(0)+' kB)';lbl.classList.add('has-file');btn.disabled=false;
+    });
+    btn.addEventListener('click',()=>{
+      const f=fi.files[0]; if(!f)return;
+      const fd=new FormData(); fd.append('update',f);
+      const xhr=new XMLHttpRequest();
+      xhr.upload.addEventListener('progress',e=>{if(!e.lengthComputable)return;
+        const pct=Math.round(e.loaded/e.total*100);wrap.classList.add('show');bar.style.width=pct+'%';msg.textContent='Uploading… '+pct+'%';});
+      xhr.addEventListener('load',()=>{if(xhr.status===200){bar.className='progress-bar done';bar.style.width='100%';msg.textContent='✓ Done — rebooting…';btn.disabled=true;}
+        else{bar.className='progress-bar err';msg.textContent='✗ HTTP '+xhr.status;}});
+      xhr.addEventListener('error',()=>{bar.className='progress-bar err';msg.textContent='✗ Connection lost';});
+      bar.className='progress-bar';bar.style.width='0%';msg.textContent='Starting…';wrap.classList.add('show');btn.disabled=true;
+      xhr.open('POST',endpoint);xhr.send(fd);
+    });
+  }
+  setupUpload({fileInputId:'fwFile',labelId:'fwLabel',fileNameId:'fwName',btnId:'fwUploadBtn',progressWrapId:'fwProgress',barId:'fwBar',msgId:'fwMsg',endpoint:'/update',requirePattern:/firmware/i,rejectMsg:'firmware.bin expected'});
+  setupUpload({fileInputId:'fsFile',labelId:'fsLabel',fileNameId:'fsName',btnId:'fsUploadBtn',progressWrapId:'fsProgress',barId:'fsBar',msgId:'fsMsg',endpoint:'/update_fs',requirePattern:/littlefs/i,rejectMsg:'littlefs.bin expected'});
+
+  const rebootBtn = document.getElementById('rebootBtn');
+  if(rebootBtn) rebootBtn.addEventListener('click',()=>{
+    if(!confirm('Reboot DMXTools?'))return;
+    fetch('/reboot').catch(()=>{}); showSaveMsg('🔄 Rebooting…');
+  });
+});
+
+async function pollConfig() {
+  try {
+    const r = await fetch('/api/wifi',{cache:'no-store'});
+    const w = await r.json();
+    const ssidEl = document.getElementById('currentSsid'); if(ssidEl) ssidEl.textContent = w.ssid||'—';
+    const badge = document.getElementById('wifiBadge');
+    if(badge){badge.innerHTML='<span class="badge-dot"></span>'+(w.ap_mode?'Captive portal':'Connected');
+      badge.className='wifi-badge '+(w.ap_mode?'warn':'ok');}
+    const ethEl = document.getElementById('currentEthIp'); if(ethEl&&w.eth_ip) ethEl.textContent=w.eth_ip;
+  } catch(e) {}
+}
+
+// ── Clear all rules ───────────────────────────────────────────────────────────
+function confirmClearRules() {
+  document.getElementById('clearConfirmRow').style.display = 'flex';
+}
+
+async function doClearRules() {
+  document.getElementById('clearConfirmRow').style.display = 'none';
+  cachedRules   = [];
+  cachedMasters = [];
+  selectedRules.clear();
+  await pushRules();
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+// Restore pill states from localStorage
+document.querySelectorAll('#faderColBtns .pill').forEach(b =>
+  b.classList.toggle('active', parseInt(b.textContent) === faderCols));
+document.querySelectorAll('#faderRowBtns .pill').forEach(b =>
+  b.classList.toggle('active', parseInt(b.textContent) === faderRows));
+document.querySelectorAll('#masterCountBtns .pill').forEach(b =>
+  b.classList.toggle('active', parseInt(b.textContent) === numMasters));
+document.querySelectorAll('#presetRowBtns .pill').forEach(b => {
+  const v = b.textContent === 'Off' ? 0 : parseInt(b.textContent);
+  b.classList.toggle('active', v === presetRows);
+});
+document.querySelectorAll('#presetColBtns .pill').forEach(b =>
+  b.classList.toggle('active', parseInt(b.textContent) === presetCols));
+document.querySelectorAll('#fnModeBtns .pill').forEach(b =>
+  b.classList.toggle('active', b.textContent.toLowerCase() === faderFnMode));
+const _recMap = { all:'All', allfaders:'All Faders', sel:'Selection', dyn:'Dynamic' };
+document.querySelectorAll('#recModeBtns .pill').forEach(b =>
+  b.classList.toggle('active', b.textContent === _recMap[presetRecMode]));
+if (presetRecMode === 'sel' || presetRecMode === 'dyn') {
+  document.getElementById('btnSelectAllFaders').style.display  = '';
+  document.getElementById('btnDeselectAllFaders').style.display = '';
+}
+
+buildFaders();
+setFaderSize(faderSize);
+setMasterSize(masterSize);
+applyVisibility();
+initColorGrid();
+fetchShows();
+fetchPresets();
+fetchFaderPresets();
+fetchRules();
+fetchStatus();
+setInterval(fetchStatus, 1000);
+</script>
+</body>
+</html>
