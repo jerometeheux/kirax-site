@@ -70,13 +70,13 @@
                     <button class="pill"        onclick="setFnMode('sel')">Sel</button>
                     <span style="display:inline-block;width:16px"></span>
                     
-                    <button class="pill" id="btnSelectAllFaders" onclick="selectAllFaders()" title="Select all faders" style="display:none">
+                    <button class="pill" id="btnSelectAllFaders" onclick="selectAllFaders()" title="Select all faders">
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="vertical-align:middle">
                         <rect x="2.5" y="6" width="11" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3" />
                         <path d="M5 9l2 2 4-4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
                       </svg>
                     </button>
-                    <button class="pill" id="btnDeselectAllFaders" onclick="selectNoFaders()" title="Unselect all faders" style="display:none">
+                    <button class="pill" id="btnDeselectAllFaders" onclick="selectNoFaders()" title="Unselect all faders">
                       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="vertical-align:middle">
                         <rect x="2.5" y="6" width="11" height="7" rx="1.5" stroke="currentColor" stroke-width="1.3" />
                         <path d="M5.5 10.5l5-5M5.5 5.5l5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
@@ -147,6 +147,14 @@
                 <button class="pill"        onclick="setPresetCols(16)">16</button>
               </div>
             </div>
+            <span style="display:inline-block;width:16px"></span>
+            <div class="ctrl-group">
+              <div class="ctrl-group-label">Position</div>
+              <div class="pill-group" id="presetPosBtns">
+                <button class="pill active" data-pos="top"    onclick="setPresetPos('top')">↑</button>
+                <button class="pill"        data-pos="bottom" onclick="setPresetPos('bottom')">↓</button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -157,6 +165,7 @@
             <div class="ctrl-group">
               <div class="ctrl-group-label">Rows</div>
               <div class="pill-group" id="faderRowBtns">
+                <button class="pill"        onclick="setFaderRows(0)">Off</button>
                 <button class="pill active" onclick="setFaderRows(1)">1</button>
                 <button class="pill"        onclick="setFaderRows(2)">2</button>
                 <button class="pill"        onclick="setFaderRows(3)">3</button>
@@ -191,6 +200,7 @@
             <div class="ctrl-group">
               <div class="ctrl-group-label">Count</div>
               <div class="pill-group" id="masterCountBtns">
+                <button class="pill"        onclick="setNumMasters(0)">Off</button>
                 <button class="pill active" onclick="setNumMasters(1)">1</button>
                 <button class="pill"        onclick="setNumMasters(2)">2</button>
                 <button class="pill"        onclick="setNumMasters(4)">4</button>
@@ -207,39 +217,57 @@
                 <button class="pill" data-sz="l" onclick="setMasterSize('l')">L</button>
               </div>
             </div>
+            <span style="display:inline-block;width:16px"></span>
+            <div class="ctrl-group">
+              <div class="ctrl-group-label">Position</div>
+              <div class="pill-group" id="masterPosBtns">
+                <button class="pill"        data-pos="top"    onclick="setMasterPos('top')">↑</button>
+                <button class="pill"        data-pos="left"   onclick="setMasterPos('left')">←</button>
+                <button class="pill active" data-pos="right"  onclick="setMasterPos('right')">→</button>
+                <button class="pill"        data-pos="bottom" onclick="setMasterPos('bottom')">↓</button>
+              </div>
+            </div>
           </div>
         </div>
 
       </div>
     </div>
 
-    <!-- ── Show + Rules ── -->
-    <div class="panel" id="tab-show">
+    <!-- ── DISK ── -->
+    <div class="panel" id="tab-disk">
 
+      <!-- SAVE TO SD -->
+      <div class="section-label">Save to SD</div>
       <div class="card">
-
-        <!-- Show actif -->
-        <div class="card-row">
-          <div style="flex:1;min-width:0">
-            <div class="row-label" id="showActiveRow">—</div>
-            <div class="row-sub" id="showDescRow"></div>
-          </div>
-        </div>
-
-        <!-- Load depuis SD -->
         <div class="card-row" style="gap:8px;flex-wrap:wrap">
-          <span class="show-lbl">Load</span>
-          <select id="showSel" style="flex:1;min-width:100px;padding:6px 10px;font-size:13px;
-            background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);
-            color:var(--text);-webkit-appearance:none;appearance:none;outline:none"></select>
-          <button class="btn" onclick="loadShow()" style="flex-shrink:0">Load</button>
-          <button class="icon-btn" onclick="downloadShow()" title="Download this CSV">
+          <span class="show-lbl">Name</span>
+          <input type="text" id="jsonSaveName" placeholder="show_name" autocomplete="off" spellcheck="false"
+            style="flex:1;min-width:100px;padding:6px 10px;font-size:13px;
+              background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);
+              color:var(--text);outline:none">
+          <input type="text" id="jsonSaveDesc" placeholder="Description…" autocomplete="off"
+            style="flex:2;min-width:120px;padding:6px 10px;font-size:13px;
+              background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);
+              color:var(--text);outline:none">
+          <button class="btn" id="btnJsonSave" style="flex-shrink:0" onclick="saveJsonShow()">Save</button>
+        </div>
+      </div>
+
+      <!-- LOAD FROM SD -->
+      <div class="section-label">Load from SD</div>
+      <div class="card" style="padding-bottom:4px">
+        <div id="jsonFileList" class="json-file-list" style="margin:8px 4px 4px">
+          <div style="font-size:12px;color:var(--muted);padding:8px 12px;font-style:italic">No files on SD card</div>
+        </div>
+        <div class="card-row" style="gap:8px;padding-top:8px;border-top:1px solid var(--border)">
+          <button class="btn" onclick="loadJsonShow()" style="flex-shrink:0">Load</button>
+          <button class="icon-btn" onclick="downloadJson()" title="Download to PC">
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"
               stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px">
               <path d="M8 2v8M5 7l3 3 3-3"/><path d="M2 12h12"/>
             </svg>
           </button>
-          <button class="icon-btn" id="btnDeleteFile" onclick="confirmDelete()"
+          <button class="icon-btn" onclick="confirmDeleteJson()"
             title="Delete this file" style="color:#f07070;border-color:rgba(220,60,60,.25)">
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"
               stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px">
@@ -247,80 +275,51 @@
             </svg>
           </button>
         </div>
-        <div id="show-preview" style="display:none;font-size:11px;color:var(--accent);
-          padding:4px 2px;margin-top:-4px;font-style:italic"></div>
-        <!-- PC : upload + download all -->
-        <div class="card-row" style="gap:8px">
-          <span class="show-lbl">PC</span>
-          <input type="file" id="uploadInput" accept=".csv" style="display:none"
-            onchange="onPickFile(event)">
-          <div class="upload-zone" id="uploadZone"
-            style="flex:1;margin:0;padding:8px 12px;flex-direction:row;gap:8px;min-height:0;text-align:left"
-            onclick="document.getElementById('uploadInput').click()"
-            ondragover="onDragOver(event)" ondragleave="onDragLeave(event)"
-            ondrop="onDropFile(event)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
-              stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="17 8 12 3 7 8"/>
-              <line x1="12" y1="3" x2="12" y2="15"/>
-            </svg>
-            <span style="font-size:13px">Drop .csv here, or click to upload</span>
-            <span id="uploadProgress" class="upload-progress" style="font-size:12px"></span>
-          </div>
-          <button class="icon-btn" id="btnDownloadAll" onclick="downloadAllShows()"
-            title="Download all .csv files from SD">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"
-              stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px">
-              <path d="M2 3h12M8 6v8M5 11l3 3 3-3"/>
-            </svg>
-          </button>
+        <!-- Import section filter checkboxes -->
+        <div class="card-row" style="flex-wrap:wrap;gap:12px;padding-top:10px;padding-bottom:10px">
+          <span style="font-size:12px;color:var(--muted);flex-basis:100%">Import sections:</span>
+          <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer">
+            <input type="checkbox" id="jcb-rules"   checked> Rules</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer">
+            <input type="checkbox" id="jcb-faders"  checked> Faders</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer">
+            <input type="checkbox" id="jcb-masters" checked> Masters</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer">
+            <input type="checkbox" id="jcb-ports"   checked> Ports</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer">
+            <input type="checkbox" id="jcb-presets" checked> Presets</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer">
+            <input type="checkbox" id="jcb-meta"    checked> Labels/Colors</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:13px;cursor:pointer">
+            <input type="checkbox" id="jcb-layout"  checked> Layout</label>
         </div>
-
-        <!-- Confirmation suppression (cachée) -->
-        <div class="card-row" id="deleteConfirmRow"
-          style="display:none;background:rgba(220,60,60,0.08)">
-          <span style="font-size:13px;color:#f07070">Delete <strong id="deleteFileName"></strong> ?</span>
-          <div style="display:flex;gap:8px">
-            <button class="btn-sm" onclick="cancelDelete()">Cancel</button>
-            <button class="btn-danger" onclick="doDeleteFile()">Yes, delete</button>
-          </div>
-        </div>
-
-        <!-- Save vers SD -->
-        <div class="card-row" style="gap:8px;flex-wrap:wrap">
-          <span class="show-lbl">Save</span>
-          <input type="text" id="saveFilename" placeholder="myshow.csv"
-            style="flex:1;min-width:90px;background:var(--surface2);border:1px solid var(--border);
-              border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:13px;
-              padding:6px 10px;outline:none;transition:border-color .2s"
-            onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''">
-          <input type="text" id="saveDesc" placeholder="Description (optional)"
-            style="flex:2;min-width:120px;background:var(--surface2);border:1px solid var(--border);
-              border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:13px;
-              padding:6px 10px;outline:none;transition:border-color .2s"
-            onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''">
-          <button class="btn" onclick="saveShow()" style="flex-shrink:0">Save to SD</button>
-          <button class="icon-btn" onclick="exportCurrentRules()" title="Export CSV (no SD required)">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"
-              stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px">
-              <path d="M8 2v8M5 7l3 3 3-3"/><path d="M2 12h12"/>
-            </svg>
-          </button>
-          <span id="saveMsg" style="font-size:12px;color:var(--muted)"></span>
-        </div>
-
-        <!-- Global show (JSON) -->
-        <div class="card-row" style="gap:8px;flex-wrap:wrap;align-items:center">
-          <span class="show-lbl">Global</span>
-          <span style="font-size:11px;color:var(--muted);flex:1">Rules + ports + fader labels/colors</span>
-          <input type="file" id="globalImportInput" accept=".json" style="display:none"
-            onchange="onPickGlobalFile(event)">
-          <button class="btn-sm" onclick="exportGlobalShow()">Export JSON</button>
-          <button class="btn-sm" onclick="document.getElementById('globalImportInput').click()">Import JSON</button>
-        </div>
-
       </div>
+
+      <!-- PC EXCHANGE -->
+      <div class="section-label">PC Exchange</div>
+      <div class="card">
+        <div class="card-row" style="gap:8px">
+          <input type="file" id="jsonUploadInput" accept=".json" style="display:none"
+            onchange="onPickJsonFile(event)">
+          <div class="upload-zone" id="jsonUploadZone"
+            style="flex:1;margin:0;padding:8px 12px;flex-direction:row;gap:8px;min-height:0;text-align:left"
+            onclick="document.getElementById('jsonUploadInput').click()"
+            ondragover="onJsonDragOver(event)" ondragleave="onJsonDragLeave(event)"
+            ondrop="onJsonDropFile(event)">
+            <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;flex-shrink:0;opacity:.6">
+              <path d="M10 2v10M7 8l3 4 3-4"/><path d="M3 14v2a1 1 0 001 1h12a1 1 0 001-1v-2"/>
+            </svg>
+            <span id="jsonUploadProgress" style="font-size:12px;color:var(--muted)">Drop .json here or click to browse</span>
+          </div>
+          <button class="btn-sm" onclick="exportGlobalShow()">Export to PC</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Rules ── -->
+    <div class="panel" id="tab-show">
 
       <div class="section-label">Presets</div>
       <div class="card" id="presets-card">
@@ -535,11 +534,13 @@
             <input type="text" id="be-note" maxlength="32" placeholder="— keep —" style="width:90px">
           </div>
         </div>
-        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center">
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;align-items:center;justify-content:space-between">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <button class="btn-danger" onclick="deleteSelected()">Delete selected</button>
+            <button class="btn-sm" onclick="clearSelection()">Deselect all</button>
+            <span style="font-size:11px;color:var(--muted)">Blank = keep. In ch s'incrémente automatiquement.</span>
+          </div>
           <button class="btn" onclick="applyBulkEdit()">Apply to selected</button>
-          <button class="btn-danger" onclick="deleteSelected()">Delete selected</button>
-          <button class="btn-sm" onclick="clearSelection()">Deselect all</button>
-          <span style="font-size:11px;color:var(--muted)">Blank = keep. In ch s'incrémente automatiquement.</span>
         </div>
       </div>
 
@@ -597,6 +598,100 @@
         <div style="font-size:11px;color:var(--muted);margin-top:6px">
           Parent doit avoir un M# inférieur. Ex: M1=source, M2 atténué par M1 → parent=1.
         </div>
+      </div>
+
+      <div class="section-label">CSV</div>
+      <div class="card">
+
+        <!-- hidden anchor for JS that still reads showActiveRow -->
+        <div style="display:none" id="showActiveRow"></div>
+
+        <!-- Load depuis SD -->
+        <div class="card-row" style="gap:8px;flex-wrap:wrap">
+          <span class="show-lbl">Load</span>
+          <select id="showSel" style="flex:1;min-width:100px;padding:6px 10px;font-size:13px;
+            background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);
+            color:var(--text);-webkit-appearance:none;appearance:none;outline:none"></select>
+          <button class="btn" onclick="loadShow()" style="flex-shrink:0">Load</button>
+          <button class="icon-btn" onclick="downloadShow()" title="Download this CSV">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px">
+              <path d="M8 2v8M5 7l3 3 3-3"/><path d="M2 12h12"/>
+            </svg>
+          </button>
+          <button class="icon-btn" id="btnDeleteFile" onclick="confirmDelete()"
+            title="Delete this file" style="color:#f07070;border-color:rgba(220,60,60,.25)">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px">
+              <path d="M3 4h10M6 4V2h4v2M5 4v8h6V4"/>
+            </svg>
+          </button>
+        </div>
+        <div id="showDescRow" style="display:none"></div>
+        <div id="show-preview" style="display:none;font-size:12px;color:var(--muted);
+          padding:2px 16px 8px;font-style:italic"></div>
+
+        <!-- PC : upload + download all -->
+        <div class="card-row" style="gap:8px">
+          <span class="show-lbl">PC</span>
+          <input type="file" id="uploadInput" accept=".csv" style="display:none"
+            onchange="onPickFile(event)">
+          <div class="upload-zone" id="uploadZone"
+            style="flex:1;margin:0;padding:8px 12px;flex-direction:row;gap:8px;min-height:0;text-align:left"
+            onclick="document.getElementById('uploadInput').click()"
+            ondragover="onDragOver(event)" ondragleave="onDragLeave(event)"
+            ondrop="onDropFile(event)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <span style="font-size:13px">Drop .csv here, or click to upload</span>
+            <span id="uploadProgress" class="upload-progress" style="font-size:12px"></span>
+          </div>
+          <button class="icon-btn" id="btnDownloadAll" onclick="downloadAllShows()"
+            title="Download all .csv files from SD">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px">
+              <path d="M2 3h12M8 6v8M5 11l3 3 3-3"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Confirmation suppression (cachée) -->
+        <div class="card-row" id="deleteConfirmRow"
+          style="display:none;background:rgba(220,60,60,0.08)">
+          <span style="font-size:13px;color:#f07070">Delete <strong id="deleteFileName"></strong> ?</span>
+          <div style="display:flex;gap:8px">
+            <button class="btn-sm" onclick="cancelDelete()">Cancel</button>
+            <button class="btn-danger" onclick="doDeleteFile()">Yes, delete</button>
+          </div>
+        </div>
+
+        <!-- Save vers SD -->
+        <div class="card-row" style="gap:8px;flex-wrap:wrap">
+          <span class="show-lbl">Save</span>
+          <input type="text" id="saveFilename" placeholder="myshow.csv"
+            style="flex:1;min-width:90px;background:var(--surface2);border:1px solid var(--border);
+              border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:13px;
+              padding:6px 10px;outline:none;transition:border-color .2s"
+            onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''">
+          <input type="text" id="saveDesc" placeholder="Description (optional)"
+            style="flex:2;min-width:120px;background:var(--surface2);border:1px solid var(--border);
+              border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:13px;
+              padding:6px 10px;outline:none;transition:border-color .2s"
+            onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''">
+          <button class="btn" onclick="saveShow()" style="flex-shrink:0">Save to SD</button>
+          <button class="icon-btn" onclick="exportCurrentRules()" title="Export RAM → CSV (current rules, no SD needed)">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px">
+              <path d="M8 2v8M5 7l3 3 3-3"/><path d="M2 12h12"/>
+            </svg>
+          </button>
+          <span id="saveMsg" style="font-size:12px;color:var(--muted)"></span>
+        </div>
+
       </div>
 
     </div>
@@ -833,6 +928,10 @@
           <span style="font-size:14px;color:var(--muted)">Ethernet IP</span>
           <span class="info-val hi" id="currentEthIp">—</span>
         </div>
+        <div class="info-row">
+          <span style="font-size:14px;color:var(--muted)">WiFi IP</span>
+          <span class="info-val" id="currentWifiIp">—</span>
+        </div>
         <div class="card-row">
           <div><div class="row-label">IP Mode</div>
             <div class="row-sub" id="ipModeHint">DHCP</div></div>
@@ -871,10 +970,12 @@
       </div>
       <button class="btn-cfg-primary" id="saveNetBtn" style="margin-bottom:10px">💾 Save Network Config</button>
 
+      <!-- ── Firmware Update ──────────────────────────────────── -->
+
       <div class="section-label">Firmware Update</div>
       <div class="card">
         <div class="card-row" id="tab-config .card-row.stacked" style="flex-direction:column;align-items:stretch;gap:10px">
-          <div style="font-size:14px;font-weight:600">🔧 Firmware</div>
+          <div class="ota-label">🔧 Firmware <span id="fwVerLabel" style="font-size:11px;font-weight:400;color:var(--muted)"></span></div>
           <div class="upload-row-cfg">
             <label class="file-label" id="fwLabel"><span>📂</span>
               <span class="file-name" id="fwName">Choose firmware.bin…</span>
@@ -886,7 +987,7 @@
           <div class="progress-msg" id="fwMsg"></div>
         </div>
         <div class="card-row" style="flex-direction:column;align-items:stretch;gap:10px">
-          <div style="font-size:14px;font-weight:600">🌐 Filesystem (Web)</div>
+          <div class="ota-label">🌐 Filesystem (Web) <span id="webVerLabel" style="font-size:11px;font-weight:400;color:var(--muted)"></span></div>
           <div class="upload-row-cfg">
             <label class="file-label" id="fsLabel"><span>📂</span>
               <span class="file-name" id="fsName">Choose littlefs.bin…</span>
@@ -898,6 +999,7 @@
           <div class="progress-msg" id="fsMsg"></div>
         </div>
       </div>
+      
       <div class="reboot-note" style="margin-bottom:10px">
         <span style="font-size:16px;flex-shrink:0;margin-top:1px">⚡</span>
         <span>Do <strong>not cut power</strong> during upload. Device reboots automatically.</span>
@@ -919,7 +1021,15 @@
       <line x1="4" y1="12" x2="20" y2="12"/><circle cx="15" cy="12" r="2.5" fill="currentColor" stroke="none"/>
       <line x1="4" y1="18" x2="20" y2="18"/><circle cx="9" cy="18" r="2.5" fill="currentColor" stroke="none"/>
     </svg>
-    <span>Faders</span>
+    <span>Show</span>
+  </button>
+  <button class="nav-btn" id="nav-disk" onclick="switchTab('disk',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <ellipse cx="12" cy="5" rx="9" ry="3"/>
+      <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+      <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+    </svg>
+    <span>Disk</span>
   </button>
   <button class="nav-btn" id="nav-show" onclick="switchTab('show',this);fetchRules()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -1050,6 +1160,7 @@
 </div>
 
 <script>
+const SW_VERSION = "4.1.4";  // web UI version — updated by set_version.py --sw
 const NUM_FADERS   = 48;
 const MAX_MASTERS  = 8;
 const NUM_ART_UNI  = 4;
@@ -1071,24 +1182,15 @@ if (DEMO_MODE) {
 
   // Mutable demo state
   const _dr = [
-    {port:'A', out:1,  src:'DMX',    uni:0, in:1,   count:8,  merge:'HTP', master:1, priority:0,  note:'Wash front'},
-    {port:'A', out:9,  src:'ARTNET', uni:0, in:9,   count:8,  merge:'HTP', master:1, priority:0,  note:'Wash side'},
-    {port:'A', out:17, src:'WEB',    uni:0, in:1,   count:1,  merge:'LTP', master:2, priority:10, note:'Grand dimmer'},
-    {port:'A', out:18, src:'CONST',  uni:0, in:200, count:1,  merge:'OVR', master:0, priority:0,  note:'Strobe en.'},
-    {port:'A', out:20, src:'DMX',    uni:0, in:20,  count:12, merge:'HTP', master:1, priority:0,  note:'RGB front'},
-    {port:'B', out:1,  src:'ARTNET', uni:1, in:1,   count:24, merge:'HTP', master:1, priority:0,  note:'LED bar 1'},
-    {port:'B', out:25, src:'ARTNET', uni:1, in:25,  count:24, merge:'HTP', master:1, priority:0,  note:'LED bar 2'},
-    {port:'C', out:1,  src:'DMX',    uni:1, in:1,   count:16, merge:'LTP', master:0, priority:5,  note:'Follow spot'},
-    {port:'C', out:30, src:'WEB',    uni:0, in:2,   count:1,  merge:'LTP', master:2, priority:0,  note:'Haze level'},
-    {port:'D', out:1,  src:'CONST',  uni:0, in:0,   count:1,  merge:'OVR', master:0, priority:0,  note:'Park low'},
+    {port:'A', out:1,  src:'DMX',    uni:0, in:1,   count:24,  merge:'HTP', master:0, priority:0,  note:'Theater 24 Channels'},
+    {port:'A', out:65,  src:'DMX', uni:1, in:1,   count:192,  merge:'HTP', master:1, priority:0,  note:'DMX 192 Automatic'},
   ];
   const _dm = [
-    {idx:1, src:'WEB', uni:0, in:1, parent:0},
-    {idx:2, src:'WEB', uni:0, in:2, parent:1},
+    {idx:1, src:'DMX', uni:0, in:24, parent:0},
   ];
   const _dp = [
-    {name:'A', active:true,  dests:[{type:'UART',   index:2}]},
-    {name:'B', active:true,  dests:[{type:'ARTNET',  universe:1}]},
+    {name:'A', active:true,  dests:[{type:'UART',   index:2},{type:'ARTNET',  universe:0}]},
+    {name:'B', active:true,  dests:[]},
     {name:'C', active:false, dests:[]},
     {name:'D', active:false, dests:[]},
   ];
@@ -1098,12 +1200,12 @@ if (DEMO_MODE) {
                 255, 255, 255, 255, 255, 255, 255, 255];
   const _demoShows    = ['demo_show.csv', 'repetition.csv', 'standby.csv'];
   const _demoPresets  = [
-    {id:0, name:'Kirax Show 2024',      desc:'Rules préchargées pour le spectacle'},
-    {id:1, name:'Répétition générale',  desc:'Config répet avec hazer'},
-    {id:2, name:'Stand-by',             desc:"Lumière d'attente scène"},
+    {id:0, name:'2 × DMX IN Merge + Master',      desc:'DMX U0 ch1-24 → port A 1-24 | U1 (dimmed by M1) ch1-448 → port A 65-512'},
+    {id:1, name:'DMX IN → ArtNet OUT',  desc:'DMX IN u0 ch1-512 → port A | IN u1 ch1-512 → port B'},
+    {id:2, name:'48 Web faders + Master',             desc:"WEB faders 1-48 → port A 1-48, dimmed by M1"},
   ];
   const _demoFaderSlots = [];
-  let _activeShow = 'demo_show.csv';
+  let _activeShow = '2 × DMX IN Merge + Master';
   let _demoSep        = ',';
   let _demoUsbEnabled = true;
   let _demoPhase      = 0;
@@ -1150,7 +1252,7 @@ if (DEMO_MODE) {
         out_ports    : Array.from({length:4}, (_, p) => _demoOut(_demoPhase, p)),
         rules        : _dr.length,
         show         : _activeShow,
-        desc         : 'Demo Show — SmartStrips V4',
+        desc         : 'Demo Show — DMX Tools V4',
       });
     }
     if (path === '/api/rules') {
@@ -1224,9 +1326,33 @@ if (DEMO_MODE) {
       if (method === 'POST') { const b = body(); if (b.enabled !== undefined) _demoUsbEnabled = !!b.enabled; return ok({ok:true}); }
       return ok({compiled:true, enabled:_demoUsbEnabled, connected:true});
     }
+    if (path === '/api/json/list') return ok({files:[
+      {name:'/demo_show.json',  desc:'Demo show — main configuration', date:'2026-01-15T10:00:00Z'},
+      {name:'/rehearsal.json',  desc:'Rehearsal du 20 janvier',        date:'2026-01-20T18:30:00Z'},
+      {name:'/backup_jan.json', desc:'',                               date:'2026-01-10T08:00:00Z'}
+    ]});
+    if (path === '/api/json/save')   return ok({ok:true});
+    if (path === '/api/json/export') {
+      const bd = body() || {};
+      const data = {version:2, desc:bd.desc||'', date:bd.date||new Date().toISOString(),
+        rules:_dr||[], masters_config:_dm||[], fader_values:_df.slice(), master_values:_dmv.slice(),
+        fader_meta:bd.fader_meta||{}, ui_layout:bd.ui_layout||{},
+        ports:[], fader_presets: faderPresetSlots||[]};
+      return new Response(JSON.stringify(data,null,2),
+        {status:200, headers:{'Content-Type':'application/json',
+          'Content-Disposition':'attachment; filename="'+(bd.name||'export.json')+'"'}});
+    }
+    if (path === '/api/json/load') {
+      const resp = {ok:true, rules_count:_dr.length, masters_count:_dm.length,
+        fader_values:_df.slice(), master_values:_dmv.slice(), fader_meta:{}, ui_layout:getUiLayout()};
+      return ok(resp);
+    }
+    if (path === '/api/json/delete') return ok({ok:true});
+    if (path === '/api/json/upload') return ok({ok:true, file:'/demo_upload.json'});
+    if (path === '/api/product')   return ok({product:'dmxtools', fw:SW_VERSION});
     if (path === '/api/config')    return ok({ok:true});
-    if (path === '/api/wifi')      return ok({ssid:'Demo-WiFi', ap_mode:false, eth_ip:'192.168.1.42'});
-    if (path === '/api/wifi/scan') return ok({networks:[{ssid:'Demo-Network',rssi:-52},{ssid:'SmartStrips-AP',rssi:-68}]});
+    if (path === '/api/wifi')      return ok({ssid:'Demo-WiFi', saved_ssid:'Demo-WiFi', connected:true, ap_mode:false, wifi_ip:'10.0.0.42', eth_ip:'192.168.1.100'});
+    if (path === '/api/wifi/scan') return ok({networks:[{ssid:'Demo-Network',rssi:-52,open:false},{ssid:'SmartStrips-AP',rssi:-68,open:true}]});
     if (path === '/reboot')        return ok({});
     // Unknown — silently succeed
     console.debug('[DEMO] unhandled:', method, path);
@@ -1246,10 +1372,14 @@ let presetRows = parseInt(localStorage.getItem('presetRows')) || 0;
 let presetCols = parseInt(localStorage.getItem('presetCols')) || 12;
 let faderFnMode   = localStorage.getItem('fnMode')   || 'flash';
 let presetRecMode = localStorage.getItem('recMode')  || 'all';
+let masterPos     = localStorage.getItem('masterPos') || 'right';
+let presetPos     = localStorage.getItem('presetPos') || 'top';
 
 // Config state
 let g_ports      = [];
 let configReady  = false;
+let diskReady       = false;
+let selectedJsonFile = null;
 let artoutEnabled = false;
 
 // Per-fader state
@@ -1303,7 +1433,8 @@ function switchTab(name, btn) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   btn.classList.add('active');
-  if (name === 'config' && !configReady) { configReady = true; pollConfig(); loadPorts(); loadCsvSep(); loadUsbDmxConfig(); }
+  if (name === 'config' && !configReady) { configReady = true; pollConfig(); loadPorts(); loadCsvSep(); loadUsbDmxConfig(); loadVersionLabels(); }
+  if (name === 'disk'   && !diskReady)   { diskReady   = true; fetchJsonFiles(); }
   if (name === 'status') buildStatusDom();
 }
 
@@ -1384,6 +1515,7 @@ function buildMasters() {
       <div class="fader-val" id="mv${i}">${v}</div>`;
     strip.appendChild(d);
   }
+  applyMasterPos(masterPos);
 }
 
 // ── Fader layout controls ─────────────────────────────────────────────────────
@@ -1395,14 +1527,20 @@ function setFaderCols(n) {
 }
 function setFaderRows(n) {
   faderRows = n; localStorage.setItem('faderRows', n);
-  document.querySelectorAll('#faderRowBtns .pill').forEach(b =>
-    b.classList.toggle('active', parseInt(b.textContent) === n));
+  document.querySelectorAll('#faderRowBtns .pill').forEach(b => {
+    const v = b.textContent === 'Off' ? 0 : parseInt(b.textContent);
+    b.classList.toggle('active', v === n);
+  });
+  document.querySelector('.faders-card').style.display = n === 0 ? 'none' : '';
   buildFaders();
 }
 function setNumMasters(n) {
   numMasters = n; localStorage.setItem('numMasters', n);
-  document.querySelectorAll('#masterCountBtns .pill').forEach(b =>
-    b.classList.toggle('active', parseInt(b.textContent) === n));
+  document.querySelectorAll('#masterCountBtns .pill').forEach(b => {
+    const v = b.textContent === 'Off' ? 0 : parseInt(b.textContent);
+    b.classList.toggle('active', v === n);
+  });
+  document.querySelector('.masters-area').style.display = n === 0 ? 'none' : '';
   buildMasters();
 }
 function setFaderSize(sz) {
@@ -1420,6 +1558,31 @@ function setMasterSize(sz) {
   if (sz !== 'm') area.classList.add('master-sz-' + sz);
   document.querySelectorAll('#masterSizeBtns .pill').forEach(b =>
     b.classList.toggle('active', b.dataset.sz === sz));
+}
+function applyMasterPos(pos) {
+  const main = document.querySelector('.fader-main-area');
+  if (main) main.dataset.masterPos = pos;
+  const area = document.querySelector('.masters-area');
+  if (area) area.dataset.masterPos = pos;
+}
+function setMasterPos(pos) {
+  masterPos = pos; localStorage.setItem('masterPos', pos);
+  document.querySelectorAll('#masterPosBtns .pill').forEach(b =>
+    b.classList.toggle('active', b.dataset.pos === pos));
+  applyMasterPos(pos);
+}
+function applyPresetPos(pos) {
+  const zone = document.getElementById('presets-zone');
+  const area = document.querySelector('.fader-main-area');
+  if (!zone || !area) return;
+  if (pos === 'bottom') area.after(zone);
+  else area.before(zone);
+}
+function setPresetPos(pos) {
+  presetPos = pos; localStorage.setItem('presetPos', pos);
+  document.querySelectorAll('#presetPosBtns .pill').forEach(b =>
+    b.classList.toggle('active', b.dataset.pos === pos));
+  applyPresetPos(pos);
 }
 function setPresetRows(n) {
   presetRows = n; localStorage.setItem('presetRows', n);
@@ -1445,9 +1608,6 @@ function setPresetRecMode(m) {
   const map = { all:'All', allfaders:'All Faders', sel:'Selection', dyn:'Dynamic' };
   document.querySelectorAll('#recModeBtns .pill').forEach(b =>
     b.classList.toggle('active', b.textContent === map[m]));
-  const showSel = (m === 'sel' || m === 'dyn');
-  document.getElementById('btnSelectAllFaders').style.display  = showSel ? '' : 'none';
-  document.getElementById('btnDeselectAllFaders').style.display = showSel ? '' : 'none';
 }
 
 // ── Fader button actions ──────────────────────────────────────────────────────
@@ -1537,6 +1697,7 @@ function renderPresets() {
     btn.addEventListener('pointercancel', () => endPresetHold(i, true));
     zone.appendChild(btn);
   }
+  applyPresetPos(presetPos);
 }
 
 function startPresetHold(slot) {
@@ -2215,7 +2376,8 @@ async function loadShow() {
     if (j.ok) {
       setActiveShow(file, j.desc || '');
       showSaveMsg(`✓ ${j.rules ?? '?'} rules, ${j.masters ?? '?'} masters`);
-      fetchRules();
+      await fetchRules();
+      await loadPorts();
     } else {
       showSaveMsg('✗ ' + (j.error || 'load error'));
     }
@@ -2227,6 +2389,10 @@ async function saveShow() {
   const desc = document.getElementById('saveDesc').value.trim();
   if (!name) { showSaveMsg('✗ filename required'); return; }
   if (!name.toLowerCase().endsWith('.csv')) name += '.csv';
+  const shortName = name.replace(/^\//, '');
+  const exists = Array.from(document.getElementById('showSel').options)
+    .some(o => o.textContent === shortName);
+  if (exists && !confirm(`"${shortName}" already exists — overwrite?`)) return;
   try {
     const r = await fetch('/api/show/save?file=' + encodeURIComponent(name), {
       method: 'POST',
@@ -2239,7 +2405,6 @@ async function saveShow() {
       await fetchShows();
       // Select the just-saved file in the dropdown
       const sel = document.getElementById('showSel');
-      const shortName = name.replace(/^\//, '');
       for (const o of sel.options) { if (o.textContent === shortName) { o.selected = true; break; } }
       setActiveShow('/' + shortName, desc);
     } else {
@@ -2314,6 +2479,17 @@ async function setCsvSep(sep) {
 // ── USB DMX config ────────────────────────────────────────────────────────────
 let _usbDmxEnabled  = false;
 let _usbDmxCompiled = false;
+
+async function loadVersionLabels() {
+  const webEl = document.getElementById('webVerLabel');
+  if (webEl) webEl.textContent = 'v' + SW_VERSION;
+  try {
+    const r = await fetch('/api/product', {cache:'no-store'});
+    const j = await r.json();
+    const fwEl = document.getElementById('fwVerLabel');
+    if (fwEl && j.fw) fwEl.textContent = 'FW ' + j.fw;
+  } catch(e) {}
+}
 
 async function loadUsbDmxConfig() {
   try {
@@ -2397,25 +2573,213 @@ function exportCurrentRules() {
   setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
 
-// ── Global show (JSON) export / import ───────────────────────────────────────
-function exportGlobalShow() {
-  const desc    = document.getElementById('showDescRow')?.textContent?.trim() || '';
+// ── JSON section checkbox helper ─────────────────────────────────────────────
+function getJsonSections() {
+  const ids  = ['rules','faders','masters','ports','presets','meta','layout'];
+  const keys = ['rules','faders','masters','ports','presets','fader_meta','ui_layout'];
+  return keys.filter((k, i) => document.getElementById('jcb-'+ids[i])?.checked !== false);
+}
+
+function getUiLayout() {
+  return { faderCols, faderRows, numMasters, presetRows, presetCols, faderSize, masterSize, masterPos, presetPos };
+}
+
+function applyUiLayout(layout) {
+  if (!layout || typeof layout !== 'object') return;
+  if (layout.faderCols  != null) { faderCols  = +layout.faderCols;  localStorage.setItem('faderCols',  faderCols);  }
+  if (layout.faderRows  != null) { faderRows  = +layout.faderRows;  localStorage.setItem('faderRows',  faderRows);  }
+  if (layout.numMasters != null) { numMasters = +layout.numMasters; localStorage.setItem('numMasters', numMasters); }
+  if (layout.presetRows != null) { presetRows = +layout.presetRows; localStorage.setItem('presetRows', presetRows); }
+  if (layout.presetCols != null) { presetCols = +layout.presetCols; localStorage.setItem('presetCols', presetCols); }
+  if (layout.faderSize  != null) { faderSize  = layout.faderSize;   localStorage.setItem('faderSize',  faderSize);  }
+  if (layout.masterSize != null) { masterSize = layout.masterSize;  localStorage.setItem('masterSize', masterSize); }
+  if (layout.masterPos  != null) { masterPos  = layout.masterPos;   localStorage.setItem('masterPos',  masterPos);  }
+  if (layout.presetPos  != null) { presetPos  = layout.presetPos;   localStorage.setItem('presetPos',  presetPos);  }
+  buildFaders();
+  buildMasters();
+  renderPresets();
+}
+
+// ── Global show (JSON) — SD operations ───────────────────────────────────────
+async function fetchJsonFiles() {
+  try {
+    const r = await fetch('/api/json/list', {cache:'no-store'});
+    const j = await r.json();
+    const list = document.getElementById('jsonFileList');
+    if (!list) return;
+
+    const files = j.files || [];
+    if (!files.length) {
+      list.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:8px 12px;font-style:italic">No files on SD card</div>';
+      selectedJsonFile = null;
+      return;
+    }
+
+    list.innerHTML = '';
+    let selFound = false;
+    files.forEach(f => {
+      const name  = f.name || f;
+      const desc  = f.desc || '';
+      const date  = (f.date || '').substring(0, 10);
+      const short = name.replace(/^\//, '');
+
+      const row = document.createElement('div');
+      row.className = 'json-file-row';
+      row.dataset.file = name;
+      row.onclick = () => {
+        selectedJsonFile = name;
+        list.querySelectorAll('.json-file-row').forEach(r => r.classList.remove('selected'));
+        row.classList.add('selected');
+      };
+      row.innerHTML =
+        `<div style="flex:1;min-width:0">` +
+          `<div style="font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${short}</div>` +
+          (desc ? `<div style="font-size:11px;color:var(--muted);font-style:italic;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${desc}</div>` : '') +
+        `</div>` +
+        (date ? `<span style="font-size:11px;color:var(--muted);flex-shrink:0;margin-left:8px">${date}</span>` : '');
+
+      if (name === selectedJsonFile) { row.classList.add('selected'); selFound = true; }
+      list.appendChild(row);
+    });
+
+    if (!selFound) {
+      selectedJsonFile = files[0].name || files[0];
+      list.firstElementChild.classList.add('selected');
+    }
+
+    const nameEl = document.getElementById('jsonSaveName');
+    if (nameEl && !nameEl.value) {
+      const stem = activeShowPath.replace(/^\//, '').replace(/\.csv$/i, '');
+      nameEl.value = stem || '';
+    }
+  } catch(e) {}
+}
+
+async function saveJsonShow() {
+  const nameEl = document.getElementById('jsonSaveName');
+  const descEl = document.getElementById('jsonSaveDesc');
+  let name = (nameEl?.value || '').trim();
+  if (!name) { showSaveMsg('✗ Name required'); return; }
+  if (!name.endsWith('.json')) name += '.json';
+  if (!name.startsWith('/')) name = '/' + name;
+
+  const shortName = name.replace(/^\//, '');
+  const list = document.getElementById('jsonFileList');
+  const exists = list && !!list.querySelector(`.json-file-row[data-file="${name}"]`);
+  if (exists && !confirm(`"${shortName}" already exists — overwrite?`)) return;
+
+  const desc = (descEl?.value || '').trim();
+  const payload = { desc, date: new Date().toISOString(), fader_meta: faderMeta, ui_layout: getUiLayout() };
+  try {
+    const r = await fetch(`/api/json/save?file=${encodeURIComponent(name)}`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const j = await r.json();
+    if (j.ok) {
+      showSaveMsg('✓ saved: ' + shortName);
+      selectedJsonFile = name;
+      await fetchJsonFiles();
+    } else showSaveMsg('✗ save failed: ' + (j.error || ''));
+  } catch(e) { showSaveMsg('✗ error'); }
+}
+
+async function loadJsonShow() {
+  const file = selectedJsonFile;
+  if (!file) { showSaveMsg('✗ No file selected'); return; }
+
+  const sections = getJsonSections();
+  if (!sections.length) { showSaveMsg('✗ Select at least one section'); return; }
+
+  try {
+    const r = await fetch(`/api/json/load?file=${encodeURIComponent(file)}`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({sections})
+    });
+    const j = await r.json();
+    if (!j.ok) { showSaveMsg('✗ ' + (j.error || 'load failed')); return; }
+
+    if (j.fader_values) {
+      j.fader_values.forEach((v, i) => { if (i < NUM_FADERS) faderValues[i] = v; });
+      buildFaders();
+    }
+    if (j.master_values) {
+      j.master_values.forEach((v, i) => { if (i < MAX_MASTERS) masterValues[i] = v; });
+      buildMasters();
+    }
+    if (j.fader_meta && typeof j.fader_meta === 'object') {
+      faderMeta = j.fader_meta;
+      localStorage.setItem('faderMeta', JSON.stringify(faderMeta));
+      buildFaders();
+    }
+    if (j.ui_layout) applyUiLayout(j.ui_layout);
+    if (sections.includes('rules'))   await fetchRules();
+    if (sections.includes('ports'))   await loadPorts();
+    if (sections.includes('presets')) await fetchFaderPresets();
+
+    showSaveMsg(`✓ loaded: ${sections.join(', ')}`);
+  } catch(e) { showSaveMsg('✗ error: ' + e); }
+}
+
+async function downloadJson() {
+  const file = selectedJsonFile; if (!file) return;
+  const url = `/api/json/download?file=${encodeURIComponent(file)}`;
+  triggerDownload(url, file.replace(/^\//, ''));
+}
+
+function confirmDeleteJson() {
+  const file = selectedJsonFile; if (!file) return;
+  if (!confirm(`Delete "${file.replace(/^\//, '')}"?`)) return;
+  fetch(`/api/json/delete?file=${encodeURIComponent(file)}`, {method:'POST'})
+    .then(r => r.json()).then(j => {
+      if (j.ok) { showSaveMsg('✓ deleted'); selectedJsonFile = null; fetchJsonFiles(); }
+      else showSaveMsg('✗ delete failed');
+    }).catch(() => showSaveMsg('✗ error'));
+}
+
+function onJsonDragOver(e)  { e.preventDefault(); document.getElementById('jsonUploadZone').classList.add('drag-over'); }
+function onJsonDragLeave(e) { document.getElementById('jsonUploadZone').classList.remove('drag-over'); }
+function onJsonDropFile(e)  { e.preventDefault(); onJsonDragLeave(e); const f=e.dataTransfer?.files?.[0]; if(f) uploadJsonFile(f); }
+function onPickJsonFile(e)  { const f=e.target.files?.[0]; if(f) uploadJsonFile(f); e.target.value=''; }
+
+async function uploadJsonFile(file) {
+  if (!file.name.toLowerCase().endsWith('.json')) { showSaveMsg('✗ only .json files accepted'); return; }
+  const prog = document.getElementById('jsonUploadProgress');
+  if (prog) { prog.textContent = 'Uploading…'; prog.style.color = 'var(--accent)'; }
+  const fd = new FormData(); fd.append('file', file, file.name);
+  try {
+    const r = await fetch('/api/json/upload', {method:'POST', body:fd});
+    const j = await r.json();
+    if (prog) prog.style.color = 'var(--muted)';
+    if (j.ok) {
+      if (prog) prog.textContent = '✓ ' + (j.file||file.name).replace(/^\//, '');
+      showSaveMsg('✓ uploaded');
+      selectedJsonFile = j.file || ('/' + file.name);
+      await fetchJsonFiles();
+    } else {
+      if (prog) prog.textContent = '✗ upload failed';
+      showSaveMsg('✗ upload failed');
+    }
+  } catch(e) { if(prog){prog.textContent='✗ error';prog.style.color='#f07070';} showSaveMsg('✗ error'); }
+}
+
+// ── Global show (JSON) — PC export / import ──────────────────────────────────
+async function exportGlobalShow() {
   const rawName = activeShowPath.replace(/^\//, '') || 'smartstrips_global';
   const stem    = rawName.replace(/\.csv$/i, '');
-  const data = {
-    version  : 1,
-    date     : new Date().toISOString(),
-    show     : stem,
-    desc     : desc,
-    faderMeta: faderMeta,
-    rules    : cachedRules,
-    masters  : cachedMasters,
-    ports    : g_ports,
-  };
-  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
-  const url  = URL.createObjectURL(blob);
-  triggerDownload(url, stem + '_global.json');
-  setTimeout(() => URL.revokeObjectURL(url), 2000);
+  const desc    = document.getElementById('jsonSaveDesc')?.value?.trim() ||
+                  document.getElementById('showDescRow')?.textContent?.trim() || '';
+  try {
+    const r = await fetch('/api/json/export', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({name: stem + '.json', desc, date: new Date().toISOString(), fader_meta: faderMeta, ui_layout: getUiLayout()})
+    });
+    if (!r.ok) { showSaveMsg('✗ export failed'); return; }
+    const blob = await r.blob();
+    const url  = URL.createObjectURL(blob);
+    triggerDownload(url, stem + '.json');
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  } catch(e) { showSaveMsg('✗ export error'); }
 }
 
 function onPickGlobalFile(e) {
@@ -2429,30 +2793,57 @@ async function importGlobalShow(file) {
   try { data = JSON.parse(await file.text()); } catch { alert('Invalid JSON file'); return; }
   if (!data.version) { alert('Not a SmartStrips global show file'); return; }
 
+  const sections = getJsonSections();
   let tasks = [];
 
-  if (data.faderMeta && typeof data.faderMeta === 'object') {
-    faderMeta = data.faderMeta;
-    localStorage.setItem('faderMeta', JSON.stringify(faderMeta));
-    buildFaders();
-    tasks.push('fader labels');
-  }
-  if (Array.isArray(data.rules) || Array.isArray(data.masters)) {
-    if (data.rules)   cachedRules   = data.rules;
-    if (data.masters) cachedMasters = data.masters;
+  if (sections.includes('rules') && (Array.isArray(data.rules) || Array.isArray(data.masters_config))) {
+    if (data.rules)          cachedRules   = data.rules;
+    if (data.masters_config) cachedMasters = data.masters_config;
     await pushRules();
     tasks.push('rules');
   }
-  if (Array.isArray(data.ports)) {
+  if (sections.includes('faders') && Array.isArray(data.fader_values)) {
+    data.fader_values.forEach((v, i) => { if (i < NUM_FADERS && v !== null) faderValues[i] = v; });
+    buildFaders();
+    try { await fetch('/api/faders', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({f:faderValues})}); } catch {}
+    tasks.push('faders');
+  }
+  if (sections.includes('masters') && Array.isArray(data.master_values)) {
+    data.master_values.forEach((v, i) => { if (i < MAX_MASTERS) masterValues[i] = v; });
+    buildMasters();
+    try { await fetch('/api/masters', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({m:masterValues})}); } catch {}
+    tasks.push('masters');
+  }
+  if (sections.includes('fader_meta') && data.fader_meta && typeof data.fader_meta === 'object') {
+    faderMeta = data.fader_meta;
+    localStorage.setItem('faderMeta', JSON.stringify(faderMeta));
+    buildFaders();
+    tasks.push('labels/colors');
+  }
+  if (sections.includes('ui_layout') && data.ui_layout) {
+    applyUiLayout(data.ui_layout);
+    tasks.push('layout');
+  }
+  if (sections.includes('ports') && Array.isArray(data.ports)) {
     g_ports = data.ports;
-    try {
-      await fetch('/api/ports', {method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ports: g_ports})});
-    } catch {}
+    try { await fetch('/api/ports', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ports:g_ports})}); } catch {}
     tasks.push('ports');
   }
-  if (data.show) setActiveShow(data.show + '.csv', data.desc || '');
-  showSaveMsg(`✓ imported: ${tasks.join(', ')}`);
+  if (sections.includes('presets') && Array.isArray(data.fader_presets)) {
+    for (const ps of data.fader_presets) {
+      if (ps.slot === undefined) continue;
+      try {
+        await fetch(`/api/fader-preset/save?slot=${ps.slot}`, {method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({name:ps.name, faders:ps.faders, masters:ps.masters})});
+      } catch {}
+    }
+    await fetchFaderPresets();
+    tasks.push('presets');
+  }
+
+  if (data.show) setActiveShow(data.show + (data.show.endsWith('.csv') ? '' : '.csv'), data.desc || '');
+  showSaveMsg(`✓ imported: ${tasks.join(', ') || 'nothing'}`);
 }
 
 function triggerDownload(url, filename) {
@@ -2832,9 +3223,10 @@ function addFromRow() {
   // Always 1 range rule: OUT channels auto-increment IN channels (offset by position)
   const newRules = [{ port, out: outFrom, src, uni, in: inStart, count, merge, priority, master, note }];
 
-  // Duplicate detection — expand all existing rules to their full out-ch range
+  // Duplicate detection — expand existing rules on the same port to their full out-ch range
   const existingOuts = new Set();
-  cachedRules.forEach(r => { for (let i = 0; i < (r.count||1); i++) existingOuts.add(r.out + i); });
+  cachedRules.filter(r => (r.port||'A') === port)
+    .forEach(r => { for (let i = 0; i < (r.count||1); i++) existingOuts.add(r.out + i); });
   const dups = newRules.flatMap(r => {
     const conflicts = [];
     for (let i = 0; i < (r.count||1); i++) { if (existingOuts.has(r.out + i)) conflicts.push(r.out + i); }
@@ -2843,7 +3235,7 @@ function addFromRow() {
   if (dups.length > 0) {
     pendingAdds = newRules;
     const warn = document.getElementById('dup-warn-row');
-    const chList = dups.length <= 8 ? dups.map(r => r.out).join(', ') : `${dups.length} channels`;
+    const chList = dups.length <= 8 ? dups.join(', ') : `${dups.length} channels`;
     warn.innerHTML = `<span style="color:#e8a020">⚠ Output channel${dups.length!==1?'s':''} already have rules: ${chList}</span>
       <div style="display:flex;gap:8px;margin-top:8px">
         <button class="btn-sm" onclick="doAddRules('skip')">Skip existing</button>
@@ -2865,20 +3257,23 @@ function addFromRow() {
 function doAddRules(mode) {
   if (!pendingAdds) return;
   document.getElementById('dup-warn-row').style.display = 'none';
+  const dupPort = pendingAdds[0]?.port || 'A';
   if (mode === 'overwrite') {
-    // Build set of all out channels the new rules claim
+    // Build set of all out channels the new rules claim (same port only)
     const claimedOuts = new Set();
     pendingAdds.forEach(nr => { for (let i = 0; i < (nr.count||1); i++) claimedOuts.add(nr.out + i); });
-    // Remove any existing rule that overlaps
+    // Remove only same-port existing rules that overlap
     cachedRules = cachedRules.filter(r => {
+      if ((r.port||'A') !== dupPort) return true;
       for (let i = 0; i < (r.count||1); i++) { if (claimedOuts.has(r.out + i)) return false; }
       return true;
     });
     cachedRules.push(...pendingAdds);
   } else {
-    // Skip — only add rules whose entire out range is free
+    // Skip — only add rules whose entire out range is free on the same port
     const existingOuts = new Set();
-    cachedRules.forEach(r => { for (let i = 0; i < (r.count||1); i++) existingOuts.add(r.out + i); });
+    cachedRules.filter(r => (r.port||'A') === dupPort)
+      .forEach(r => { for (let i = 0; i < (r.count||1); i++) existingOuts.add(r.out + i); });
     cachedRules.push(...pendingAdds.filter(r => {
       for (let i = 0; i < (r.count||1); i++) { if (existingOuts.has(r.out + i)) return false; }
       return true;
@@ -2894,9 +3289,9 @@ function cancelAdd() {
 }
 
 // ── Masters CRUD ──────────────────────────────────────────────────────────────
-function deleteMasterAt(i) {
+async function deleteMasterAt(i) {
   cachedMasters.splice(i, 1);
-  saveRules();
+  await pushRules();
 }
 
 function onAmSrcChange() {
@@ -2919,7 +3314,7 @@ function stepAm(id, mn, mx, d) {
   el.value = Math.max(mn, Math.min(mx, (parseInt(el.value) || mn) + d));
 }
 
-function addMasterFromRow() {
+async function addMasterFromRow() {
   const idx    = parseInt(document.getElementById('am-idx').value) || 1;
   const src    = document.getElementById('am-src').value;
   const uni    = parseInt(document.getElementById('am-uni').value) || 0;
@@ -2937,7 +3332,7 @@ function addMasterFromRow() {
 
   cachedMasters.push({ idx, src, uni, in: inCh, parent });
   cachedMasters.sort((a, b) => a.idx - b.idx);
-  saveRules();
+  await pushRules();
 }
 
 // mark ar-out-from / ar-out-to as user-touched + sync ar-count
@@ -3090,6 +3485,8 @@ async function deleteRuleAt(idx) {
 
 async function deleteSelected() {
   if (!selectedRules.size) return;
+  const n = selectedRules.size;
+  if (!confirm(`Delete ${n} selected rule${n > 1 ? 's' : ''}?`)) return;
   const sorted = [...selectedRules].sort((a, b) => b - a);
   sorted.forEach(idx => cachedRules.splice(idx, 1));
   selectedRules.clear();
@@ -3227,6 +3624,12 @@ async function fetchStatus() {
     lastStatus = j;
 
     if (!apiOk) { apiOk = true; document.getElementById('statusDot').classList.add('online'); }
+      
+    // FW version in OTA label
+    const fwVer = s.network?.fw_version;
+    if (fwVer) document.getElementById('fwVerLabel').textContent = '(' + fwVer + ')';
+    const webVer = s.network?.web_version || SW_VERSION;
+    if (webVer) document.getElementById('webVerLabel').textContent = '(' + webVer + ')';
 
     // Sync fader/master UI from server on first contact
     if (!faderValuesInited) {
@@ -3644,11 +4047,17 @@ async function pollConfig() {
   try {
     const r = await fetch('/api/wifi',{cache:'no-store'});
     const w = await r.json();
-    const ssidEl = document.getElementById('currentSsid'); if(ssidEl) ssidEl.textContent = w.ssid||'—';
+    const ssidEl = document.getElementById('currentSsid');
+    if(ssidEl) ssidEl.textContent = w.ssid || w.saved_ssid || '—';
     const badge = document.getElementById('wifiBadge');
-    if(badge){badge.innerHTML='<span class="badge-dot"></span>'+(w.ap_mode?'Captive portal':'Connected');
-      badge.className='wifi-badge '+(w.ap_mode?'warn':'ok');}
-    const ethEl = document.getElementById('currentEthIp'); if(ethEl&&w.eth_ip) ethEl.textContent=w.eth_ip;
+    if(badge){
+      const label = w.ap_mode ? 'Captive portal' : w.connected ? 'Connected' : (w.saved_ssid ? 'Disconnected' : 'Off');
+      const cls   = w.ap_mode ? 'warn' : w.connected ? 'ok' : '';
+      badge.innerHTML = '<span class="badge-dot"></span>' + label;
+      badge.className = 'wifi-badge' + (cls ? ' '+cls : '');
+    }
+    const ethEl  = document.getElementById('currentEthIp');  if(ethEl)  ethEl.textContent  = w.eth_ip  || '—';
+    const wifiEl = document.getElementById('currentWifiIp'); if(wifiEl) wifiEl.textContent = w.wifi_ip || '—';
   } catch(e) {}
 }
 
@@ -3684,11 +4093,10 @@ document.querySelectorAll('#fnModeBtns .pill').forEach(b =>
 const _recMap = { all:'All', allfaders:'All Faders', sel:'Selection', dyn:'Dynamic' };
 document.querySelectorAll('#recModeBtns .pill').forEach(b =>
   b.classList.toggle('active', b.textContent === _recMap[presetRecMode]));
-if (presetRecMode === 'sel' || presetRecMode === 'dyn') {
-  document.getElementById('btnSelectAllFaders').style.display  = '';
-  document.getElementById('btnDeselectAllFaders').style.display = '';
-}
-
+document.querySelectorAll('#masterPosBtns .pill').forEach(b =>
+  b.classList.toggle('active', b.dataset.pos === masterPos));
+document.querySelectorAll('#presetPosBtns .pill').forEach(b =>
+  b.classList.toggle('active', b.dataset.pos === presetPos));
 buildFaders();
 setFaderSize(faderSize);
 setMasterSize(masterSize);

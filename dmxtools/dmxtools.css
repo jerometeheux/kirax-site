@@ -208,6 +208,16 @@ input[type="range"] {
   border: 1px solid rgba(52,211,153,0.35);
 }
 .masters-strip { display: flex; gap: 4px; }
+
+/* Master position variants */
+.fader-main-area[data-master-pos="left"]   { flex-direction: row-reverse; }
+.fader-main-area[data-master-pos="top"]    { flex-direction: column-reverse; align-items: stretch; }
+.fader-main-area[data-master-pos="bottom"] { flex-direction: column;         align-items: stretch; }
+.fader-main-area[data-master-pos="top"]    .masters-area,
+.fader-main-area[data-master-pos="bottom"] .masters-area { flex-shrink: 1; overflow-x: auto; }
+.fader-main-area[data-master-pos="top"]    .masters-strip,
+.fader-main-area[data-master-pos="bottom"] .masters-strip { flex-wrap: wrap; }
+
 .masters-future {
   border: 1px dashed rgba(255,255,255,0.06);
   border-radius: 6px; padding: 4px;
@@ -571,6 +581,16 @@ select:focus { border-color: var(--accent); }
 .upload-progress { display: none; font-size: 12px; color: var(--accent); margin-top: 4px; }
 .upload-progress.active { display: block; }
 
+/* JSON file list (DISK tab) */
+.json-file-list { max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 1px; }
+.json-file-row {
+  display: flex; align-items: center; gap: 8px; padding: 7px 12px;
+  cursor: pointer; border-radius: var(--radius-sm);
+  transition: background .1s;
+}
+.json-file-row:hover   { background: var(--surface2); }
+.json-file-row.selected { background: var(--accent-glow); outline: 1px solid rgba(100,160,255,.3); }
+
 /* Bottom nav */
 .bottom-nav {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
@@ -683,7 +703,7 @@ select:focus { border-color: var(--accent); }
 /* input valeur — sa propre boîte arrondie */
 .universe-box .uni-center{display:flex;align-items:center;justify-content:center;}
 .universe-box .uni-center input{
-  width:52px;height:32px;
+  width:64px;height:32px;
   background:#111;border:1px solid #444;border-radius:6px;
   color:#0ff;text-align:center;
   font-weight:bold;font-size:14px;font-family:inherit;
