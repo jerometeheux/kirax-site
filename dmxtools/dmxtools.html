@@ -18,7 +18,13 @@
         <div class="show-sub" id="showSub">—</div>
       </div>
     </div>
-    <div class="header-right">
+    <div class="header-right" style="display:flex;align-items:center;gap:10px">
+      <a href="/devices.html" title="Kirax Devices"
+         style="display:flex;align-items:center;justify-content:center;
+                width:30px;height:30px;border-radius:8px;
+                background:rgba(108,99,255,0.1);border:1px solid rgba(108,99,255,0.2);
+                color:var(--accent);font-size:16px;text-decoration:none;
+                transition:background 0.2s">📡</a>
       <div class="status-dot" id="statusDot"></div>
     </div>
   </header>
@@ -103,6 +109,7 @@
             <button class="danger-btn" onclick="allFadersZero()">0 >>> Faders</button>
             <button class="danger-btn" onclick="allMastersZero()">0 >>> Masters</button>
             <button class="danger-btn" id="btnBlackout" onclick="toggleBlackout()">Blackout</button>
+            <button class="live-btn" id="btnLiveMode" onclick="toggleLiveMode()">EDIT</button>
           </div>
 
         </div>
@@ -1160,7 +1167,7 @@
 </div>
 
 <script>
-const SW_VERSION = "4.1.4";  // web UI version — updated by set_version.py --sw
+const SW_VERSION = "4.2.0";  // web UI version — updated by set_version.py --sw
 const NUM_FADERS   = 48;
 const MAX_MASTERS  = 8;
 const NUM_ART_UNI  = 4;
@@ -1794,6 +1801,17 @@ function allMastersZero() {
 
 let blackoutActive = false;
 const blackoutSnapshot = { faders: null, masters: null };
+
+let liveMode = false;
+function toggleLiveMode() {
+  liveMode = !liveMode;
+  document.body.classList.toggle('live-mode', liveMode);
+  const btn = document.getElementById('btnLiveMode');
+  if (btn) {
+    btn.textContent = liveMode ? 'LIVE' : 'EDIT';
+    btn.classList.toggle('live-active', liveMode);
+  }
+}
 
 function toggleBlackout() {
   const btn = document.getElementById('btnBlackout');
