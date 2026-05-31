@@ -157,6 +157,23 @@ nav {
 .hero-cta {
   display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
 }
+.hero-local {
+  margin-top: 48px;
+  padding-top: 28px;
+  border-top: 1px solid var(--border-h);
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  width: min(520px, 90vw);
+}
+.hero-local-label {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.hero-local-btns {
+  display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+}
 .btn {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 13px 28px;

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kirax — Location de matériel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="kirax-fr.css">
+  <!-- Vercel Web Analytics -->
+  <script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+  <main class="container">
+    <a class="back-link" href="index.html">← Retour à l'accueil</a>
+
+    <!-- ============ HERO ============ -->
+    <section class="hero fade-up">
+      <p class="kicker">Location · Région de Visé / Liège</p>
+      <h1>Matériel à louer</h1>
+      <p class="lead">
+        Du matériel <strong>local</strong>, à essayer ou à louer pour un événement —
+        concert candlelight, mariage, spectacle. Enlèvement sur place ou installation
+        sur demande. <strong>Le truc rare : des bougies LED pilotables en DMX</strong>,
+        que presque personne n'a.
+      </p>
+      <div class="hero-meta">
+        <span>
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 21s-7-5.2-7-11a7 7 0 0 1 14 0c0 5.8-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          Région de Visé (BE)
+        </span>
+        <span>
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 4h16v14H4z"/><path d="M4 9h16"/></svg>
+          Devis sans engagement
+        </span>
+        <span>
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          Essayer avant d'acheter
+        </span>
+      </div>
+    </section>
+
+    <!-- ============ FILTRE CATÉGORIES (Décoration en premier) ============ -->
+    <nav class="tabs" id="tabs">
+      <button class="tab active" data-filter="all">Tout</button>
+      <button class="tab" data-filter="deco">Décoration <span class="count">1</span></button>
+      <button class="tab" data-filter="lumiere">Lumière <span class="count">1</span></button>
+      <button class="tab" data-filter="son">Son</button>
+    </nav>
+
+    <!-- ============ DÉCORATION → BOUGIES LED ============ -->
+    <section class="rental fade-up" data-cat="deco">
+      <div class="rental-head">
+        <div class="rental-icon">🕯️</div>
+        <div class="rental-headtext">
+          <h2>Bougies LED</h2>
+          <p class="rental-sub">Pilotables en DMX, télécommande ou lampe de poche spéciale</p>
+        </div>
+        <span class="cat-tag">Décoration</span>
+      </div>
+
+      <!-- Bandeau -->
+      <img class="cover-banner" src="pics/renting001p01.jpg" alt="Bougies LED en situation" data-lb>
+
+      <!-- ---------- 1) EXPLICATIONS ---------- -->
+      <div class="rental-body">
+        <div>
+          <h3>Le principe</h3>
+          <ul class="list">
+            <li>Des bougies LED <strong>sans flamme</strong>, sûres et réutilisables, qui imitent une vraie flamme vacillante.</li>
+            <li>Allumage / extinction <strong>à distance</strong>, individuellement ou toutes ensemble.</li>
+            <li>Idéal pour un concert candlelight, un mariage ou un spectacle.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Modes de contrôle</h3>
+          <div class="ctrl-chips">
+            <span class="chip">Télécommande IR d'origine</span>
+            <span class="chip">Lampe de poche ON/OFF longue portée, faisceau réglable</span>
+            <span class="chip">Spot large IR piloté en DMX</span>
+            <span class="chip soon">Lyre Beam IR (sur demande)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cas d'usage -->
+      <div class="usecases">
+        <article class="uc">
+          <div class="uc-n">Cas 01</div>
+          <h4>Toutes les bougies depuis une console DMX</h4>
+          <p><strong>Contexte :</strong> un concert candlelight où tu veux aussi intégrer d'autres appareils DMX.</p>
+          <p><strong>Solution :</strong> la console allume ou éteint toutes les bougies d'un seul geste.</p>
+        </article>
+        <article class="uc">
+          <div class="uc-n">Cas 02</div>
+          <h4>Dessiner sur les bougies à distance</h4>
+          <p><strong>Contexte :</strong> allumer ou éteindre certaines bougies pour un effet magique.</p>
+          <p><strong>Solution :</strong> un spot BEAM modifié avec lampe IR.</p>
+        </article>
+        <article class="uc">
+          <div class="uc-n">Cas 03</div>
+          <h4>Dessiner soi-même sur scène</h4>
+          <p><strong>Contexte :</strong> piloter les bougies à la main pendant le show.</p>
+          <p><strong>Solution :</strong> une lampe de poche IR avec boutons ON / OFF.</p>
+        </article>
+      </div>
+
+      <!-- ---------- 2) MODÈLES & TARIFS ---------- -->
+      <h3 class="rental-subhead">Modèles &amp; tarifs</h3>
+      <div class="models">
+        <article class="model">
+          <img src="pics/renting001p03.jpg" alt="Bougies cire ultra-réalistes" data-lb>
+          <div class="model-info">
+            <h4>Cire ultra-réaliste — flamme vacillante</h4>
+            <p>75 bougies en cire véritable, rendu le plus réaliste. Pour l'intérieur, ambiance haut de gamme.</p>
+            <div class="model-foot">
+              <span class="price">35 €<small> / jour (+-75pc avec piles AA)</small></span>
+              <a class="btn btn-ghost" href="mailto:contact@kirax.be?subject=Location%20bougies%20cire">Réserver</a>
+            </div>
+          </div>
+        </article>
+        <article class="model">
+          <img src="pics/renting001p02.jpg" alt="Bougies plastique extérieur" data-lb>
+          <div class="model-info">
+            <h4>Plastique — usage extérieur</h4>
+            <p>70 bougies en plastique, résistantes pour l'extérieur. Rendu un peu moins réaliste mais robuste.</p>
+            <div class="model-foot">
+              <span class="price">25 €<small> / jour (70pc avec piles AA)</small></span>
+              <a class="btn btn-ghost" href="mailto:contact@kirax.be?subject=Location%20bougies%20plastique">Réserver</a>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="rental-cta">
+        <a class="btn btn-primary" href="mailto:contact@kirax.be?subject=Location%20Bougies%20LED">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="m4 6 8 6 8-6"/></svg>
+          Demander un devis complet
+        </a>
+        <span class="hint">Réponse rapide · location à la soirée ou au week-end</span>
+      </div>
+    </section>
+
+    <!-- ============ LUMIÈRE → SMARTSTRIP ============ -->
+    <section class="rental fade-up" data-cat="lumiere">
+      <div class="rental-head">
+        <div class="rental-icon">🌈</div>
+        <div class="rental-headtext">
+          <h2>SmartStrip</h2>
+          <p class="rental-sub">Bande LED RGB pilotable en WiFi / Art-Net / DMX</p>
+        </div>
+        <span class="cat-tag">Lumière</span>
+      </div>
+
+      <!-- Bandeau -->
+      <img class="cover-banner" src="pics/project002p02.jpg" alt="SmartStrip — bande LED" data-lb>
+
+      <!-- 1) EXPLICATIONS -->
+      <div class="rental-body">
+        <div>
+          <h3>Le principe</h3>
+          <ul class="list">
+            <li>Bande de LEDs adressables <strong>WS2812</strong> (1 m), pilotable <strong>sans fil</strong>.</li>
+            <li>Effets dynamiques intégrés ou contrôle pixel par pixel depuis une console.</li>
+            <li>Plusieurs bandes <strong>synchronisables</strong> entre elles pour couvrir un décor.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Modes de contrôle</h3>
+          <div class="ctrl-chips">
+            <span class="chip">Art-Net (WiFi)</span>
+            <span class="chip">Modes DMX</span>
+            <span class="chip">Interface web (téléphone / tablette)</span>
+            <span class="chip">Sync multi-bandes (ESP-NOW)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2) MODÈLES & TARIFS -->
+      <h3 class="rental-subhead">Modèles &amp; tarifs</h3>
+      <div class="models">
+        <article class="model">
+          <img src="pics/project002p03.jpg" alt="SmartStrip 1 m WS2812" data-lb>
+          <div class="model-info">
+            <h4>SmartStrip 1 m — WS2812</h4>
+            <p>Une bande de 1 m, contrôleur ESP32-C6 intégré, interface web incluse. (Décris ici le nombre de LEDs, l'alim, etc.)</p>
+            <div class="model-foot">
+              <span class="price">50 €<small> / jour (8 x 1m)</small></span>
+              <a class="btn btn-ghost" href="mailto:contact@kirax.be?subject=Location%20SmartStrip">Réserver</a>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <div class="rental-cta">
+        <a class="btn btn-primary" href="mailto:contact@kirax.be?subject=Location%20SmartStrip">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="m4 6 8 6 8-6"/></svg>
+          Demander un devis
+        </a>
+        <span class="hint">Plusieurs bandes disponibles · me consulter pour les quantités</span>
+      </div>
+    </section>
+
+    <!-- ============ SON (vide pour l'instant) ============ -->
+    <section class="empty-state" data-cat="son" hidden>
+      <div class="e-icon">🔊</div>
+      <h2>Son</h2>
+      <p>Pas encore de matériel listé dans cette catégorie. Une idée précise ? Dis-moi ce que tu cherches.</p>
+      <a class="btn btn-ghost" href="mailto:contact@kirax.be?subject=Location%20son">Me contacter</a>
+    </section>
+
+    <!-- ============ CTA GÉNÉRAL ============ -->
+    <section class="rental fade-up" data-cat="all-only" style="text-align:center;">
+      <h2 style="margin-bottom:10px;">Tu cherches autre chose ?</h2>
+      <p class="hint" style="max-width:480px;margin:0 auto 18px;">
+        Le stock évolue. Décris ton événement et ton besoin, je te dis ce qui est possible.
+      </p>
+      <a class="btn btn-primary" href="mailto:contact@kirax.be?subject=Location%20-%20demande">contact@kirax.be</a>
+    </section>
+
+    <a class="back-link" href="index.html" style="margin-top:30px;">← Retour à l'accueil</a>
+
+    <footer class="fr-footer">
+      © 2026 Kirax — <a href="https://kirax.be">kirax.be</a>
+    </footer>
+  </main>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <button class="lb-close" id="lbClose" aria-label="Fermer">×</button>
+    <img src="" alt="" id="lbImg">
+  </div>
+
+  <script>
+    // ---- Filtre catégories ----
+    // "Tout" affiche tous les blocs réels et masque les états vides.
+    const tabs = document.querySelectorAll('.tab');
+    const blocks = document.querySelectorAll('[data-cat]');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const f = tab.dataset.filter;
+        blocks.forEach(b => {
+          const show = (f === 'all')
+            ? !b.classList.contains('empty-state')
+            : (b.dataset.cat === f);
+          b.hidden = !show;
+        });
+      });
+    });
+
+    // ---- Lightbox ----
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lbImg');
+    document.querySelectorAll('[data-lb]').forEach(img => {
+      img.addEventListener('click', () => {
+        lbImg.src = img.src; lbImg.alt = img.alt;
+        lb.classList.add('open');
+      });
+    });
+    function closeLb(){ lb.classList.remove('open'); lbImg.src = ''; }
+    lb.addEventListener('click', closeLb);
+    document.getElementById('lbClose').addEventListener('click', closeLb);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); });
+  </script>
+</body>
+</html>

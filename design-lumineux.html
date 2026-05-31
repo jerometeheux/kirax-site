@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kirax — Design Lumineux</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="kirax-fr.css">
+  <!-- Vercel Web Analytics -->
+  <script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+  <main class="container">
+    <a class="back-link" href="index.html">← Retour à l'accueil</a>
+
+    <section class="section-title-block fade-up">
+      <p class="kicker">Réalisations</p>
+      <h2>Design Lumineux</h2>
+      <p>Quelques ambiances et installations lumineuses montées pour des événements et des
+        scènes. Mises en lumière, effets DMX, bougies & décors.</p>
+    </section>
+
+    <!-- Galerie : remplace les pics/design0X.jpg par tes photos.
+         Tu peux ajouter/retirer autant de blocs <figure> que tu veux. -->
+    <div class="masonry fade-up">
+      <figure class="ph">
+        <img src="pics/design001p01.jpg" alt="Réalisation 1">
+        <figcaption>Bengalis 2019</figcaption>
+      </figure>
+      <figure class="ph">
+        <img src="pics/design001p02.jpg" alt="Réalisation 2">
+        <figcaption>Bengalis 2019</figcaption>
+      </figure>
+      <figure class="ph">
+        <img src="pics/design001p03.jpg" alt="Réalisation 3">
+        <figcaption>Bengalis 2019</figcaption>
+      </figure>
+      <figure class="ph">
+        <img src="pics/design001p04.jpg" alt="Réalisation 4">
+        <figcaption>Bengalis 2019</figcaption>
+      </figure>
+      <figure class="ph">
+        <img src="pics/design001p05.jpg" alt="Réalisation 5">
+        <figcaption>Bengalis 2019</figcaption>
+      </figure>
+      <figure class="ph">
+        <img src="pics/design001p06.jpg" alt="Réalisation 5">
+        <figcaption>Bengalis 2019</figcaption>
+      </figure>
+      <figure class="ph">
+        <img src="pics/design002p01.jpg" alt="Réalisation 6">
+        <figcaption>Cabaret 2025</figcaption>
+      </figure>
+      <figure class="ph">
+        <img src="pics/design003p01.jpg" alt="Réalisation 6">
+        <figcaption>Bengalis</figcaption>
+      </figure>
+      <figure class="ph">
+        <img src="pics/design004p01.jpg" alt="Réalisation 6">
+        <figcaption>Bengalis 2026</figcaption>
+      </figure>
+    </div>
+
+    <a class="back-link" href="index.html" style="margin-top:36px;">← Retour à l'accueil</a>
+
+    <footer class="fr-footer">
+      © 2026 Kirax — <a href="https://kirax.be">kirax.be</a>
+    </footer>
+  </main>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <button class="lb-close" id="lbClose" aria-label="Fermer">×</button>
+    <img src="" alt="" id="lbImg">
+  </div>
+
+  <script>
+    const lb = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lbImg');
+    document.querySelectorAll('.ph img').forEach(img => {
+      img.addEventListener('click', () => {
+        lbImg.src = img.src; lbImg.alt = img.alt;
+        lb.classList.add('open');
+      });
+    });
+    function closeLb(){ lb.classList.remove('open'); lbImg.src = ''; }
+    lb.addEventListener('click', closeLb);
+    document.getElementById('lbClose').addEventListener('click', closeLb);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); });
+  </script>
+</body>
+</html>

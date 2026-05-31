@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="home.css">
+<!-- Vercel Web Analytics -->
+<script defer src="/_vercel/insights/script.js"></script>
 </head>
 <body>
 
@@ -17,6 +19,8 @@
   </div>
   <ul class="nav-links">
     <li><a href="#projects">Projects</a></li>
+    <li><a href="#renting">Location</a></li>
+    <li><a href="#design">Design</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
@@ -27,14 +31,22 @@
   <div class="hero-glow"></div>
   <img src="logos/kirax_logo.png" alt="Kirax" class="hero-brand">
   <div class="hero-badge fade-in">Tools & Side Projects</div>
-  <h1 class="hero-title fade-in">Building things<br>that actually work.</h1>
-  <p class="hero-sub fade-in">Small tools, big ideas. Hardware, software, and everything in between — crafted with precision and a touch of obsession.</p>
+  <h1 class="hero-title fade-in">Belgian ideas &times; AI tools<br>= real hardware.</h1>
+  <p class="hero-sub fade-in">A one-person Belgian lab building embedded electronics and lighting tools — ESP32, DMX, Art-Net. Prototyped fast with AI, finished by hand.</p>
   <div class="hero-cta fade-in">
     <a href="#projects" class="btn btn-primary">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      See Projects
+      Explore projects
     </a>
     <a href="#contact" class="btn btn-ghost">Get in touch</a>
+  </div>
+
+  <div class="hero-local fade-in">
+    <span class="hero-local-label">🇧🇪 Services en région liégeoise</span>
+    <div class="hero-local-btns">
+      <a href="#renting" class="btn btn-ghost">Location de matériel</a>
+      <a href="#design" class="btn btn-ghost">Design lumineux</a>
+    </div>
   </div>
   <div class="scroll-hint">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
@@ -84,12 +96,78 @@
       <span class="project-tag">SW</span>
       <span class="project-tag">UI</span>
       <span class="project-tag">DMX</span>
-      <span class="project-tag">IR</span>
-      <div class="project-title">DMX meet IR remote</div>
-      <p class="project-desc">Control IR lights with DMX signals from your favorite lighting console.</p>
+      <div class="project-title">DMX Node</div>
+      <p class="project-desc">Control lights, Sevo, IR with DMX signals from your favorite lighting console.</p>
       <span class="project-link">Open project page →</span>
     </a>
-    
+    <a href="project004.html" class="project-card wip">
+      <div class="status-badge status-progress">In Progress</div>
+      <img src="pics/project004p01.jpg" alt="Project 004 cover image" class="project-thumb">
+      <span class="project-tag">Application</span>
+      <span class="project-tag">Candle</span>
+      <div class="project-title">Candles Remotes</div>
+      <p class="project-desc">Control IR lights with DMX signals from your favorite lighting console.</p>
+      <span class="project-link">Open project page →</span>
+    </a>    
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- LOCATION / RENTING -->
+<section id="renting">
+  <div class="section-label">Try</div>
+  <h2 class="section-title">Location</h2>
+  <p class="section-sub">Matériel à louer dans la région de Liège — pour un événement, ou pour essayer avant d'acheter.</p>
+
+  <div class="projects-grid">
+
+    <a href="location.html" class="project-card">
+      <img src="pics/renting001p01.jpg" alt="Bougies LED" class="project-thumb">
+      <span class="project-tag">Déco</span>
+      <span class="project-tag">DMX</span>
+      <span class="project-tag">IR</span>
+      <div class="project-title">Bougies LED</div>
+      <p class="project-desc">75 bougies cire ultra-réalistes + 70 plastique extérieur. Pilotables en DMX, télécommande ou lampe IR.</p>
+      <span class="project-link">Voir la location →</span>
+    </a>
+
+    <a href="location.html" class="project-card">
+      <img src="pics/project002p01.jpg" alt="SmartStrip" class="project-thumb">
+      <span class="project-tag">Lumière</span>
+      <span class="project-tag">Art-Net</span>
+      <span class="project-tag">RGB</span>
+      <div class="project-title">SmartStrip</div>
+      <p class="project-desc">Bande LED RGB WS2812 (1 m), pilotable WiFi / Art-Net / DMX, plusieurs bandes synchronisables.</p>
+      <span class="project-link">Voir la location →</span>
+    </a>
+
+  </div>
+
+  <div style="margin-top:26px;">
+    <a href="location.html" class="btn btn-primary">Voir tout le matériel à louer →</a>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- DESIGN LUMINEUX -->
+<section id="design">
+  <div class="section-label">Show</div>
+  <h2 class="section-title">Design Lumineux</h2>
+  <p class="section-sub">Quelques ambiances et installations lumineuses réalisées pour des événements et des scènes.</p>
+
+  <div class="projects-grid">
+
+    <a href="design-lumineux.html" class="project-card">
+      <img src="pics/design004p01.jpg" alt="Design lumineux — réalisations" class="project-thumb">
+      <span class="project-tag">Galerie</span>
+      <span class="project-tag">Événementiel</span>
+      <div class="project-title">Réalisations</div>
+      <p class="project-desc">Mises en lumière, effets DMX, bougies & décors — un aperçu en photos de quelques projets.</p>
+      <span class="project-link">Ouvrir la galerie →</span>
+    </a>
+
   </div>
 </section>
 
