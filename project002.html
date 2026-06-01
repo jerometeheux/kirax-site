@@ -125,5 +125,45 @@
     </section>
     <a class="back-link" href="index.html">← Back to home</a>
   </main>
+
+<style>
+#lightbox-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 999;
+  background: rgba(0,0,0,0.85);
+  align-items: center; justify-content: center;
+  cursor: zoom-out;
+}
+#lightbox-overlay.open { display: flex; }
+#lightbox-overlay img {
+  max-width: 92vw; max-height: 90vh;
+  border-radius: 8px;
+  box-shadow: 0 8px 48px rgba(0,0,0,0.6);
+  object-fit: contain;
+}
+.screen img { cursor: zoom-in; }
+</style>
+
+<div id="lightbox-overlay">
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+const overlay = document.getElementById('lightbox-overlay');
+const lbImg   = document.getElementById('lightbox-img');
+
+document.querySelectorAll('.screen img').forEach(img => {
+  img.addEventListener('click', () => {
+    lbImg.src = img.src;
+    lbImg.alt = img.alt;
+    overlay.classList.add('open');
+  });
+});
+
+overlay.addEventListener('click', () => overlay.classList.remove('open'));
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') overlay.classList.remove('open');
+});
+</script>
 </body>
 </html>

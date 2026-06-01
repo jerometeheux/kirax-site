@@ -49,7 +49,7 @@
           <li>Basic libs</li>
         </ul>        
         <div class="section">
-          <h2>Photo Gallery</h2>
+          <h2>Screenshots</h2>
           <div class="gallery">
             <img src="pics/project001p02.jpg" alt="Project 001 photo 2">
             <img src="pics/project001p05.jpg" alt="Project 001 photo 5">
@@ -92,12 +92,25 @@
           <p><strong>Context:</strong> Using Trads, RGB fixtures and Automatic fixtures on one Univers</p>
           <p><strong>Solution:</strong> Use 2 cheap consoles together : a "24 Channels DMX" and a "12 x 16 Automatic console" with main master</p>
           <p><strong>Proof:</strong> TBD</p>
+          <section class="card section">
+            <div class="screens">
+              <div class="screen"><img src="pics/project001p07.jpg" alt="Pics 007"><p>2 Basic consoles + Dmx Tools.</p></div>
+              <div class="screen"><img src="pics/project001p08.jpg" alt="Pics 008"><p>Rules editor screenshot.</p></div>
+            </div>
+          </section>
         </article>
         <article class="usecase">
           <h3>Use Case 2 - DMX simplifier</h3>
           <p><strong>Context:</strong> Transform fixtures with strange DMX or Moving Wash into simple "RGB channels"</p>
           <p><strong>Solution:</strong> Use web-configurable routing and remapping rules to use cheap 24 Channels DMX console to control "complex" fixutres</p>
           <p><strong>Proof:</strong> TBD</p>
+           <section class="card section">
+            <div class="screens">
+              <div class="screen"><img src="pics/project001p09.jpg" alt="Pics 009"><p>DMX fantaisist led source</p></div>
+              <div class="screen"><img src="pics/project001p10.jpg" alt="Pics 010"><p>DMX crasy table</p></div>
+              <div class="screen"><img src="pics/project001p11.jpg" alt="Pics 011"><p>Rules to transform into RGB.</p></div>
+            </div>
+          </section>         
         </article>
         <article class="usecase">
           <h3>Use Case 3 - Hybrid operation (console + local web control)</h3>
@@ -144,5 +157,45 @@
     </section>
     <a class="back-link" href="index.html">← Back to home</a>
   </main>
+
+<style>
+#lightbox-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 999;
+  background: rgba(0,0,0,0.85);
+  align-items: center; justify-content: center;
+  cursor: zoom-out;
+}
+#lightbox-overlay.open { display: flex; }
+#lightbox-overlay img {
+  max-width: 92vw; max-height: 90vh;
+  border-radius: 8px;
+  box-shadow: 0 8px 48px rgba(0,0,0,0.6);
+  object-fit: contain;
+}
+.screen img { cursor: zoom-in; }
+</style>
+
+<div id="lightbox-overlay">
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script>
+const overlay = document.getElementById('lightbox-overlay');
+const lbImg   = document.getElementById('lightbox-img');
+
+document.querySelectorAll('.screen img').forEach(img => {
+  img.addEventListener('click', () => {
+    lbImg.src = img.src;
+    lbImg.alt = img.alt;
+    overlay.classList.add('open');
+  });
+});
+
+overlay.addEventListener('click', () => overlay.classList.remove('open'));
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') overlay.classList.remove('open');
+});
+</script>
 </body>
 </html>
